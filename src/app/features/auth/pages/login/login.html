@@ -1,1 +1,33 @@
-<p>login works!</p>
+<form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+  <!-- 表单级错误 -->
+  <div class="form-error" *ngIf="form.errors?.['invalidCredentials']">
+    用户名或密码错误
+  </div>
+
+  <!-- 用户名 -->
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>用户名</mat-label>
+    <input matInput formControlName="username" autocomplete="username" />
+    <mat-error *ngIf="f.username.hasError('required')">必填</mat-error>
+    <mat-error *ngIf="f.username.hasError('minlength')">至少 3 个字符</mat-error>
+  </mat-form-field>
+
+  <!-- 密码 -->
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>密码</mat-label>
+    <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" autocomplete="current-password" />
+    <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())">
+      <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+    </button>
+    <mat-error *ngIf="f.password.hasError('required')">必填</mat-error>
+    <mat-error *ngIf="f.password.hasError('minlength')">至少 6 个字符</mat-error>
+  </mat-form-field>
+
+  <!-- 记住我 + 提交 -->
+  <div class="row">
+    <mat-checkbox formControlName="rememberMe">记住我</mat-checkbox>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || submitting()">
+      {{ submitting() ? '登录中...' : '登录' }}
+    </button>
+  </div>
+</form>
