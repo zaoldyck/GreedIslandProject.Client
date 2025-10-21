@@ -43,3 +43,17 @@
     }
   }
 }
+.register-link {
+  margin-top: 16px;
+  text-align: center;
+
+  a {
+    color: #1976d2; // Angular Material 默认主色
+    font-size: 14px;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

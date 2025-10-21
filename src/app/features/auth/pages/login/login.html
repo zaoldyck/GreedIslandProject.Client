@@ -1,4 +1,4 @@
-<form  class="card" [formGroup]="form" (ngSubmit)="onSubmit()">
+<form class="card" [formGroup]="form" (ngSubmit)="onSubmit()">
   <h2>登录</h2>
 
   <mat-form-field appearance="outline">
@@ -8,11 +8,8 @@
            formControlName="account"
            autocomplete="username"
            placeholder="输入账号" />
-    @if (form.controls.account.touched && form.controls.account.hasError('required'))
-    {
-      <mat-error>
-        账号为必填
-      </mat-error>
+    @if (form.controls.account.touched && form.controls.account.hasError('required')) {
+    <mat-error>账号为必填</mat-error>
     }
   </mat-form-field>
 
@@ -31,18 +28,19 @@
             [attr.aria-label]="'切换密码可见性'">
       <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
     </button>
-    @if (form.controls.password.touched && form.controls.password.hasError('required'))
-    {
-    <mat-error>
-      密码为必填
-    </mat-error>
+    @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+    <mat-error>密码为必填</mat-error>
     }
   </mat-form-field>
 
   <div class="actions">
-    <button type="submit" mat-flat-button  
-            [disabled]="form.invalid || form.pending">
+    <button type="submit" mat-flat-button [disabled]="form.invalid || form.pending">
       登录
     </button>
+  </div>
+
+  <!-- 新增注册跳转 -->
+  <div class="register-link">
+    <a mat-button routerLink="/register">没有账号？去注册</a>
   </div>
 </form>
