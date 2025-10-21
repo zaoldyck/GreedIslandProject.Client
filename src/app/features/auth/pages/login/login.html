@@ -1,33 +1,48 @@
-<form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
-  <!-- 表单级错误 -->
-  <div class="form-error" *ngIf="form.errors?.['invalidCredentials']">
-    用户名或密码错误
-  </div>
+<form  class="card" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <h2>登录</h2>
 
-  <!-- 用户名 -->
-  <mat-form-field appearance="outline" class="full">
-    <mat-label>用户名</mat-label>
-    <input matInput formControlName="username" autocomplete="username" />
-    <mat-error *ngIf="f.username.hasError('required')">必填</mat-error>
-    <mat-error *ngIf="f.username.hasError('minlength')">至少 3 个字符</mat-error>
+  <mat-form-field appearance="outline">
+    <mat-label>账号</mat-label>
+    <input matInput
+           required
+           formControlName="account"
+           autocomplete="username"
+           placeholder="输入账号" />
+    @if (form.controls.account.touched && form.controls.account.hasError('required'))
+    {
+      <mat-error>
+        账号为必填
+      </mat-error>
+    }
   </mat-form-field>
 
-  <!-- 密码 -->
-  <mat-form-field appearance="outline" class="full">
+  <mat-form-field appearance="outline">
     <mat-label>密码</mat-label>
-    <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" autocomplete="current-password" />
-    <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())">
-      <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+    <input matInput
+           required
+           [type]="showPassword() ? 'text':'password'"
+           formControlName="password"
+           autocomplete="current-password"
+           placeholder="输入密码" />
+    <button mat-icon-button
+            matSuffix
+            type="button"
+            (click)="showPassword.set(!showPassword())"
+            [attr.aria-label]="'切换密码可见性'">
+      <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
     </button>
-    <mat-error *ngIf="f.password.hasError('required')">必填</mat-error>
-    <mat-error *ngIf="f.password.hasError('minlength')">至少 6 个字符</mat-error>
+    @if (form.controls.password.touched && form.controls.password.hasError('required'))
+    {
+    <mat-error>
+      密码为必填
+    </mat-error>
+    }
   </mat-form-field>
 
-  <!-- 记住我 + 提交 -->
-  <div class="row">
-    <mat-checkbox formControlName="rememberMe">记住我</mat-checkbox>
-    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || submitting()">
-      {{ submitting() ? '登录中...' : '登录' }}
+  <div class="actions">
+    <button type="submit" mat-flat-button  
+            [disabled]="form.invalid || form.pending">
+      登录
     </button>
   </div>
 </form>

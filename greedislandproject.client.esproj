@@ -3,17 +3,14 @@
     <ShouldRunBuildScript>false</ShouldRunBuildScript>
     <ShouldRunNpmInstall>false</ShouldRunNpmInstall>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove=".vscode\**" />
     <None Remove="dist\**" />
     <TypeScriptConfiguration Remove=".vscode\**" />
     <TypeScriptConfiguration Remove="dist\**" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="src\app\features\auth\pages\" />
-    <Folder Include="src\app\features\auth\models\" />
     <Folder Include="src\app\features\auth\services\" />
     <Folder Include="src\app\features\users\models\" />
     <Folder Include="src\app\features\users\pages\" />
