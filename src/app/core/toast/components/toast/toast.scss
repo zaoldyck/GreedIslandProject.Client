@@ -1,0 +1,129 @@
+/* ========= 根：覆盖变量可自定义主题 ========= */
+:host {
+  /* 位置为全局浮层，不挡住页面其他区域点击 */
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1300;
+  /* 颜色变量（可在全局或主题里覆盖） */
+  --toast-fg: #fff;
+  --toast-success-bg: linear-gradient(135deg, #2bb673, #22a060);
+  --toast-alert-bg: linear-gradient(135deg, #e53935, #c62828);
+  --toast-shadow: 0 6px 20px rgba(0,0,0,.18);
+  --toast-blur: saturate(1.2) blur(2px);
+  --toast-radius: 8px;
+  --toast-enter-duration: .18s;
+  --toast-exit-duration: .18s;
+}
+
+/* ========= 容器：桌面右上角；移动端底部居中 ========= */
+.toasts-host {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .toasts-host {
+    top: auto;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    align-items: center;
+  }
+}
+
+/* ========= 单条 Toast ========= */
+.toast {
+  pointer-events: auto; /* 允许点击关闭按钮 */
+  min-width: 280px;
+  max-width: min(420px, calc(100% - 32px));
+  color: var(--toast-fg);
+  border-radius: var(--toast-radius);
+  box-shadow: var(--toast-shadow);
+  backdrop-filter: var(--toast-blur);
+  /* 入场初始状态（通过非 .closing 规则过渡到目标态） */
+  transform: translateY(-8px);
+  opacity: 0;
+  /* 进入/退出过渡 */
+  transition: transform var(--toast-enter-duration) ease, opacity var(--toast-enter-duration) ease, filter var(--toast-enter-duration) ease;
+  will-change: transform, opacity;
+  /* 文本处理 */
+  .text {
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+}
+
+/* 进入后的稳定态（默认状态） */
+.toast:not(.closing) {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 退出动画（服务里会把 closing 设为 true，延迟移除） */
+.toast.closing {
+  transform: translateY(-8px);
+  opacity: 0;
+  filter: saturate(.9);
+  transition-duration: var(--toast-exit-duration);
+}
+
+/* 类型样式 */
+.toast.success {
+  background: var(--toast-success-bg);
+}
+
+.toast.alert {
+  background: var(--toast-alert-bg);
+}
+
+/* 内容区布局 */
+.content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* 关闭按钮（仅 alert 显示） */
+.close {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  padding: 6px;
+  cursor: pointer;
+  opacity: .9;
+  transition: opacity .15s ease;
+}
+
+.close:hover {
+  opacity: 1;
+}
+
+/* ========= 可选：深色模式微调 ========= */
+@media (prefers-color-scheme: dark) {
+  :host {
+    --toast-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+}
+
+/* ========= 可选：减少动态效果（无障碍） ========= */
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toast.closing {
+    transition: none;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+}

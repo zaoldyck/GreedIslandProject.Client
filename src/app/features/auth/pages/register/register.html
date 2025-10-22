@@ -1,1 +1,111 @@
-<p>register works!</p>
+<h1>注册</h1>
+
+<mat-horizontal-stepper #stepper>
+  <!-- 步骤一：验证手机号 -->
+  <mat-step [stepControl]="phoneForm" label="">
+    <form [formGroup]="phoneForm">
+      <h3>验证手机号</h3>
+
+      <div class="step-panel entered">
+        <!-- 第一步默认就进入完成态 -->
+        <mat-form-field appearance="outline" class="w-100"
+                        [class.invalid-shake]="phoneForm.controls.phone.invalid && phoneForm.controls.phone.touched">
+          <mat-label>手机号</mat-label>
+          <input matInput type="tel" formControlName="phone" maxlength="11" autocomplete="tel" />
+          @if (phoneForm.controls.phone.hasError('required')) {
+          <mat-error>必填项</mat-error>
+          }
+          @if (phoneForm.controls.phone.hasError('pattern')) {
+          <mat-error>请输入有效的大陆手机号</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="sms-row">
+          <mat-form-field appearance="outline" class="flex-1"
+                          [class.invalid-shake]="phoneForm.controls.code.invalid && phoneForm.controls.code.touched">
+            <mat-label>短信验证码</mat-label>
+            <input matInput formControlName="code" maxlength="6" />
+            @if (phoneForm.controls.code.hasError('required')) {
+            <mat-error>必填项</mat-error>
+            }
+            @if (phoneForm.controls.code.hasError('pattern')) {
+            <mat-error>请输入6位数字验证码</mat-error>
+            }
+            @if (phoneForm.controls.code.hasError('server')) {
+            <mat-error>{{ phoneForm.controls.code.getError('server') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <div class="sms-actions">
+            <button mat-stroked-button type="button"
+                    [disabled]="!canSend()"
+                    (click)="sendCode()">
+              @if (countdown() === 0) { 获取验证码 } @else { 重新发送 {{countdown()}}s }
+            </button>
+
+            <!-- 纯 CSS 进度条：倒计时期间显示，宽度跟随百分比 -->
+            @if (countdown() > 0) {
+            <div class="countdown-bar">
+              <span class="bar" [style.width.%]="(60 - countdown()) / 60 * 100"></span>
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="actions">
+          <button mat-raised-button color="primary" type="button"
+                  (click)="verifyPhone(() => stepper.next())">
+            下一步
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- 步骤二：完善个人信息 -->
+  <mat-step [stepControl]="profileForm" label="">
+    <form [formGroup]="profileForm" (ngSubmit)="complete()">
+      <h3>完善个人信息</h3>
+
+      <!-- 第二步：当拿到 registerTicket() 时加 .entered 触发淡入 -->
+      <div class="step-panel" [class.entered]="!!registerTicket()">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>昵称（可选）</mat-label>
+          <input matInput formControlName="displayName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100"
+                        [class.invalid-shake]="profileForm.controls.email?.invalid && profileForm.controls.email?.touched">
+          <mat-label>邮箱（可选）</mat-label>
+          <input matInput formControlName="email" autocomplete="email" />
+          @if (profileForm.controls.email?.hasError('email')) {
+          <mat-error>邮箱格式不正确</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>设置密码（可选）</mat-label>
+          <input matInput type="password" formControlName="password" autocomplete="new-password" />
+          <mat-hint>至少8位，包含数字和字母；不填也可用短信登录</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100"
+                        [class.invalid-shake]="profileForm.hasError('passwordMismatch') || profileForm.hasError('passwordWeak')">
+          <mat-label>确认密码</mat-label>
+          <input matInput type="password" formControlName="confirmPassword" autocomplete="new-password" />
+          @if (profileForm.hasError('passwordWeak')) {
+          <mat-error>密码需至少8位，包含数字和字母</mat-error>
+          }
+          @if (profileForm.hasError('passwordMismatch')) {
+          <mat-error>两次输入的密码不一致</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-button type="button" (click)="stepper.previous()">上一步</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="submitting()">完成注册</button>
+        </div>
+      </div>
+    </form>
+  </mat-step>
+</mat-horizontal-stepper>

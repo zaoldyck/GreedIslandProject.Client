@@ -1,0 +1,15 @@
+<div class="toasts-host" role="region" aria-label="通知">
+  @for (t of svc.toasts(); track t.id) {
+  <div class="toast"
+       [ngClass]="[t.type, t.closing ? 'closing' : '']"
+       role="alert"
+       [attr.aria-live]="t.type === 'alert' ? 'assertive' : 'polite'">
+    <div class="content">
+      <span class="text">{{ t.message }}</span>
+      @if (t.type === 'alert') {
+      <button class="close" type="button" (click)="svc.dismiss(t.id)" aria-label="关闭">×</button>
+      }
+    </div>
+  </div>
+  }
+</div>
