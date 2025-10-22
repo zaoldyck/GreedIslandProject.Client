@@ -15,6 +15,6 @@
     <Folder Include="src\app\features\users\models\" />
     <Folder Include="src\app\features\users\pages\" />
     <Folder Include="src\app\features\users\services\" />
-    <Folder Include="src\app\shared\" />
+    <Folder Include="src\app\shared\legal\" />
   </ItemGroup>
 </Project>

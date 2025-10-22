@@ -7,13 +7,16 @@ import { ToastService } from '../../../../core/toast/services/ToastService';
 import { RegisterService } from '../../services/RegisterService';
 import { NgClass } from '@angular/common';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { UserAgreementDialog } from '../../../../shared/legal/user-agreement-dialog/user-agreement-dialog';
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
 const OPTIONAL_PASSWORD_PATTERN = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/; // 至少8位，含数字和字母
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatStepperModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatStepperModule, MatCheckboxModule, MatDialogModule],
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
@@ -21,10 +24,12 @@ export class Register {
   private fb = inject(FormBuilder);
   private svc = inject(RegisterService);
   private toastService = inject(ToastService);
+  private dialog = inject(MatDialog);
   // 第一步：手机号 + 短信码
   phoneForm = this.fb.nonNullable.group({
     phone: ['', [Validators.required, Validators.pattern(CN_PHONE)]],
-    code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
+    code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+    agreement: [false, Validators.requiredTrue] // 新增：必须勾选
   });
 
   // 第二步：个人信息（密码可选）
@@ -203,6 +208,17 @@ export class Register {
         this.toastService.showAlert('注册失败，请稍后再试');
       },
       complete: () => this.submitting.set(false)
+    });
+  }
+
+  openUserAgreementDialog(): void {
+    this.dialog.open(UserAgreementDialog, {
+      width: '880px',
+      maxWidth: '90vw',
+      maxHeight: '80vh',
+      autoFocus: false,
+      restoreFocus: true,
+      panelClass: 'legal-dialog',
     });
   }
 }

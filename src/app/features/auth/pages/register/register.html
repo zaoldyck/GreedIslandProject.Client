@@ -8,7 +8,7 @@
 
       <div class="step-panel entered">
         <!-- 第一步默认就进入完成态 -->
-        <mat-form-field appearance="outline" 
+        <mat-form-field appearance="outline"
                         [class.invalid-shake]="phoneForm.controls.phone.invalid && phoneForm.controls.phone.touched">
           <mat-label>手机号</mat-label>
           <input matInput type="tel" formControlName="phone" maxlength="11" autocomplete="tel" />
@@ -55,6 +55,15 @@
         <div>
           <div>
             <button matButton matStepperNext>同意协议并继续</button>
+
+            <mat-checkbox formControlName="agreement" required>
+              我已阅读并同意
+              <button type="button"
+                      class="as-link"
+                      (click)="openUserAgreementDialog()">
+                《用户服务协议和隐私政策》
+              </button>
+            </mat-checkbox>
           </div>
         </div>
       </div>
@@ -99,7 +108,6 @@
           <mat-error>两次输入的密码不一致</mat-error>
           }
         </mat-form-field>
-
       </div>
 
       <div>
@@ -113,7 +121,6 @@
     <p>You are now done.</p>
     <div>
       <button matButton matStepperPrevious>Back</button>
-  
     </div>
   </mat-step>
 </mat-stepper>
