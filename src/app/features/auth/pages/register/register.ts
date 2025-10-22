@@ -5,13 +5,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ToastService } from '../../../../core/toast/services/ToastService';
 import { RegisterService } from '../../services/RegisterService';
+import { NgClass } from '@angular/common';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
 const OPTIONAL_PASSWORD_PATTERN = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/; // 至少8位，含数字和字母
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatStepperModule],
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
@@ -73,7 +75,7 @@ export class Register {
   }
 
   // 校验短信码 → 获取注册票据
-  verifyPhone(nextStep: () => void) {
+  verifyPhone(stepper: MatStepper) {
     if (this.phoneForm.invalid) {
       this.phoneForm.markAllAsTouched();
       this.toastService.showAlert('请正确填写手机号和验证码');
@@ -81,40 +83,65 @@ export class Register {
     }
 
     const { phone, code } = this.phoneForm.getRawValue();
-    this.svc.verifySms({ phone, code }).subscribe({
-      next: (res) => {
-        this.registerTicket.set(res.registerTicket);
-        this.toastService.showSuccess('手机号验证成功');
-        nextStep();
-      },
-      error: (err) => {
-        // 尝试按 ASP.NET Core ValidationProblemDetails 结构解析
-        const problem = err?.error as { errors?: Record<string, string[]>; title?: string; status?: number } | undefined;
-        const codeMsgs = problem?.errors?.['code'];   // ★ 用下标访问
 
-        if (Array.isArray(codeMsgs) && codeMsgs.length > 0) {
-          // 合并现有错误，避免覆盖本地校验
+    this.svc.verifySms({ phone, code })
+      // .pipe(take(1), finalize(() => { /* 可选：收尾逻辑，如关闭loading */ }))
+      .subscribe({
+        next: (res) => {
+          // 写入注册票据
+          this.registerTicket.set(res.registerTicket);
+
+          // ✅ 清理 code 控件上可能残留的 server 错误（防止成功后仍显示红字）
           const ctrl = this.phoneForm.controls.code;
-          ctrl.setErrors({ ...(ctrl.errors ?? {}), server: codeMsgs[0] });
-          ctrl.markAsTouched();
-        } else if (problem?.errors) {
-          // 兜底：把其他字段错误分发到对应控件
-          for (const [key, msgs] of Object.entries(problem.errors)) {
-            const c = this.phoneForm.get(key);
-            if (c && msgs?.length) {
-              c.setErrors({ ...(c.errors ?? {}), server: msgs.join(' ') });
-              c.markAsTouched();
+          if (ctrl.errors?.['server']) {
+            const { server, ...rest } = ctrl.errors;
+            ctrl.setErrors(Object.keys(rest).length ? rest : null);
+            ctrl.updateValueAndValidity({ emitEvent: false });
+          }
+
+          this.toastService.showSuccess('手机号验证成功');
+
+          // 直接在方法里推进 stepper
+          stepper.next();
+        },
+
+        error: (err) => {
+          // 按 ASP.NET Core ValidationProblemDetails 结构解析
+          const problem = err?.error as
+            | { errors?: Record<string, string[]>; title?: string; status?: number }
+            | undefined;
+
+          // 标记是否已给出具体字段级提示，若没有再给兜底 Toast
+          let hinted = false;
+
+          // 优先处理 code 字段
+          const codeMsgs = problem?.errors?.['code'];
+          if (Array.isArray(codeMsgs) && codeMsgs.length > 0) {
+            const ctrl = this.phoneForm.controls.code;
+            ctrl.setErrors({ ...(ctrl.errors ?? {}), server: codeMsgs[0] });
+            ctrl.markAsTouched();
+            hinted = true;
+          }
+
+          // 分发其他字段错误（若后端返回了）
+          if (problem?.errors) {
+            for (const [key, msgs] of Object.entries(problem.errors)) {
+              if (key === 'code') continue; // code 已处理
+              const c = this.phoneForm.get(key);
+              if (c && msgs?.length) {
+                c.setErrors({ ...(c.errors ?? {}), server: msgs.join(' ') });
+                c.markAsTouched();
+                hinted = true;
+              }
             }
           }
-        } else {
-          // 仍没有结构化错误，给一个通用提示
-          this.toastService.showAlert(err?.error?.message ?? '验证码错误或已过期');
-        }
 
-        // 顶层提示
-        this.toastService.showAlert('验证码错误或已过期');
-      }
-    });
+          // 若没有结构化字段错误，再给一个兜底提示
+          if (!hinted) {
+            this.toastService.showAlert(err?.error?.message ?? '验证码错误或已过期');
+          }
+        },
+      });
   }
 
   // 密码可选校验：只有填写时才检查强度与一致性

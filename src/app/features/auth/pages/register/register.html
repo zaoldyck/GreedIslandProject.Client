@@ -1,14 +1,14 @@
 <h1>注册</h1>
 
-<mat-horizontal-stepper #stepper>
+<mat-stepper linear #stepper>
   <!-- 步骤一：验证手机号 -->
   <mat-step [stepControl]="phoneForm" label="">
     <form [formGroup]="phoneForm">
-      <h3>验证手机号</h3>
+      <ng-template matStepLabel>验证手机号</ng-template>
 
       <div class="step-panel entered">
         <!-- 第一步默认就进入完成态 -->
-        <mat-form-field appearance="outline" class="w-100"
+        <mat-form-field appearance="outline" 
                         [class.invalid-shake]="phoneForm.controls.phone.invalid && phoneForm.controls.phone.touched">
           <mat-label>手机号</mat-label>
           <input matInput type="tel" formControlName="phone" maxlength="11" autocomplete="tel" />
@@ -40,7 +40,7 @@
             <button mat-stroked-button type="button"
                     [disabled]="!canSend()"
                     (click)="sendCode()">
-              @if (countdown() === 0) { 获取验证码 } @else { 重新发送 {{countdown()}}s }
+              @if (countdown() === 0) { 获取验证码 } @else { 重新发送 {{ countdown() }}s }
             </button>
 
             <!-- 纯 CSS 进度条：倒计时期间显示，宽度跟随百分比 -->
@@ -52,11 +52,10 @@
           </div>
         </div>
 
-        <div class="actions">
-          <button mat-raised-button color="primary" type="button"
-                  (click)="verifyPhone(() => stepper.next())">
-            下一步
-          </button>
+        <div>
+          <div>
+            <button matButton matStepperNext>同意协议并继续</button>
+          </div>
         </div>
       </div>
     </form>
@@ -65,7 +64,7 @@
   <!-- 步骤二：完善个人信息 -->
   <mat-step [stepControl]="profileForm" label="">
     <form [formGroup]="profileForm" (ngSubmit)="complete()">
-      <h3>完善个人信息</h3>
+      <ng-template matStepLabel>填写账号信息</ng-template>
 
       <!-- 第二步：当拿到 registerTicket() 时加 .entered 触发淡入 -->
       <div class="step-panel" [class.entered]="!!registerTicket()">
@@ -75,10 +74,10 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-100"
-                        [class.invalid-shake]="profileForm.controls.email?.invalid && profileForm.controls.email?.touched">
+                        [class.invalid-shake]="profileForm.controls.email.invalid && profileForm.controls.email.touched">
           <mat-label>邮箱（可选）</mat-label>
           <input matInput formControlName="email" autocomplete="email" />
-          @if (profileForm.controls.email?.hasError('email')) {
+          @if (profileForm.controls.email.hasError('email')) {
           <mat-error>邮箱格式不正确</mat-error>
           }
         </mat-form-field>
@@ -101,11 +100,20 @@
           }
         </mat-form-field>
 
-        <div class="actions">
-          <button mat-button type="button" (click)="stepper.previous()">上一步</button>
-          <button mat-raised-button color="primary" type="submit" [disabled]="submitting()">完成注册</button>
-        </div>
+      </div>
+
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
       </div>
     </form>
   </mat-step>
-</mat-horizontal-stepper>
+  <mat-step>
+    <ng-template matStepLabel>注册成功</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+  
+    </div>
+  </mat-step>
+</mat-stepper>
