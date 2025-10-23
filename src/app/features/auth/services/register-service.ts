@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CompleteRegisterRequest, CompleteRegisterResponse, SendSmsRequest, VerifySmsRequest, VerifySmsResponse } from '../models/RegisterModels';
+import { CompleteRegisterRequest, CompleteRegisterResponse, SendSmsRequest, VerifySmsRequest, VerifySmsResponse } from '../models/register-models';
 
 @Injectable({
   providedIn: 'root'

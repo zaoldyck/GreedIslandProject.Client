@@ -3,13 +3,14 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Va
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ToastService } from '../../../../core/toast/services/ToastService';
-import { RegisterService } from '../../services/RegisterService';
+import { ToastService } from '../../../../core/toast/services/toast-service';
+import { RegisterService } from '../../services/register-service';
 import { NgClass } from '@angular/common';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UserAgreementDialog } from '../../../../shared/legal/user-agreement-dialog/user-agreement-dialog';
+import { CaptchaService } from '../../../../core/services/captcha-service';
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
 const OPTIONAL_PASSWORD_PATTERN = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/; // 至少8位，含数字和字母
@@ -25,6 +26,7 @@ export class Register {
   private svc = inject(RegisterService);
   private toastService = inject(ToastService);
   private dialog = inject(MatDialog);
+  private captchaService = inject(CaptchaService);
   // 第一步：手机号 + 短信码
   phoneForm = this.fb.nonNullable.group({
     phone: ['', [Validators.required, Validators.pattern(CN_PHONE)]],
