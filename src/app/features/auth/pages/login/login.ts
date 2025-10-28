@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { LoginRequest } from '../../models/LoginRequest';
+import { LoginRequest } from '../../models/login-request';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';

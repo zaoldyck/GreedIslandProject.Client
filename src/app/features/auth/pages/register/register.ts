@@ -11,6 +11,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UserAgreementDialog } from '../../../../shared/legal/user-agreement-dialog/user-agreement-dialog';
 import { CaptchaService } from '../../../../core/services/captcha-service';
+import { firstValueFrom, switchMap } from 'rxjs';
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
 const OPTIONAL_PASSWORD_PATTERN = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/; // 至少8位，含数字和字母
@@ -51,26 +52,37 @@ export class Register {
 
   get canSend() { return computed(() => !this.sending() && this.countdown() === 0); }
 
-  // 发送验证码（60s 冷却）
-  sendCode() {
+
+  async sendCode() {
     const phoneCtrl = this.phoneForm.controls.phone;
     if (phoneCtrl.invalid) {
       phoneCtrl.markAsTouched();
       this.toastService.showAlert('请输入有效的手机号');
       return;
     }
+
     this.sending.set(true);
-    this.svc.sendSms({ phone: phoneCtrl.value, purpose: 'register', captchaToken: '' }).subscribe({
-      next: () => {
-        this.toastService.showSuccess('验证码已发送');
-        this.startCountdown(60);
-      },
-      error: (err) => {
-        this.toastService.showAlert(err?.error?.message || '发送验证码失败，请稍后重试');
-      },
-      complete: () => this.sending.set(false)
-    });
+    try {
+      debugger
+      // 你的 CaptchaService 是 Promise 风格
+      const captchaToken = await this.captchaService.verify();
+
+      // svc.sendSms 返回 Observable，这里用 firstValueFrom 接一次
+      await firstValueFrom(this.svc.sendSms({
+        phone: phoneCtrl.value,
+        purpose: 'register',
+        captchaToken
+      }));
+
+      this.toastService.showSuccess('验证码已发送');
+      this.startCountdown(60);
+    } catch (err: any) {
+      this.toastService.showAlert(err?.error?.message || '发送验证码失败，请稍后重试');
+    } finally {
+      this.sending.set(false);
+    }
   }
+
 
   private startCountdown(sec: number) {
     this.countdown.set(sec);

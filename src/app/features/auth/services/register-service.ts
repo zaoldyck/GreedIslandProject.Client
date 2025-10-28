@@ -12,7 +12,7 @@ export class RegisterService {
   constructor(private http: HttpClient) { }
 
   sendSms(body: SendSmsRequest): Observable<{ ok: boolean }> {
-    return this.http.post<{ ok: boolean }>(`${this.base}/auth/sms/send`, body);
+    return this.http.post<{ ok: boolean }>(`${this.base}/Notification/sms/send`, body);
   }
 
   verifySms(body: VerifySmsRequest): Observable<VerifySmsResponse> {
