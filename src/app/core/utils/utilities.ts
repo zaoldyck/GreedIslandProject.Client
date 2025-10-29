@@ -21,6 +21,22 @@ export class Utilities {
   public static readonly notFoundMessageCaption = 'Not Found';
   public static readonly notFoundMessageDetail = 'The target resource cannot be found';
 
+  public static handleError(err: any, fallbackMessage = '请求失败，请稍后重试'): string {
+    return err?.error?.message || err?.message || fallbackMessage;
+  }
+
+  public static mapSmsCodeReason(reason?: string): string {
+    switch (reason) {
+      case 'mismatch': return '验证码不正确';
+      case 'not_found': return '验证码不存在或已过期';
+      case 'empty_value': return '验证码无效';
+      case 'rate_limited': return '操作过于频繁，请稍后再试';
+      case 'purpose_required': return '验证码用途缺失';
+      case 'phone_required': return '手机号不能为空';
+      default: return '验证码校验失败';
+    }
+  }
+
   public static readonly findHttpResponseMessageDefaultSearchOption: HttpMessageSearchOptions = {
     searchInCaption: true,
     searchInMessage: false,

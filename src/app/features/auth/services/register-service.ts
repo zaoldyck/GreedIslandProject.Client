@@ -11,15 +11,15 @@ export class RegisterService {
 
   constructor(private http: HttpClient) { }
 
-  sendSms(body: SendSmsRequest): Observable<{ ok: boolean }> {
-    return this.http.post<{ ok: boolean }>(`${this.base}/Notification/sms/send`, body);
+  sendSms(request: SendSmsRequest): Observable<{ ok: boolean }> {
+    return this.http.post<{ ok: boolean }>(`${this.base}/Notification/sms/send`, request);
   }
 
-  verifySms(body: VerifySmsRequest): Observable<VerifySmsResponse> {
-    return this.http.post<VerifySmsResponse>(`${this.base}/auth/sms/verify`, body);
+  verifySms(request: VerifySmsRequest): Observable<VerifySmsResponse> {
+    return this.http.post<VerifySmsResponse>(`${this.base}/Notification/sms/verify`, request);
   }
 
-  completeRegister(body: CompleteRegisterRequest): Observable<CompleteRegisterResponse> {
-    return this.http.post<CompleteRegisterResponse>(`${this.base}/auth/register/complete`, body);
+  completeRegister(request: CompleteRegisterRequest): Observable<CompleteRegisterResponse> {
+    return this.http.post<CompleteRegisterResponse>(`${this.base}/auth/register/complete`, request);
   }
 }

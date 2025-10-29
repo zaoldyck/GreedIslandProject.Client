@@ -3,7 +3,7 @@
 <mat-stepper linear #stepper>
   <!-- 步骤一：验证手机号 -->
   <mat-step [stepControl]="phoneForm">
-    <form [formGroup]="phoneForm">
+    <form [formGroup]="phoneForm" (ngSubmit)="confirmAgreementAndNext(stepper)">
       <ng-template matStepLabel>验证手机号</ng-template>
 
       <!-- 第一步默认就进入完成态 -->
@@ -35,7 +35,6 @@
           }
         </mat-form-field>
 
-
         <button mat-stroked-button type="button"
                 [disabled]="!canSend()"
                 (click)="sendCode()">
@@ -48,14 +47,14 @@
           <span [style.width.%]="(60 - countdown()) / 60 * 100"></span>
         </div>
         }
-
       </div>
 
       <div>
         <div>
-          <button matButton matStepperNext>同意协议并继续</button>
 
-          
+          <button mat-raised-button type="submit" [disabled]="loading()">
+            <span>同意协议并继续</span>
+          </button>
         </div>
       </div>
       <div>
@@ -76,14 +75,13 @@
     <form [formGroup]="profileForm" (ngSubmit)="complete()">
       <ng-template matStepLabel>填写账号信息</ng-template>
 
- 
-      <div >
-        <mat-form-field appearance="outline" >
+      <div>
+        <mat-form-field appearance="outline">
           <mat-label>昵称（可选）</mat-label>
           <input matInput formControlName="displayName" />
         </mat-form-field>
 
-        <mat-form-field appearance="outline"  
+        <mat-form-field appearance="outline"
                         [class.shake]="profileForm.controls.email.invalid && profileForm.controls.email.touched">
           <mat-label>邮箱（可选）</mat-label>
           <input matInput formControlName="email" autocomplete="email" />
@@ -92,13 +90,13 @@
           }
         </mat-form-field>
 
-        <mat-form-field appearance="outline" >
+        <mat-form-field appearance="outline">
           <mat-label>设置密码（可选）</mat-label>
           <input matInput type="password" formControlName="password" autocomplete="new-password" />
           <mat-hint>至少8位，包含数字和字母；不填也可用短信登录</mat-hint>
         </mat-form-field>
 
-        <mat-form-field appearance="outline"  
+        <mat-form-field appearance="outline"
                         [class.shake]="profileForm.hasError('passwordMismatch') || profileForm.hasError('passwordWeak')">
           <mat-label>确认密码</mat-label>
           <input matInput type="password" formControlName="confirmPassword" autocomplete="new-password" />

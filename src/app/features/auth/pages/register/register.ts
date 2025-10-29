@@ -11,7 +11,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UserAgreementDialog } from '../../../../shared/legal/user-agreement-dialog/user-agreement-dialog';
 import { CaptchaService } from '../../../../core/services/captcha-service';
-import { firstValueFrom, switchMap } from 'rxjs';
+import { finalize, firstValueFrom, switchMap, take } from 'rxjs';
+import { SendSmsRequest, VerifySmsRequest } from '../../models/register-models';
+import { Utilities } from '../../../../core/utils/utilities';
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
 const OPTIONAL_PASSWORD_PATTERN = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/; // 至少8位，含数字和字母
@@ -28,6 +30,7 @@ export class Register {
   private toastService = inject(ToastService);
   private dialog = inject(MatDialog);
   private captchaService = inject(CaptchaService);
+  readonly purpose = 'register' as const; // 或 'login' as const
   // 第一步：手机号 + 短信码
   phoneForm = this.fb.nonNullable.group({
     phone: ['', [Validators.required, Validators.pattern(CN_PHONE)]],
@@ -45,13 +48,12 @@ export class Register {
 
   // 一次性注册票据（由后端颁发）
   registerTicket = signal<string | null>(null);
-
+  loading = signal(false);
   // 发送短信按钮状态
   sending = signal(false);
   countdown = signal(0);
 
   get canSend() { return computed(() => !this.sending() && this.countdown() === 0); }
-
 
   async sendCode() {
     const phoneCtrl = this.phoneForm.controls.phone;
@@ -61,28 +63,42 @@ export class Register {
       return;
     }
 
-    this.sending.set(true);
+    this.sending.set(true); // 在获取验证码/调用接口整个过程内置为 true
+
     try {
-      debugger
       // 你的 CaptchaService 是 Promise 风格
       const captchaToken = await this.captchaService.verify();
 
-      // svc.sendSms 返回 Observable，这里用 firstValueFrom 接一次
-      await firstValueFrom(this.svc.sendSms({
-        phone: phoneCtrl.value,
-        purpose: 'register',
+      // ✅ 显式体现 SendSmsRequest 类型
+      const payload: SendSmsRequest = {
+        phone: phoneCtrl.value!,   // 保证是 string
+        purpose: this.purpose,
         captchaToken
-      }));
+      };
 
-      this.toastService.showSuccess('验证码已发送');
-      this.startCountdown(60);
-    } catch (err: any) {
-      this.toastService.showAlert(err?.error?.message || '发送验证码失败，请稍后重试');
-    } finally {
+      // 用 subscribe + finalize（确保成功/失败都能关掉 loading）
+      this.svc.sendSms(payload).pipe(
+        finalize(() => this.sending.set(false))
+      ).subscribe({
+        next: res => {
+          // 你的 sendSms() 返回 { ok: boolean }
+          if (!res) {
+            this.toastService.showAlert('发送验证码失败，请稍后重试');
+            return;
+          }
+          this.toastService.showSuccess('验证码已发送');
+          this.startCountdown(60);
+        },
+        error: err => {
+          this.toastService.showAlert(Utilities.handleError(err));
+        }
+      });
+    } catch (e: any) {
+      // Captcha 验证抛错会走这里（不会触发上面的 finalize），需要手动关掉 loading
       this.sending.set(false);
+      this.toastService.showAlert(Utilities.handleError(e));
     }
   }
-
 
   private startCountdown(sec: number) {
     this.countdown.set(sec);
@@ -93,73 +109,32 @@ export class Register {
     }, 1000);
   }
 
-  // 校验短信码 → 获取注册票据
-  verifyPhone(stepper: MatStepper) {
+  confirmAgreementAndNext(stepper: MatStepper): void {
     if (this.phoneForm.invalid) {
       this.phoneForm.markAllAsTouched();
-      this.toastService.showAlert('请正确填写手机号和验证码');
       return;
     }
 
-    const { phone, code } = this.phoneForm.getRawValue();
+    const { phone, code } = this.phoneForm.getRawValue() as { phone: string; code: string };
 
-    this.svc.verifySms({ phone, code })
-      // .pipe(take(1), finalize(() => { /* 可选：收尾逻辑，如关闭loading */ }))
+    const request: VerifySmsRequest = { phone, code, purpose: this.purpose };
+
+    this.loading.set(true);
+    this.svc.verifySms(request)
+      .pipe(
+        finalize(() => this.loading.set(false)) // 成功/失败都会关 loading
+      )
       .subscribe({
-        next: (res) => {
-          // 写入注册票据
-          this.registerTicket.set(res.registerTicket);
-
-          // ✅ 清理 code 控件上可能残留的 server 错误（防止成功后仍显示红字）
-          const ctrl = this.phoneForm.controls.code;
-          if (ctrl.errors?.['server']) {
-            const { server, ...rest } = ctrl.errors;
-            ctrl.setErrors(Object.keys(rest).length ? rest : null);
-            ctrl.updateValueAndValidity({ emitEvent: false });
-          }
-
-          this.toastService.showSuccess('手机号验证成功');
-
-          // 直接在方法里推进 stepper
-          stepper.next();
-        },
-
-        error: (err) => {
-          // 按 ASP.NET Core ValidationProblemDetails 结构解析
-          const problem = err?.error as
-            | { errors?: Record<string, string[]>; title?: string; status?: number }
-            | undefined;
-
-          // 标记是否已给出具体字段级提示，若没有再给兜底 Toast
-          let hinted = false;
-
-          // 优先处理 code 字段
-          const codeMsgs = problem?.errors?.['code'];
-          if (Array.isArray(codeMsgs) && codeMsgs.length > 0) {
-            const ctrl = this.phoneForm.controls.code;
-            ctrl.setErrors({ ...(ctrl.errors ?? {}), server: codeMsgs[0] });
-            ctrl.markAsTouched();
-            hinted = true;
-          }
-
-          // 分发其他字段错误（若后端返回了）
-          if (problem?.errors) {
-            for (const [key, msgs] of Object.entries(problem.errors)) {
-              if (key === 'code') continue; // code 已处理
-              const c = this.phoneForm.get(key);
-              if (c && msgs?.length) {
-                c.setErrors({ ...(c.errors ?? {}), server: msgs.join(' ') });
-                c.markAsTouched();
-                hinted = true;
-              }
-            }
-          }
-
-          // 若没有结构化字段错误，再给一个兜底提示
-          if (!hinted) {
-            this.toastService.showAlert(err?.error?.message ?? '验证码错误或已过期');
+        next: res => {
+          if (res.success) {
+            stepper.next();
+          } else {
+            this.phoneForm.controls.code.setErrors({ server: Utilities.mapSmsCodeReason(res.reason) });
           }
         },
+        error: () => {
+          this.phoneForm.controls.code.setErrors({ server: '网络错误，请稍后重试' });
+        }
       });
   }
 
