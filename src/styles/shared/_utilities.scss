@@ -27,3 +27,10 @@
     pointer-events: none;
   }
 }
+
+.form-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--form-gap, 16px);
+}

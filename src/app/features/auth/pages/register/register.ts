@@ -1,5 +1,5 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,9 +11,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UserAgreementDialog } from '../../../../shared/legal/user-agreement-dialog/user-agreement-dialog';
 import { CaptchaService } from '../../../../core/services/captcha-service';
-import { finalize, firstValueFrom, switchMap, take } from 'rxjs';
+import { distinctUntilChanged, finalize, firstValueFrom, startWith, switchMap, take } from 'rxjs';
 import { SendSmsRequest, VerifySmsRequest } from '../../models/register-models';
 import { Utilities } from '../../../../core/utils/utilities';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
 const OPTIONAL_PASSWORD_PATTERN = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/; // 至少8位，含数字和字母
@@ -24,12 +25,13 @@ const OPTIONAL_PASSWORD_PATTERN = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/; // 至少8位
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
-export class Register {
+export class Register implements OnInit {
   private fb = inject(FormBuilder);
   private svc = inject(RegisterService);
   private toastService = inject(ToastService);
   private dialog = inject(MatDialog);
   private captchaService = inject(CaptchaService);
+  private destroyRef = inject(DestroyRef);
   readonly purpose = 'register' as const; // 或 'login' as const
   // 第一步：手机号 + 短信码
   phoneForm = this.fb.nonNullable.group({
@@ -38,14 +40,33 @@ export class Register {
     agreement: [false, Validators.requiredTrue] // 新增：必须勾选
   });
 
+  // 可选密码强度：空值通过；有值时要求 ≥8 + 数字 + 小写
+  optionalPasswordStrength: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const v = (control.value ?? '') as string;
+    if (!v) return null; // 允许不填密码
+    const hasMinLen = v.length >= 8;
+    const hasDigit = /\d/.test(v);
+    const hasLower = /[a-z]/.test(v);
+    return hasMinLen && hasDigit && hasLower ? null : { passwordWeak: true };
+  };
+
+  // 表单级一致性：两边都有值时才比较
+  optionalPasswordMatch: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const group = control as FormGroup;
+    const pwd = (group.get('password')?.value ?? '') as string;
+    const cfm = (group.get('confirmPassword')?.value ?? '') as string;
+    if (!pwd || !cfm) return null; // 没有同时填写就不报不一致
+    return pwd === cfm ? null : { passwordMismatch: true };
+  };
+
   // 第二步：个人信息（密码可选）
-  profileForm = this.fb.group({
+  profileForm = this.fb.nonNullable.group({
     displayName: [''],
     email: ['', [Validators.email]],
-    password: [''],
-    confirmPassword: ['']
-  }, { validators: [this.optionalPasswordValidator.bind(this)] });
-
+    password: ['', [this.optionalPasswordStrength]],
+    confirmPassword: [''],
+  }, { validators: this.optionalPasswordMatch });
+ 
   // 一次性注册票据（由后端颁发）
   registerTicket = signal<string | null>(null);
   loading = signal(false);
@@ -54,6 +75,30 @@ export class Register {
   countdown = signal(0);
 
   get canSend() { return computed(() => !this.sending() && this.countdown() === 0); }
+
+
+  ngOnInit(): void {
+    const passwordCtrl = this.profileForm.controls.password;
+    const confirmPasswordCtrl = this.profileForm.controls.confirmPassword;
+
+    passwordCtrl.valueChanges.pipe(
+      startWith(passwordCtrl.value),
+      distinctUntilChanged(),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(v => {
+      if (v) {
+        confirmPasswordCtrl.addValidators(Validators.required);
+      } else {
+        confirmPasswordCtrl.removeValidators(Validators.required);
+        confirmPasswordCtrl.setValue('');
+        confirmPasswordCtrl.markAsPristine();
+        confirmPasswordCtrl.markAsUntouched();
+      }
+      confirmPasswordCtrl.updateValueAndValidity({ emitEvent: false });
+      this.profileForm.updateValueAndValidity({ emitEvent: false });
+    });
+  }
+
 
   async sendCode() {
     const phoneCtrl = this.phoneForm.controls.phone;
@@ -110,6 +155,13 @@ export class Register {
   }
 
   confirmAgreementAndNext(stepper: MatStepper): void {
+
+    // 自动勾选协议
+    if (!this.phoneForm.controls.agreement.value) {
+      this.phoneForm.controls.agreement.setValue(true);
+      this.phoneForm.controls.agreement.markAsDirty();
+    }
+
     if (this.phoneForm.invalid) {
       this.phoneForm.markAllAsTouched();
       return;
@@ -150,7 +202,7 @@ export class Register {
   submitting = signal(false);
 
   // 完成注册
-  complete() {
+  complete(stepper: MatStepper) {
     if (!this.registerTicket()) {
       this.toastService.showAlert('请先完成手机号验证');
       return;
@@ -172,6 +224,7 @@ export class Register {
       autoLogin: false  // 如需“注册即登录”，改为 true
     }).subscribe({
       next: () => {
+        stepper.next();
         this.toastService.showSuccess('注册成功');
         // TODO: 这里按你的流程跳转：登录页 / 授权页 / 个人中心
       },

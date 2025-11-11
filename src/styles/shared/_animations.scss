@@ -1,5 +1,5 @@
 /* src/styles/shared/_animations.scss */
-@keyframes slight-shake {
+@keyframes shake-slight {
   0%, 100% {
     transform: translateX(0);
   }
@@ -17,7 +17,9 @@
   }
 }
 
-.shake {
-  animation: slight-shake var(--shake-duration, 0.18s) var(--shake-easing, ease);
+.shake-slight {
+  animation: shake-slight var(--shake-duration, 0.18s) var(--shake-easing, ease);
   animation-iteration-count: 1;
+  will-change: transform;
+  transform-origin: center;
 }

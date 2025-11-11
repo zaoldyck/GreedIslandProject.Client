@@ -2,10 +2,7 @@
 @use './styles/shared/animations';
 @use './styles/shared/utilities';
 
-.my-class {
-  animation: slight-shake 0.18s ease; // 不需要 animations.
-}
-
+ 
 html {
   @include mat.theme(( color: ( primary: mat.$azure-palette, tertiary: mat.$blue-palette, ), typography: Roboto, density: 0, ));
 }
@@ -23,6 +20,8 @@ body {
   font: var(--mat-sys-body-medium);
   // Reset the user agent margin.
   margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  --form-gap: 16px; // 默认间距
 }
 /* You can add global styles to this file, and also import other style files */
 
@@ -30,7 +29,4 @@ html, body {
   height: 100%;
 }
 
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
+ 
