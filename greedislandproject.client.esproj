@@ -11,7 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\app\core\toast\components\" />
-    <Folder Include="src\app\features\auth\pages\" />
+    <Folder Include="src\app\features\authentication\pages\" />
     <Folder Include="src\app\features\users\models\" />
     <Folder Include="src\app\features\users\pages\" />
     <Folder Include="src\app\features\users\services\" />

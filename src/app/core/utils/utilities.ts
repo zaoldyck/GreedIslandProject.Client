@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, Signal } from '@angular/core';
 import { HttpResponseBase, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 type HttpMessageSearchOptions = Readonly<{
@@ -25,7 +25,7 @@ export class Utilities {
     return err?.error?.message || err?.message || fallbackMessage;
   }
 
-  public static mapSmsCodeReason(reason?: string): string {
+  public static mapSmsCodeReason(reason?: string | null): string {
     switch (reason) {
       case 'mismatch': return '验证码不正确';
       case 'not_found': return '验证码不存在或已过期';
@@ -46,6 +46,24 @@ export class Utilities {
     contains: false,
     resultType: 'preferMessage',
   };
+
+  /**
+     * 启动一个简单倒计时（基于 Angular Signal）
+     * @param countdown 一个 signal<number>，用于存储剩余秒数
+     * @param sec 初始秒数
+     */
+  public static startCountdown(countdown: ReturnType<typeof signal<number>>, sec: number) {
+    countdown.set(sec);
+    const t = setInterval(() => {
+      const v = countdown();
+      if (v <= 1) {
+        countdown.set(0);
+        clearInterval(t);
+      } else {
+        countdown.set(v - 1);
+      }
+    }, 1000);
+  }
 
   public static cookies =
     {

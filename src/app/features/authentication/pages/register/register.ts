@@ -1,10 +1,10 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ToastService } from '../../../../core/toast/services/toast-service';
-import { RegisterService } from '../../services/register-service';
+import { AuthenticationService } from '../../services/authentication-service';
 import { NgClass } from '@angular/common';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -12,27 +12,30 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UserAgreementDialog } from '../../../../shared/legal/user-agreement-dialog/user-agreement-dialog';
 import { CaptchaService } from '../../../../core/services/captcha-service';
 import { distinctUntilChanged, finalize, firstValueFrom, startWith, switchMap, take } from 'rxjs';
-import { SendSmsRequest, VerifySmsRequest } from '../../models/register-models';
+import { CompleteRegisterRequest } from '../../models/register-models';
 import { Utilities } from '../../../../core/utils/utilities';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterModule } from '@angular/router';
+import { SendSmsRequest, VerifySmsRequest } from '../../models/authentication-models';
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
-const OPTIONAL_PASSWORD_PATTERN = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/; // 至少8位，含数字和字母
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatStepperModule, MatCheckboxModule, MatDialogModule],
+  imports: [RouterModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatStepperModule, MatCheckboxModule, MatDialogModule],
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
 export class Register implements OnInit {
+  private cdr = inject(ChangeDetectorRef);
   private fb = inject(FormBuilder);
-  private svc = inject(RegisterService);
+  private authenticationService = inject(AuthenticationService);
   private toastService = inject(ToastService);
   private dialog = inject(MatDialog);
   private captchaService = inject(CaptchaService);
   private destroyRef = inject(DestroyRef);
   readonly purpose = 'register' as const; // 或 'login' as const
+
   // 第一步：手机号 + 短信码
   phoneForm = this.fb.nonNullable.group({
     phone: ['', [Validators.required, Validators.pattern(CN_PHONE)]],
@@ -66,16 +69,15 @@ export class Register implements OnInit {
     password: ['', [this.optionalPasswordStrength]],
     confirmPassword: [''],
   }, { validators: this.optionalPasswordMatch });
- 
+
   // 一次性注册票据（由后端颁发）
-  registerTicket = signal<string | null>(null);
+  verificationTicket = signal<string | null>(null);
   loading = signal(false);
   // 发送短信按钮状态
   sending = signal(false);
   countdown = signal(0);
 
   get canSend() { return computed(() => !this.sending() && this.countdown() === 0); }
-
 
   ngOnInit(): void {
     const passwordCtrl = this.profileForm.controls.password;
@@ -99,7 +101,6 @@ export class Register implements OnInit {
     });
   }
 
-
   async sendCode() {
     const phoneCtrl = this.phoneForm.controls.phone;
     if (phoneCtrl.invalid) {
@@ -122,7 +123,7 @@ export class Register implements OnInit {
       };
 
       // 用 subscribe + finalize（确保成功/失败都能关掉 loading）
-      this.svc.sendSms(payload).pipe(
+      this.authenticationService.sendSms(payload).pipe(
         finalize(() => this.sending.set(false))
       ).subscribe({
         next: res => {
@@ -132,7 +133,7 @@ export class Register implements OnInit {
             return;
           }
           this.toastService.showSuccess('验证码已发送');
-          this.startCountdown(60);
+          Utilities.startCountdown(this.countdown, 60);
         },
         error: err => {
           this.toastService.showAlert(Utilities.handleError(err));
@@ -145,17 +146,7 @@ export class Register implements OnInit {
     }
   }
 
-  private startCountdown(sec: number) {
-    this.countdown.set(sec);
-    const t = setInterval(() => {
-      const v = this.countdown();
-      if (v <= 1) { this.countdown.set(0); clearInterval(t); }
-      else this.countdown.set(v - 1);
-    }, 1000);
-  }
-
   confirmAgreementAndNext(stepper: MatStepper): void {
-
     // 自动勾选协议
     if (!this.phoneForm.controls.agreement.value) {
       this.phoneForm.controls.agreement.setValue(true);
@@ -168,20 +159,30 @@ export class Register implements OnInit {
     }
 
     const { phone, code } = this.phoneForm.getRawValue() as { phone: string; code: string };
-
-    const request: VerifySmsRequest = { phone, code, purpose: this.purpose };
+    const request: VerifySmsRequest = { phone: (phone ?? '').trim(), code: (code ?? '').trim(), purpose: this.purpose };
 
     this.loading.set(true);
-    this.svc.verifySms(request)
-      .pipe(
-        finalize(() => this.loading.set(false)) // 成功/失败都会关 loading
-      )
+
+    this.authenticationService.verifySms(request)
+      .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: res => {
           if (res.success) {
+            // 兼容后端返回大小写差异：RegisterTicket vs verificationTicket
+            const verificationTicket = res.verificationTicket;
+
+            if (!verificationTicket) {
+              // 理论上成功一定应有票据；若后端未来允许“仅验证不签发”，这里防御处理
+              this.phoneForm.controls.code.setErrors({ server: '验证成功，但未签发票据，请稍后重试' });
+              return;
+            }
+
+            this.verificationTicket.set(verificationTicket);
+
             stepper.next();
           } else {
-            this.phoneForm.controls.code.setErrors({ server: Utilities.mapSmsCodeReason(res.reason) });
+            const msg = Utilities.mapSmsCodeReason(res.reason);
+            this.phoneForm.controls.code.setErrors({ server: msg });
           }
         },
         error: () => {
@@ -190,23 +191,15 @@ export class Register implements OnInit {
       });
   }
 
-  // 密码可选校验：只有填写时才检查强度与一致性
-  private optionalPasswordValidator(group: AbstractControl): ValidationErrors | null {
-    const pwd = group.get('password')?.value as string | undefined;
-    const cfm = group.get('confirmPassword')?.value as string | undefined;
-    if (!pwd && !cfm) return null;                // 都没填：不校验
-    if (pwd && !OPTIONAL_PASSWORD_PATTERN.test(pwd)) return { passwordWeak: true };
-    if (pwd !== cfm) return { passwordMismatch: true };
-    return null;
-  }
   submitting = signal(false);
 
-  // 完成注册
   complete(stepper: MatStepper) {
-    if (!this.registerTicket()) {
+    const ticket = this.verificationTicket();
+    if (!ticket) {
       this.toastService.showAlert('请先完成手机号验证');
       return;
     }
+
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
       this.toastService.showAlert('请修正表单错误后再提交');
@@ -214,43 +207,46 @@ export class Register implements OnInit {
     }
 
     this.submitting.set(true);
-    const { displayName, email, password } = this.profileForm.getRawValue();
+    const { displayName, email, password } = this.profileForm.getRawValue() as {
+      displayName: string;
+      email: string;
+      password: string;
+    };
 
-    this.svc.completeRegister({
-      registerTicket: this.registerTicket()!,
+    const req: CompleteRegisterRequest = {
+      verificationTicket: ticket,
       displayName: displayName || null,
       email: email || null,
       password: password || null,
-      autoLogin: false  // 如需“注册即登录”，改为 true
-    }).subscribe({
-      next: () => {
-        stepper.next();
-        this.toastService.showSuccess('注册成功');
-        // TODO: 这里按你的流程跳转：登录页 / 授权页 / 个人中心
-      },
-      error: (err) => {
-        // 约定的 ProblemDetails: { errors: { [field: string]: string[] } }
-        const errors = err?.error?.errors as Record<string, string[]> | undefined;
+      autoLogin: false // 如需注册即登录，改为 true
+    };
 
-        // 兼容不同键名：password / Password / 空键（部分后端把通用错误丢在空键）
-        const serverMsgs =
-          errors?.['password'] ??
-          errors?.['Password'] ??
-          errors?.[''] ??
-          null;
+    this.authenticationService.completeRegister(req)
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe({
+        next: (res) => {
+          if (res.ok) {
+            // 清除一次性票据，避免重复提交
+            this.verificationTicket.set(null);
 
-        if (serverMsgs?.length) {
-          const pwdCtrl = this.profileForm.controls.password!;
-          // 合并到已有错误（不覆盖 pattern/required 等）
-          const prev = pwdCtrl.errors ?? {};
-          pwdCtrl.setErrors({ ...prev, server: serverMsgs.join(' ') });
-          pwdCtrl.markAsTouched(); // 触发 mat-error 显示
+            stepper.next();
+            this.toastService.showSuccess('注册成功');
+
+            // 你可以根据 userId / isNew 做后续逻辑
+            // if (req.autoLogin) { 刷新/跳转 … }
+          } else {
+            // 后端若可能返回 ok=false（非异常），这里兜底
+            this.toastService.showAlert('注册失败，请稍后再试');
+          }
+        },
+        error: (err) => {
+          const backend = err.error;
+          const msg =
+            backend?.message ||
+            (typeof backend === 'string' ? backend : '注册失败，请稍后再试');
+          this.toastService.showAlert(msg);
         }
-
-        this.toastService.showAlert('注册失败，请稍后再试');
-      },
-      complete: () => this.submitting.set(false)
-    });
+      });
   }
 
   openUserAgreementDialog(): void {

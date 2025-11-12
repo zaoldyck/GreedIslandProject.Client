@@ -1,0 +1,4 @@
+:host ::ng-deep .mat-step-header,
+:host ::ng-deep .mat-vertical-stepper-header {
+  pointer-events: none !important;
+}

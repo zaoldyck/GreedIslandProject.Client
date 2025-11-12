@@ -2,10 +2,10 @@
 
 <mat-stepper linear #stepper>
   <!-- 步骤一：验证手机号 -->
-  <mat-step [stepControl]="phoneForm" [editable]="false">
+  <mat-step  [editable]="false">
     <form [formGroup]="phoneForm" class="form-vertical" (ngSubmit)="confirmAgreementAndNext(stepper)">
       <ng-template matStepLabel>验证手机号</ng-template>
-
+   
       <!-- 第一步默认就进入完成态 -->
       <mat-form-field appearance="outline" floatLabel="always"
                       [class.shake-slight]="phoneForm.controls.phone.invalid && phoneForm.controls.phone.touched">
@@ -71,7 +71,7 @@
   </mat-step>
 
   <!-- 步骤二：完善个人信息 -->
-  <mat-step [stepControl]="profileForm"  [editable]="false">
+  <mat-step    [editable]="false">
     <form [formGroup]="profileForm" class="form-vertical" (ngSubmit)="complete(stepper)">
       <ng-template matStepLabel>填写账号信息</ng-template>
 
@@ -128,11 +128,11 @@
       </div>
     </form>
   </mat-step>
-  <mat-step  [editable]="false">
+  <mat-step   [editable]="false">
     <ng-template matStepLabel>注册成功</ng-template>
-    <p>You are now done.</p>
+    <p>注册成功.</p>
     <div>
-      <button matButton matStepperPrevious>Back</button>
+      <button mat-button [routerLink]="['/login']">前往登录</button>
     </div>
   </mat-step>
 </mat-stepper>
