@@ -2,7 +2,7 @@
 <mat-tab-group>
   <!-- 密码登录 -->
   <mat-tab label="密码登录">
-    <form [formGroup]="pwdForm" (ngSubmit)="onSubmitPwd()">
+    <form [formGroup]="passwordForm" class="form-vertical" (ngSubmit)="loginWithPassword()">
 
       <h2>登录</h2>
 
@@ -13,7 +13,7 @@
                required
                autocomplete="username"
                placeholder="输入账号" />
-        @if (pwdForm.controls.account.touched && pwdForm.controls.account.hasError('required')) {
+        @if (passwordForm.controls.account.touched && passwordForm.controls.account.hasError('required')) {
         <mat-error>账号为必填</mat-error>
         }
       </mat-form-field>
@@ -33,13 +33,13 @@
                 [attr.aria-label]="'切换密码可见性'">
           <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
-        @if (pwdForm.controls.password.touched && pwdForm.controls.password.hasError('required')) {
+        @if (passwordForm.controls.password.touched && passwordForm.controls.password.hasError('required')) {
         <mat-error>密码为必填</mat-error>
         }
       </mat-form-field>
 
-      <button type="submit" mat-flat-button color="primary"
-              [disabled]="pwdForm.invalid || logging()">
+      <button type="submit" mat-flat-button 
+              [disabled]="passwordForm.invalid || logging()">
         登录
       </button>
 
@@ -49,7 +49,7 @@
 
   <!-- 短信登录 -->
   <mat-tab label="短信登录">
-    <form [formGroup]="smsForm" (ngSubmit)="onSubmitSms()">
+    <form [formGroup]="smsForm" class="form-vertical" (ngSubmit)="loginWithSms()">
 
       <h2>手机验证码登录</h2>
 
@@ -69,37 +69,37 @@
         <mat-error>请输入有效的大陆手机号</mat-error>
         }
       </mat-form-field>
+      <div>
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>短信验证码</mat-label>
+          <input matInput
+                 formControlName="code"
+                 maxlength="6"
+                 required
+                 placeholder="6位数字" />
+          @if (smsForm.controls.code.hasError('required') && smsForm.controls.code.touched) {
+          <mat-error>验证码为必填</mat-error>
+          }
+          @if (smsForm.controls.code.hasError('pattern') && smsForm.controls.code.touched) {
+          <mat-error>请输入6位数字验证码</mat-error>
+          }
+          @if (smsForm.controls.code.hasError('server')) {
+          <mat-error>{{ smsForm.controls.code.getError('server') }}</mat-error>
+          }
+        </mat-form-field>
 
-      <mat-form-field appearance="outline" floatLabel="always">
-        <mat-label>短信验证码</mat-label>
-        <input matInput
-               formControlName="code"
-               maxlength="6"
-               required
-               placeholder="6位数字" />
-        @if (smsForm.controls.code.hasError('required') && smsForm.controls.code.touched) {
-        <mat-error>验证码为必填</mat-error>
-        }
-        @if (smsForm.controls.code.hasError('pattern') && smsForm.controls.code.touched) {
-        <mat-error>请输入6位数字验证码</mat-error>
-        }
-        @if (smsForm.controls.code.hasError('server')) {
-        <mat-error>{{ smsForm.controls.code.getError('server') }}</mat-error>
-        }
-      </mat-form-field>
+        <button mat-stroked-button type="button"
+                [disabled]="!canSend()"
+                (click)="sendCode()">
+          @if (countdown() === 0) { 获取验证码 } @else { 重新发送 {{ countdown() }}s }
+        </button>
+      </div>
+        <button type="submit" mat-flat-button 
+                [disabled]="smsForm.invalid || logging()">
+          登录
+        </button>
 
-      <button mat-stroked-button type="button"
-              [disabled]="!canSend()"
-              (click)="sendCode()">
-        @if (countdown() === 0) { 获取验证码 } @else { 重新发送 {{ countdown() }}s }
-      </button>
-
-      <button type="submit" mat-flat-button color="primary"
-              [disabled]="smsForm.invalid || logging()">
-        登录
-      </button>
-
-      <a mat-button routerLink="/register">没有账号？去注册</a>
+        <a mat-button routerLink="/register">没有账号？去注册</a>
     </form>
   </mat-tab>
 </mat-tab-group>

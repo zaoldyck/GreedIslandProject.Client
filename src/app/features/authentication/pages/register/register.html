@@ -41,12 +41,7 @@
           @if (countdown() === 0) { 获取验证码 } @else { 重新发送 {{ countdown() }}s }
         </button>
 
-        <!-- 纯 CSS 进度条：倒计时期间显示，宽度跟随百分比 -->
-        @if (countdown() > 0) {
-        <div>
-          <span [style.width.%]="(60 - countdown()) / 60 * 100"></span>
-        </div>
-        }
+       
       </div>
 
       <div>

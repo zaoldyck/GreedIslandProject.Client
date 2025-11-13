@@ -12,15 +12,14 @@ export class AuthenticationService {
   private http = inject(HttpClient);
   private base = '/api';
 
-  loginBySms(request: LoginBySmsRequest): Observable<LoginResponse> {
+  loginWithSms(request: LoginBySmsRequest): Observable<LoginResponse> {
     const body = new URLSearchParams();
     body.set('grant_type', 'sms_otp');      // 自定义的 grant
     body.set('phone', request.phone);
     body.set('code', request.code);
     body.set('client_id', 'spa');   // 公开客户端
     // body.set('client_secret', '...');       // 若是保密客户端才需要（SPA 一般不要用）
-    body.set('scope', 'openid profile api');    // 视你的配置
-
+    body.set('scope', 'openid profile email phone api');    // 视你的配置
     return this.http.post<LoginResponse>('/connect/token', body.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });

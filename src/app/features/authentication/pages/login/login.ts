@@ -10,7 +10,7 @@ import { ToastService } from '../../../../core/toast/services/toast-service';
 import { Utilities } from '../../../../core/utils/utilities';
 import { CaptchaService } from '../../../../core/services/captcha-service';
 import { SendSmsRequest } from '../../models/authentication-models';
-import { finalize } from 'rxjs';
+import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
 @Component({
   selector: 'app-login',
@@ -35,7 +35,7 @@ export class Login {
   readonly codeTTL = 60;
 
   // 表单
-  pwdForm = this.fb.group({
+  passwordForm = this.fb.group({
     account: ['', [Validators.required]],
     password: ['', [Validators.required]]
   });
@@ -46,15 +46,16 @@ export class Login {
   });
 
   // ===== 密码登录 =====
-  async onSubmitPwd(): Promise<void> {
-    if (this.pwdForm.invalid) {
-      this.pwdForm.markAllAsTouched();
+  async loginWithPassword(): Promise<void> {
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
       return;
     }
-    const { account, password } = this.pwdForm.value;
+    const { account, password } = this.passwordForm.value;
 
     this.logging.set(true);
   }
+
   // 发送短信按钮状态
   sending = signal(false);
   countdown = signal(0);
@@ -105,26 +106,35 @@ export class Login {
     }
   }
 
-  // ===== 短信登录：提交 =====
-  async onSubmitSms(): Promise<void> {
+
+
+  loginWithSms(): void {
     if (this.smsForm.invalid) {
       this.smsForm.markAllAsTouched();
       return;
     }
-    const { phone, code } = this.smsForm.value;
+    const { phone, code } = this.smsForm.value!;
 
     this.logging.set(true);
 
-    try {
-      await this.authenticationService.loginBySms({
-        phone: phone!.trim(),
-        code: code!.trim()
-      });
-      await this.router.navigate(['/']);
-    } catch (err: any) {
-      this.smsForm.controls.code.setErrors({ server: err?.message || '验证码错误或已过期' });
-    } finally {
-      this.logging.set(false);
-    }
+    this.authenticationService.loginWithSms({
+      phone: phone!.trim(),
+      code: code!.trim()
+    }).pipe(
+        // 成功后跳转到 '/'
+        tap(() => this.router.navigate(['/'])),
+
+        catchError((err) => {
+          const desc = err?.error?.error_description
+            || err?.message
+            || '验证码错误或已过期';
+          this.smsForm.controls.code.setErrors({ server: desc });
+          return of(null);
+        }),
+        finalize(() => this.logging.set(false))
+      )
+      .subscribe();
   }
+
+
 }
