@@ -8,5 +8,4 @@ import { MatDialogModule } from '@angular/material/dialog';
   styleUrl: './user-agreement-dialog.scss'
 })
 export class UserAgreementDialog {
-
 }

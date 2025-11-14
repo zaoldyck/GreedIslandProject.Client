@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
-import { AuthenticationService } from '../../services/authentication-service';
+import { AuthenticationService } from '../../../../core/services/authentication-service';
 import { ToastService } from '../../../../core/toast/services/toast-service';
 import { Utilities } from '../../../../core/utils/utilities';
 import { CaptchaService } from '../../../../core/services/captcha-service';
@@ -106,8 +106,6 @@ export class Login {
     }
   }
 
-
-
   loginWithSms(): void {
     if (this.smsForm.invalid) {
       this.smsForm.markAllAsTouched();
@@ -121,20 +119,18 @@ export class Login {
       phone: phone!.trim(),
       code: code!.trim()
     }).pipe(
-        // 成功后跳转到 '/'
-        tap(() => this.router.navigate(['/'])),
+      // 成功后跳转到 '/'
+      tap(() => this.router.navigate(['/'])),
 
-        catchError((err) => {
-          const desc = err?.error?.error_description
-            || err?.message
-            || '验证码错误或已过期';
-          this.smsForm.controls.code.setErrors({ server: desc });
-          return of(null);
-        }),
-        finalize(() => this.logging.set(false))
-      )
+      catchError((err) => {
+        const desc = err?.error?.error_description
+          || err?.message
+          || '验证码错误或已过期';
+        this.smsForm.controls.code.setErrors({ server: desc });
+        return of(null);
+      }),
+      finalize(() => this.logging.set(false))
+    )
       .subscribe();
   }
-
-
 }

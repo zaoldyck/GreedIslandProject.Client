@@ -38,7 +38,7 @@
         }
       </mat-form-field>
 
-      <button type="submit" mat-flat-button 
+      <button type="submit" mat-flat-button
               [disabled]="passwordForm.invalid || logging()">
         登录
       </button>
@@ -94,12 +94,12 @@
           @if (countdown() === 0) { 获取验证码 } @else { 重新发送 {{ countdown() }}s }
         </button>
       </div>
-        <button type="submit" mat-flat-button 
-                [disabled]="smsForm.invalid || logging()">
-          登录
-        </button>
+      <button type="submit" mat-flat-button
+              [disabled]="smsForm.invalid || logging()">
+        登录
+      </button>
 
-        <a mat-button routerLink="/register">没有账号？去注册</a>
+      <a mat-button routerLink="/register">没有账号？去注册</a>
     </form>
   </mat-tab>
 </mat-tab-group>
