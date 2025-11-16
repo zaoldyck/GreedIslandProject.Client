@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, delay, map, Observable, of } from 'rxjs';
-import { CompleteRegisterRequest, CompleteRegisterResponse } from '../../features/authentication/models/register-models';
-import { LoginByPasswordRequest, LoginBySmsRequest, LoginResponse } from '../../features/authentication/models/login-models';
-import { SendSmsRequest, VerifySmsRequest, VerifySmsResponse } from '../../features/authentication/models/authentication-models';
+import { CompleteRegisterRequest, CompleteRegisterResponse } from '../models/register-models';
+import { LoginByPasswordRequest, LoginBySmsRequest, LoginResponse } from '../models/login-models';
+import { MeResponse, SendSmsRequest, VerifySmsRequest, VerifySmsResponse } from '../models/authentication-models';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +19,9 @@ export class AuthenticationService {
     );
   }
   /** Cookie 模式下向后端探测是否已登录 */
-  checkSession() {
-    return this.http.get<{ authenticated: boolean }>(`${this.base}/Authentication/Me`).pipe(
-      map(res => !!res?.authenticated),
-      // 如果还没接入 401→Refresh 拦截器，兜底当成未登录：
+  checkSession(): Observable<boolean> {
+    return this.http.get<MeResponse>(`${this.base}/Authentication/me`).pipe(
+      map(res => res.authenticated === true),
       catchError(() => of(false))
     );
   }

@@ -1,6 +1,7 @@
 @use '@angular/material' as mat;
 @use './styles/shared/animations';
 @use './styles/shared/utilities';
+@use './styles/shared/component-overrides';
 
 html {
   @include mat.theme(( color: ( primary: mat.$azure-palette, tertiary: mat.$blue-palette, ), typography: Roboto, density: 0, ));

@@ -15,3 +15,9 @@ export interface VerifySmsResponse {
   reason?: string | null;
   verificationTicket?: string | null;
 }
+
+export interface MeResponse {
+  authenticated: boolean;
+  sub?: string;
+  name?: string;
+}

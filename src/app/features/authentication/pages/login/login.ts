@@ -4,14 +4,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../../core/services/authentication-service';
 import { ToastService } from '../../../../core/toast/services/toast-service';
 import { Utilities } from '../../../../core/utils/utilities';
 import { CaptchaService } from '../../../../core/services/captcha-service';
-import { SendSmsRequest } from '../../models/authentication-models';
+ 
 import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
+import { SendSmsRequest } from '../../../../core/models/authentication-models';
 @Component({
   selector: 'app-login',
   imports: [
@@ -26,6 +27,7 @@ export class Login {
   private router = inject(Router);
   private toastService = inject(ToastService);
   private captchaService = inject(CaptchaService);
+  private activatedRoute = inject(ActivatedRoute); 
   readonly purpose = 'login' as const;
 
   // UI 状态
@@ -45,15 +47,39 @@ export class Login {
     code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
   });
 
-  // ===== 密码登录 =====
-  async loginWithPassword(): Promise<void> {
+  // ===== "密码登录" =====
+  loginWithPassword(): void {
     if (this.passwordForm.invalid) {
       this.passwordForm.markAllAsTouched();
       return;
     }
-    const { account, password } = this.passwordForm.value;
 
+    const { account, password } = this.passwordForm.value!;
     this.logging.set(true);
+
+    //this.authenticationService.loginWithPassword({
+    //  account: (account ?? '').trim(),
+    //  password: (password ?? '').trim()
+    //}).pipe(
+    //  // "成功：回到 returnUrl（守卫带过来的），否则回 '/'；失败：提示错误"
+    //  tap(ok => {
+    //    if (ok) {
+    //      const returnUrl = this.getSafeReturnUrl();
+    //      this.router.navigateByUrl(returnUrl);
+    //    } else {
+    //      this.toastService.showAlert('用户名或密码错误');
+    //      // "可选：把错误挂到控件上，驱动表单错误样式"
+    //      this.passwordForm.controls.password.setErrors({ server: '用户名或密码错误' });
+    //    }
+    //  }),
+    //  catchError(err => {
+    //    const msg = err?.error?.error_description || err?.message || '登录失败，请稍后重试';
+    //    this.toastService.showAlert(msg);
+    //    this.passwordForm.controls.password.setErrors({ server: msg });
+    //    return of(false);
+    //  }),
+    //  finalize(() => this.logging.set(false)) // "无论成功失败都复位 loading"
+    //).subscribe();
   }
 
   // 发送短信按钮状态
@@ -119,9 +145,11 @@ export class Login {
       phone: phone!.trim(),
       code: code!.trim()
     }).pipe(
-      // 成功后跳转到 '/'
-      tap(() => this.router.navigate(['/'])),
-
+      // "成功：回到 returnUrl（守卫带过来的），否则回 '/'"
+      tap(() => {
+        const returnUrl = this.getSafeReturnUrl();
+        this.router.navigateByUrl(returnUrl);
+      }),
       catchError((err) => {
         const desc = err?.error?.error_description
           || err?.message
@@ -130,7 +158,22 @@ export class Login {
         return of(null);
       }),
       finalize(() => this.logging.set(false))
-    )
-      .subscribe();
+    ).subscribe();
   }
+
+  // "获取守卫带过来的 returnUrl，如果没有就默认 '/'"
+  private getRawReturnUrl(): string {
+    return this.activatedRoute.snapshot.queryParamMap.get('returnUrl') ?? '/';
+  }
+
+  // "做一个简单的安全过滤：仅允许以 '/' 开头的站内相对路径，拒绝 'http'、'//' 等外链"
+  private getSafeReturnUrl(): string {
+    const raw = this.getRawReturnUrl().trim();
+    if (!raw) return '/';
+    // 只允许以单个斜杠开头的相对路径，如：'/dashboard'、'/orders/1'
+    const isRelativePath = raw.startsWith('/') && !raw.startsWith('//') && !raw.startsWith('/\\');
+    const looksLikeExternal = /^https?:\/\//i.test(raw);
+    return (isRelativePath && !looksLikeExternal) ? raw : '/';
+  }
+
 }

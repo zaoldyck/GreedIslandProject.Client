@@ -12,11 +12,13 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UserAgreementDialog } from '../../../../shared/legal/user-agreement-dialog/user-agreement-dialog';
 import { CaptchaService } from '../../../../core/services/captcha-service';
 import { distinctUntilChanged, finalize, firstValueFrom, startWith, switchMap, take } from 'rxjs';
-import { CompleteRegisterRequest } from '../../models/register-models';
+ 
 import { Utilities } from '../../../../core/utils/utilities';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
-import { SendSmsRequest, VerifySmsRequest } from '../../models/authentication-models';
+import { SendSmsRequest, VerifySmsRequest } from '../../../../core/models/authentication-models';
+import { CompleteRegisterRequest } from '../../../../core/models/register-models';
+ 
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
 
