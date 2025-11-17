@@ -9,7 +9,7 @@ import { AuthenticationService } from '../../../../core/services/authentication-
 import { ToastService } from '../../../../core/toast/services/toast-service';
 import { Utilities } from '../../../../core/utils/utilities';
 import { CaptchaService } from '../../../../core/services/captcha-service';
- 
+
 import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SendSmsRequest } from '../../../../core/models/authentication-models';
@@ -27,7 +27,7 @@ export class Login {
   private router = inject(Router);
   private toastService = inject(ToastService);
   private captchaService = inject(CaptchaService);
-  private activatedRoute = inject(ActivatedRoute); 
+  private activatedRoute = inject(ActivatedRoute);
   readonly purpose = 'login' as const;
 
   // UI 状态
@@ -137,25 +137,26 @@ export class Login {
       this.smsForm.markAllAsTouched();
       return;
     }
-    const { phone, code } = this.smsForm.value!;
 
+    const { phone, code } = this.smsForm.value!;
     this.logging.set(true);
 
     this.authenticationService.loginWithSms({
       phone: phone!.trim(),
       code: code!.trim()
     }).pipe(
-      // "成功：回到 returnUrl（守卫带过来的），否则回 '/'"
+      // 登录成功后切换到 refreshSession()
+      switchMap(() => this.authenticationService.refreshSession()),
       tap(() => {
         const returnUrl = this.getSafeReturnUrl();
         this.router.navigateByUrl(returnUrl);
       }),
-      catchError((err) => {
+      catchError(err => {
         const desc = err?.error?.error_description
           || err?.message
           || '验证码错误或已过期';
         this.smsForm.controls.code.setErrors({ server: desc });
-        return of(null);
+        return of(false); // 保证流继续
       }),
       finalize(() => this.logging.set(false))
     ).subscribe();
@@ -175,5 +176,4 @@ export class Login {
     const looksLikeExternal = /^https?:\/\//i.test(raw);
     return (isRelativePath && !looksLikeExternal) ? raw : '/';
   }
-
 }

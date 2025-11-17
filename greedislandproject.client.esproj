@@ -19,4 +19,9 @@
     <Folder Include="src\app\shared\legal\" />
     <Folder Include="src\app\layouts\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="src\app\core\view-models\application-user-view-model.ts">
+      <CustomToolNamespace>ViewModels\ApplicationUserViewModel.cs</CustomToolNamespace>
+    </None>
+  </ItemGroup>
 </Project>

@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { catchError, delay, map, Observable, of } from 'rxjs';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { catchError, delay, map, Observable, of, tap } from 'rxjs';
 import { CompleteRegisterRequest, CompleteRegisterResponse } from '../models/register-models';
 import { LoginByPasswordRequest, LoginBySmsRequest, LoginResponse } from '../models/login-models';
 import { MeResponse, SendSmsRequest, VerifySmsRequest, VerifySmsResponse } from '../models/authentication-models';
+import { ApplicationUserViewModel } from '../view-models/application-user-view-model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,17 +13,34 @@ export class AuthenticationService {
   private http = inject(HttpClient);
   private base = '/api';
 
+  private _user = signal<ApplicationUserViewModel | null>(null);
+  private _known = signal(false); // 是否已完成一次探测
+
+  public readonly user = computed(() => this._user());
+  readonly isLoggedIn = computed(() => !!this._user());
+  readonly isKnown = computed(() => this._known());
+
+  refreshSession() {
+    if (this._known()) return of(this.isLoggedIn());
+
+    return this.http.get<ApplicationUserViewModel>(`${this.base}/Authentication/me`).pipe(
+      tap(user => {
+        this._user.set(user ?? null);
+        this._known.set(true);
+      }),
+      map(() => this.isLoggedIn()),
+      catchError(() => {
+        this._user.set(null);
+        this._known.set(true);
+        return of(false);
+      })
+    );
+  }
+
   loginWithSms(request: LoginBySmsRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
       `${this.base}/Authentication/LoginWithSms`,
       request
-    );
-  }
-  /** Cookie 模式下向后端探测是否已登录 */
-  checkSession(): Observable<boolean> {
-    return this.http.get<MeResponse>(`${this.base}/Authentication/me`).pipe(
-      map(res => res.authenticated === true),
-      catchError(() => of(false))
     );
   }
 

@@ -16,4 +16,7 @@ export class TopNav {
   ngOnInit() {
     this.isUserLoggedIn = true;
   }
+  logout() {
+
+  }
 }
