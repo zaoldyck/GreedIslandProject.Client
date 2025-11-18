@@ -43,7 +43,23 @@ export class AuthenticationService {
       request
     );
   }
-
+  logout(): Observable<void> {
+    return this.http.post<{ ok: boolean }>(`${this.base}/Authentication/logout`, {})
+      .pipe(
+        tap({
+          next: _ => {
+            this._user.set(null);
+            this._known.set(true);
+          },
+          error: _ => {
+            // 即使后端报错，本地也强制清空，以免假在线
+            this._user.set(null);
+            this._known.set(true);
+          }
+        }),
+        map(() => void 0)
+      );
+  }
   sendSms(request: SendSmsRequest): Observable<{ ok: boolean }> {
     return this.http.post<{ ok: boolean }>(`${this.base}/Notification/sms/send`, request);
   }

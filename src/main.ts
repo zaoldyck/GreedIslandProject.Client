@@ -1,21 +1,6 @@
-import { ApplicationConfig, EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
- 
-import { firstValueFrom } from 'rxjs';
-import { AuthenticationService } from './app/core/services/authentication-service';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { App } from './app/app';
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    // ✅ 新的初始化方式
-    makeEnvironmentProviders([
-      {
-        provide: 'APP_STARTUP',
-        useFactory: (authService: AuthenticationService) => {
-          return async () => {
-            await firstValueFrom(authService.refreshSession()); // 强制刷新会话
-          };
-        },
-        deps: [AuthenticationService]
-      }
-    ])
-  ]
-};
+bootstrapApplication(App, appConfig)
+  .catch((err) => console.error(err));

@@ -1,19 +1,25 @@
-import { isPlatformBrowser } from "@angular/common";
-import { inject, PLATFORM_ID } from "@angular/core";
-import { CanActivateFn, Router } from "@angular/router";
-import { of } from "rxjs";
-import { AuthenticationService } from "./authentication-service";
+// require-authentication.guard.ts
+import { isPlatformBrowser } from '@angular/common';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { map, of } from 'rxjs';
+import { AuthenticationService } from './authentication-service';
 
 export const requireAuthenticationGuard: CanActivateFn = (_route, state) => {
   const pid = inject(PLATFORM_ID);
-  if (!isPlatformBrowser(pid)) return of(true);
+  if (!isPlatformBrowser(pid)) return of(true); // SSR 端直接放行
 
   const router = inject(Router);
-  const authenticationService = inject(AuthenticationService);
-  // 直接检查 signal 状态
-  const isLoggedIn = authenticationService.isLoggedIn();
-  debugger
-  return of(isLoggedIn ? true : router.createUrlTree(['/login'], {
-    queryParams: { returnUrl: state.url }
-  }));
+  const auth = inject(AuthenticationService);
+
+  // 关键：守卫返回 Observable，Router 会等待它完成
+  return auth.refreshSession().pipe(
+    map(isLoggedIn =>
+      isLoggedIn
+        ? true
+        : router.createUrlTree(['/login'], {
+          queryParams: { returnUrl: state.url },
+        })
+    )
+  );
 };

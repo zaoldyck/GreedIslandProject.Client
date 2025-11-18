@@ -3,20 +3,30 @@ import { AuthenticationService } from '../../core/services/authentication-servic
 import { NgTemplateOutlet } from '@angular/common';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-top-nav',
-  imports: [MatButton, MatIconButton, MatIconModule, NgTemplateOutlet],
+  imports: [RouterLinkActive,RouterLink,MatButton, MatIconButton, MatIconModule, NgTemplateOutlet],
   templateUrl: './top-nav.html',
   styleUrl: './top-nav.scss'
 })
 export class TopNav {
-  private authenticationService = inject(AuthenticationService);
-  isUserLoggedIn = false;
+  public authenticationService = inject(AuthenticationService);
+  private router = inject(Router);
+ 
   ngOnInit() {
-    this.isUserLoggedIn = true;
+  
   }
   logout() {
-
+    debugger
+    this.authenticationService.logout().subscribe({
+      next: () => {
+        // 任选其一
+        this.router.navigateByUrl('/login');
+        // 或者强制刷新确保所有内存状态清空
+        // location.href = '/';
+      }
+    });
   }
 }
