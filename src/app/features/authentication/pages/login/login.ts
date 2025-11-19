@@ -10,7 +10,7 @@ import { ToastService } from '../../../../core/toast/services/toast-service';
 import { Utilities } from '../../../../core/utils/utilities';
 import { CaptchaService } from '../../../../core/services/captcha-service';
 
-import { catchError, finalize, of, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, exhaustMap, filter, finalize, of, switchMap, take, tap } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SendSmsRequest } from '../../../../core/models/authentication-models';
 @Component({
@@ -145,8 +145,10 @@ export class Login {
       phone: phone!.trim(),
       code: code!.trim()
     }).pipe(
-      // 登录成功后切换到 refreshSession()
-      switchMap(() => this.authenticationService.refreshSession()),
+      take(1), // 只取一次上游发射（可选，但推荐）
+      // 防并发：用户多次点击也只会处理第一次直到链路完成
+      exhaustMap(() => this.authenticationService.refreshSession(true)),
+      filter(Boolean), // 仅当 refreshSession 返回 true（已登录）时继续
       tap(() => {
         const returnUrl = this.getSafeReturnUrl();
         this.router.navigateByUrl(returnUrl);
@@ -156,7 +158,8 @@ export class Login {
           || err?.message
           || '验证码错误或已过期';
         this.smsForm.controls.code.setErrors({ server: desc });
-        return of(false); // 保证流继续
+        // 这里终止流，避免后续 tap/导航
+        return EMPTY;
       }),
       finalize(() => this.logging.set(false))
     ).subscribe();

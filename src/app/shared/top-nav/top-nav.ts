@@ -19,7 +19,6 @@ export class TopNav {
   
   }
   logout() {
-    debugger
     this.authenticationService.logout().subscribe({
       next: () => {
         // 任选其一

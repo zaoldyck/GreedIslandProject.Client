@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { catchError, delay, map, Observable, of, tap } from 'rxjs';
+import { computed, inject, Injectable, REQUEST, signal } from '@angular/core';
+import { catchError, delay, finalize, map, Observable, of, shareReplay, tap } from 'rxjs';
 import { CompleteRegisterRequest, CompleteRegisterResponse } from '../models/register-models';
 import { LoginByPasswordRequest, LoginBySmsRequest, LoginResponse } from '../models/login-models';
 import { MeResponse, SendSmsRequest, VerifySmsRequest, VerifySmsResponse } from '../models/authentication-models';
@@ -11,6 +11,8 @@ import { ApplicationUserViewModel } from '../view-models/application-user-view-m
 })
 export class AuthenticationService {
   private http = inject(HttpClient);
+  /** 仅 SSR 时有值；CSR 为空 */
+  private req = inject(REQUEST);
   private base = '/api';
 
   private _user = signal<ApplicationUserViewModel | null>(null);
@@ -20,10 +22,22 @@ export class AuthenticationService {
   readonly isLoggedIn = computed(() => !!this._user());
   readonly isKnown = computed(() => this._known());
 
-  refreshSession() {
-    if (this._known()) return of(this.isLoggedIn());
+  private refreshing$?: Observable<boolean>; // 正在进行的刷新请求（复用）
 
-    return this.http.get<ApplicationUserViewModel>(`${this.base}/Authentication/me`).pipe(
+  refreshSession(force = false): Observable<boolean> {
+    if (!force && this._known()) {
+      return of(this.isLoggedIn());
+    }
+
+    // 已有进行中的请求：直接复用（避免并发）
+    if (this.refreshing$ && !force) {
+      return this.refreshing$;
+    }
+
+    const req$ = this.http.get<ApplicationUserViewModel>(
+      `${this.base}/Authentication/me`,
+      { withCredentials: true } // Cookie 会话必需；Bearer Token 模式靠拦截器
+    ).pipe(
       tap(user => {
         this._user.set(user ?? null);
         this._known.set(true);
@@ -33,8 +47,24 @@ export class AuthenticationService {
         this._user.set(null);
         this._known.set(true);
         return of(false);
-      })
+      }),
+      finalize(() => { this.refreshing$ = undefined; }),
+      shareReplay({ bufferSize: 1, refCount: true }) // 关键：复用结果
     );
+
+    this.refreshing$ = req$;
+    return req$;
+  }
+
+  markUnknown() { this._known.set(false); }
+
+  /** SSR：根据 Cookie 是否存在快速判断；CSR：返回 null */
+  public isLoggedInOnServer(): boolean | null {
+    if (!this.req) return null; // 浏览器或 prerender 阶段
+    // Angular 20 的 REQUEST 是 Web API Request：headers 为 Headers
+    const cookie = this.req.headers.get('cookie') ?? '';
+    // 根据 ASP.NET Core Identity 默认 Cookie 名匹配（你说用的是 Identity.Application）
+    return /\.AspNetCore\.Identity\.Application=([^;]+)/.test(cookie);
   }
 
   loginWithSms(request: LoginBySmsRequest): Observable<LoginResponse> {
