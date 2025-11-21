@@ -30,7 +30,7 @@
               "src/styles.scss"
             ],
             "server": "src/main.server.ts",
-            "outputMode": "server",
+            "outputMode": "static", //SSR 贵 先不用
             "ssr": {
               "entry": "src/server.ts"
             }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.2752196">
+﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.2752196">
   <PropertyGroup>
     <ShouldRunBuildScript>false</ShouldRunBuildScript>
     <ShouldRunNpmInstall>false</ShouldRunNpmInstall>
@@ -18,6 +18,12 @@
     <Folder Include="src\app\features\users\services\" />
     <Folder Include="src\app\shared\legal\" />
     <Folder Include="src\app\layouts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.dockerignore">
+      <DependentUpon>$(DockerDefaultDockerfile)</DependentUpon>
+      <Link>.dockerignore</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Update="src\app\core\view-models\application-user-view-model.ts">
