@@ -29,5 +29,11 @@
     <None Update="src\app\core\view-models\application-user-view-model.ts">
       <CustomToolNamespace>ViewModels\ApplicationUserViewModel.cs</CustomToolNamespace>
     </None>
+    <None Update="src\app\core\view-models\city-view-model.ts">
+      <CustomToolNamespace>ViewModels\CityViewModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="src\app\core\view-models\province-view-model.ts">
+      <CustomToolNamespace>ViewModels\ProvinceViewModel.cs</CustomToolNamespace>
+    </None>
   </ItemGroup>
 </Project>
