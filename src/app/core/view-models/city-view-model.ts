@@ -1,47 +1,27 @@
-export class CityViewModel {
-  constructor() {
-    this.id = null;
+    export class CityViewModel {
+       constructor() {
+                this.id = null;
 
-    this.provinceId = null;
+                this.provinceId = null;
 
-    this.code = null;
+                this.code = null;
 
-    this.name = null;
+                this.name = null;
 
-    this.level = 0;
+                this.level = 0;
 
-    this.sortOrder = 0;
+                this.sortOrder = 0;
+        }
 
-    this.isEnabled = false;
+            public id: string|null;
 
-    this.createdBy = null;
+            public provinceId: string|null;
 
-    this.createdDate = new Date();
+            public code: string|null;
 
-    this.updatedBy = null;
+            public name: string|null;
 
-    this.updatedDate = null;
-  }
+            public level: number;
 
-  public id: string | null;
-
-  public provinceId: string | null;
-
-  public code: string | null;
-
-  public name: string | null;
-
-  public level: number;
-
-  public sortOrder: number;
-
-  public isEnabled: boolean;
-
-  public createdBy: string | null;
-
-  public createdDate: Date;
-
-  public updatedBy: string | null;
-
-  public updatedDate: Date | null;
-}
+            public sortOrder: number;
+    }
