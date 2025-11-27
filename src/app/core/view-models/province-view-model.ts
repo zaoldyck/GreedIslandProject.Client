@@ -2,7 +2,7 @@ import { CityViewModel } from "./city-view-model";
 
 export class ProvinceViewModel {
   constructor() {
-    this.id = 0;
+    this.id = null;
 
     this.code = null;
 
@@ -16,7 +16,7 @@ export class ProvinceViewModel {
 
     this.sortOrder = 0;
 
-    this.isEnabled = null;
+    this.isEnabled = false;
 
     this.createdBy = null;
 
@@ -29,7 +29,7 @@ export class ProvinceViewModel {
     this.cities = [];
   }
 
-  public id: number;
+  public id: string | null;
 
   public code: string | null;
 
@@ -43,7 +43,7 @@ export class ProvinceViewModel {
 
   public sortOrder: number;
 
-  public isEnabled: boolean | null;
+  public isEnabled: boolean;
 
   public createdBy: string | null;
 
