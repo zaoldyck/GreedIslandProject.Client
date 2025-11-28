@@ -6,11 +6,12 @@ import { LureFishSpecies } from './features/lure/lure-fish-species/page/lure-fis
 import { requireAuthenticationGuard } from './core/services/require-authentication-guard';
 import { LureFishSpeciesDetail } from './features/lure/lure-fish-species/page/lure-fish-species-detail/lure-fish-species-detail';
 import { MainLayout } from './layouts/main-layout/main-layout';
+import { requireAnonymousGuard } from './core/services/require-anonymous-guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'lure/lure-fish-species', pathMatch: 'full' },
-  { path: 'login', component: Login },
-  { path: 'register', component: Register },
+  { path: 'login', canActivate: [requireAnonymousGuard], component: Login },
+  { path: 'register', canActivate: [requireAnonymousGuard], component: Register },
   {
     path: '',
     component: MainLayout,

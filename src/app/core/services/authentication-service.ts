@@ -5,12 +5,14 @@ import { CompleteRegisterRequest, CompleteRegisterResponse } from '../models/reg
 import { LoginByPasswordRequest, LoginBySmsRequest, LoginResponse } from '../models/login-models';
 import { MeResponse, SendSmsRequest, VerifySmsRequest, VerifySmsResponse } from '../models/authentication-models';
 import { ApplicationUserViewModel } from '../view-models/application-user-view-model';
+import { CommonService } from './common-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
   private http = inject(HttpClient);
+  private commonService = inject(CommonService);
   /** 仅 SSR 时有值；CSR 为空 */
   private req = inject(REQUEST);
   private base = '/api';
@@ -28,19 +30,23 @@ export class AuthenticationService {
     if (!force && this._known()) {
       return of(this.isLoggedIn());
     }
-
-    // 已有进行中的请求：直接复用（避免并发）
     if (this.refreshing$ && !force) {
       return this.refreshing$;
     }
 
     const req$ = this.http.get<ApplicationUserViewModel>(
       `${this.base}/Authentication/me`,
-      { withCredentials: true } // Cookie 会话必需；Bearer Token 模式靠拦截器
+      { withCredentials: true }
     ).pipe(
       tap(user => {
         this._user.set(user ?? null);
         this._known.set(true);
+
+        // ✅ 后端优先：登录成功后，直接覆盖为账户偏好（如果有）
+        const userProvinceId = user?.preferredProvinceId;
+        if (userProvinceId) {
+          this.commonService.setPreferredProvinceId(userProvinceId);
+        }
       }),
       map(() => this.isLoggedIn()),
       catchError(() => {
@@ -49,7 +55,7 @@ export class AuthenticationService {
         return of(false);
       }),
       finalize(() => { this.refreshing$ = undefined; }),
-      shareReplay({ bufferSize: 1, refCount: true }) // 关键：复用结果
+      shareReplay({ bufferSize: 1, refCount: true })
     );
 
     this.refreshing$ = req$;
@@ -57,15 +63,6 @@ export class AuthenticationService {
   }
 
   markUnknown() { this._known.set(false); }
-
-  /** SSR：根据 Cookie 是否存在快速判断；CSR：返回 null */
-  public isLoggedInOnServer(): boolean | null {
-    if (!this.req) return null; // 浏览器或 prerender 阶段
-    // Angular 20 的 REQUEST 是 Web API Request：headers 为 Headers
-    const cookie = this.req.headers.get('cookie') ?? '';
-    // 根据 ASP.NET Core Identity 默认 Cookie 名匹配（你说用的是 Identity.Application）
-    return /\.AspNetCore\.Identity\.Application=([^;]+)/.test(cookie);
-  }
 
   loginWithSms(request: LoginBySmsRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(

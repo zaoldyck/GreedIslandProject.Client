@@ -105,9 +105,9 @@ export class ApplicationUserViewModel {
 
   public theme: string | null;
 
-  public preferredProvinceId: number | null;
+  public preferredProvinceId: string | null;
 
-  public preferredCityId: number | null;
+  public preferredCityId: string | null;
 
   public wechatOpenId: string | null;
 

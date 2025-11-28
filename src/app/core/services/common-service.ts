@@ -42,6 +42,14 @@ export class CommonService {
     );
   }
 
+  /** 后端优先时用于写入：更新 signal + localStorage */
+  setPreferredProvinceId(id: string): void {
+    this.provinceSig.set(id);
+    try {
+      localStorage.setItem(Constants.preferredProvinceIdKey, id);
+    } catch { /* SSR/隐私模式下可能抛错，忽略 */ }
+  }
+
   private loadProvinceFromLS(): string | null {
     try {
       return localStorage.getItem(Constants.preferredProvinceIdKey) || null;

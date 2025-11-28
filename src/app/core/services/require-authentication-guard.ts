@@ -1,28 +1,19 @@
-// require-authentication.guard.ts
-import { inject, PLATFORM_ID } from '@angular/core'; // ← 加上 REQUEST
+// core/services/require-authentication-guard.ts
+import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { map,  take, tap } from 'rxjs';
 import { AuthenticationService } from './authentication-service';
 
+// 受保护守卫：不请求网络，只根据当前信号
 export const requireAuthenticationGuard: CanActivateFn = (_route, state) => {
   const router = inject(Router);
   const auth = inject(AuthenticationService);
 
-  // 平台 & SSR 请求对象（仅在 SSR 渲染时有值；CSR/SSG 为 null）
-  const pid = inject(PLATFORM_ID);
- 
-  // 浏览器分支
-  return auth.refreshSession().pipe(
-    tap(v => {
-      if (process.env['NODE_ENV'] !== 'production') {
-        console.log('[Guard][CSR] refreshSession first =', v, '| path:', state.url);
-      }
-    }),
-    take(1),
-    map(isLoggedIn =>
-      isLoggedIn
-        ? true
-        : router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } })
-    )
-  );
+  if (auth.isKnown()) {
+    return auth.isLoggedIn()
+      ? true
+      : router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+  }
+
+  // 未探测（unknown）时的保守策略：先去登录
+  return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
 };
