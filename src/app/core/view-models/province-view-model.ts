@@ -16,6 +16,16 @@ export class ProvinceViewModel {
 
     this.sortOrder = 0;
 
+    this.isEnabled = false;
+
+    this.createdBy = null;
+
+    this.createdDate = new Date();
+
+    this.updatedBy = null;
+
+    this.updatedDate = null;
+
     this.cities = [];
   }
 
@@ -32,6 +42,16 @@ export class ProvinceViewModel {
   public isDirectCity: boolean;
 
   public sortOrder: number;
+
+  public isEnabled: boolean;
+
+  public createdBy: string | null;
+
+  public createdDate: Date;
+
+  public updatedBy: string | null;
+
+  public updatedDate: Date | null;
 
   public cities: CityViewModel[];
 }
