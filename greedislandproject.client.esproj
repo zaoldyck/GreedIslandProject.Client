@@ -32,8 +32,20 @@
     <None Update="src\app\core\view-models\city-view-model.ts">
       <CustomToolNamespace>ViewModels\CityViewModel.cs</CustomToolNamespace>
     </None>
+    <None Update="src\app\core\view-models\lure-fish-species-tag-map-view-model.ts">
+      <CustomToolNamespace>ViewModels\LureFishSpeciesTagMapViewModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="src\app\core\view-models\lure-fish-specy-view-model.ts">
+      <CustomToolNamespace>ViewModels\LureFishSpecyViewModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="src\app\core\view-models\lure-fish-variant-view-model.ts">
+      <CustomToolNamespace>ViewModels\LureFishVariantViewModel.cs</CustomToolNamespace>
+    </None>
     <None Update="src\app\core\view-models\province-view-model.ts">
       <CustomToolNamespace>ViewModels\ProvinceViewModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="src\app\core\view-models\TagViewModel.ts">
+      <CustomToolNamespace>ViewModels\TagViewModel.cs</CustomToolNamespace>
     </None>
   </ItemGroup>
 </Project>
