@@ -14,7 +14,6 @@ export class App implements OnInit {
   private commonService = inject(CommonService);
 
   ngOnInit() {
-    debugger
     // ✅ 匿名用户兜底加载省份（已登录用户不会重复请求，因为有缓存）
     this.commonService.getPreferredProvinceId().subscribe({
       next: () => { },

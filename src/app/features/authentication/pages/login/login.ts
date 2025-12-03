@@ -85,9 +85,9 @@ export class Login {
   // 发送短信按钮状态
   sending = signal(false);
   countdown = signal(0);
-  get canSend() { return computed(() => !this.sending() && this.countdown() === 0); }
-
+  canSend = computed(() => !this.sending() && this.countdown() === 0);
   async sendCode() {
+    if (!this.canSend()) return; // 防重复点击/倒计时中
     const phoneCtrl = this.smsForm.controls.phone;
     if (phoneCtrl.invalid) {
       phoneCtrl.markAsTouched();
@@ -119,7 +119,7 @@ export class Login {
             return;
           }
           this.toastService.showSuccess('验证码已发送');
-          Utilities.startCountdown(this.countdown, 60);
+          Utilities.startCountdown(this.countdown, this.codeTTL);
         },
         error: err => {
           this.toastService.showAlert(Utilities.handleError(err));

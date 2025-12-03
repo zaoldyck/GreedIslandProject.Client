@@ -16,7 +16,7 @@ export const routes: Routes = [
     path: '',
     component: MainLayout,
     children: [
-      { path: 'lure/lure-fish-species', canActivate: [requireAuthenticationGuard], component: LureFishSpecies },
+      { path: 'lure/lure-fish-species',component: LureFishSpecies },
       { path: 'lure/lure-fish-species/detail/:id', canActivate: [requireAuthenticationGuard], component: LureFishSpeciesDetail },
     ]
   },

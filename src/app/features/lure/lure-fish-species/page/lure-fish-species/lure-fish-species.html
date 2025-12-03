@@ -1,1 +1,40 @@
-<p>lure-fish-species works!</p>
+@let result = (result$ | async);
+@let items = result?.items ?? [];  <!-- 统一折叠为数组 -->
+@if (result) {
+  @if (items.length > 0) {
+<div class="card-list">
+  @for (item of items; track item.id) {
+  <mat-card class="fish-card">
+    <img mat-card-image
+         [src]="resolveImageUrl(item.imageUrl)"
+         [alt]="item.name"
+         loading="lazy"
+         (error)="onImgError($event)" />
+
+    <mat-card-header>
+      <mat-card-title>{{ item.name }}</mat-card-title>
+      <mat-card-subtitle>{{ item.scientificName }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p>{{ item.description }}</p>
+    </mat-card-content>
+
+    <mat-card-footer class="meta">
+      <span>排序：{{ item.sortOrder }}</span>
+      <span class="dot">·</span>
+      <span [class.enabled]="item.isEnabled">启用：{{ item.isEnabled ? '是' : '否' }}</span>
+    </mat-card-footer>
+  </mat-card>
+  }
+</div>
+  } @else {
+<mat-card>
+  <mat-card-content>暂无数据</mat-card-content>
+</mat-card>
+  }
+} @else {
+<mat-card>
+  <mat-card-content>正在加载...</mat-card-content>
+</mat-card>
+}

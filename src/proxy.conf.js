@@ -34,6 +34,7 @@ const PROXY_CONFIG = [
 
       // 如果你的授权码流程使用 cookie 回调（典型的服务器端处理），可以加上：
       '/signin-oidc',
+      '/pictures'
     ],
     target,
     secure: false,        // 开发环境自签证书，关闭证书校验
