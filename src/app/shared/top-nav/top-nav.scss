@@ -1,6 +1,17 @@
- .docs-navbar-header {
+@use '../../../styles/shared/constants';
+
+.app-shell {
+  /* 保证容器高度稳定（dvh 回退写法） */
+  height: 100vh;
+
+  @supports (height: 100dvh) {
+    height: 100dvh;
+  }
+}
+
+.docs-navbar-header {
   display: flex;
-  flex-wrap: wrap;
+  white-space: nowrap;
   align-items: center;
   padding: 8px 16px;
 
@@ -15,57 +26,86 @@
   }
 }
 
-.mat-mdc-icon-button {
-  color: inherit;
+.app-sidenav {
+  width: constants.$drawer-width;
+  overflow: hidden;
+  border-bottom-right-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
 }
 
-.docs-github-logo,
-app-logo {
-  margin-right: 8px;
-  width: 24px;
-  height: 24px;
+/* 关键：让内部容器变成纵向 flex，把头部和列表分区处理 */
+:host ::ng-deep .app-sidenav .mat-drawer-inner-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* 拉满抽屉高度，便于子元素分配 */
+}
+
+.app-logo {
+  width: 42px;
 }
 
 .app-name {
   margin-left: 5px;
+  margin-right: 5px;
   font-weight: 500;
   cursor: pointer;
-  font-size: 20px; 
+  font-size: 20px;
 }
 
 .docs-flex-spacer {
   flex-grow: 1;
 }
-
-.docs-navbar-link {
-  text-decoration: inherit;
-  flex: 1;
-}
-
-.docs-navbar {
+.menu-button {
+  margin-right: 10px;
   display: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--mat-sys-outline); // Material Design 主题的轮廓色
+  background-color: var(--mat-sys-primary-container); // 背景色，保持和导航一致
 }
 
-.docs-navbar-show-small {
-  display: none;
+
+/* 头部：固定在顶部，不滚动（可选 sticky，更像 GitHub） */
+.sidenav-header {
+  flex: 0 0 auto;
+  position: sticky; /* 滚动时固定在顶部 */
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 左 logo 右 close */
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding-top: calc(12px + env(safe-area-inset-top, 0px)); /* iOS 安全区（可选） */
 }
 
-// Rules for when the device is detected to be a small screen.
-// Moves content two rows instead of one.
-@media (max-width: 720px) {
+/* 列表：作为唯一滚动容器 */
+.app-nav-list {
+  flex: 1 1 auto;
+  overflow: auto; /* 只在这里滚动 */
+  padding: 8px 0;
+  box-sizing: border-box;
+}
+
+/* 只影响侧边栏这个列表 */
+.app-nav-list a.mat-mdc-list-item.is-active {
+  background: rgba(0, 0, 0, 0.06); /* 选中背景，不影响 hover ripple */
+}
+ 
+.app-nav-list a.mat-mdc-list-item.is-active:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+
+
+@media (max-width: constants.$small-breakpoint-width) {
   .docs-navbar-hide-small {
     display: none;
   }
 
-  .docs-navbar-show-small {
-    display: block;
-  }
-
-  .docs-navbar {
+  .menu-button {
     display: flex;
   }
-
-  .docs-github-logo {
-    margin: 0;
-  }
 }
+

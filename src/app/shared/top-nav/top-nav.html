@@ -1,30 +1,153 @@
-<!-- TODO: figure out if the <nav> should go inside of a <header> element. -->
-<nav class="docs-navbar-header" aria-label="Top Toolbar">
-  <img style="width:42px;cursor: pointer;" src="logo.svg" routerLink="/" alt="logo">
 
-  <span class="app-name" routerLink="/">
-    路亚宝
-  </span>
+<mat-sidenav-container class="app-shell">
+  <!-- 抽屉：移动端菜单 -->
+  <mat-sidenav #drawer="matSidenav" [mode]="'over'" class="app-sidenav" [autoFocus]="false">
+    <!-- 顶部：Logo（左） + 关闭（右） -->
+    <div class="sidenav-header">
+      <img class="app-logo" src="logo.svg" alt="logo">
+      <button type="button" mat-icon-button (click)="drawer.close()" aria-label="关闭菜单">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
 
-  <a matButton="text" class="docs-navbar-hide-small"
-     routerLinkActive="docs-navbar-header-item-selected">123</a>
 
-  <a matButton="text" class="docs-navbar-hide-small" routerLink="guides" routerLinkActive="docs-navbar-header-item-selected">Guides</a>
-  <div class="docs-flex-spacer"></div>
 
-  @if (authenticationService.isLoggedIn()) {
-  <button mat-button (click)="logout()">
-    <mat-icon>logout</mat-icon> Logout
-  </button>
-  } @else {
-  <button mat-button [routerLink]="'/login'" [queryParams]="{ returnUrl: router.url }">
-    <mat-icon>login</mat-icon> Login
-  </button>
-  }
-</nav>
-<nav class="docs-navbar docs-navbar-show-small" aria-label="Section Nav Bar">
+    <mat-nav-list class="app-nav-list">
 
-  <a matButton="text" class="docs-navbar-link">123</a>
+      <a mat-list-item
+         routerLink="/"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>home</mat-icon>
+        <span matListItemTitle>首页</span>
+      </a>
 
-  <a matButton="text" class="docs-navbar-link" routerLink="guides">Guides</a>
-</nav>
+      <a mat-list-item
+         routerLink="/spots"
+         routerLinkActive="is-active"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>map</mat-icon>
+        <span matListItemTitle>钓点地图</span>
+      </a>
+
+      <a mat-list-item
+         routerLink="/techniques"
+         routerLinkActive="is-active"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>tips_and_updates</mat-icon>
+        <span matListItemTitle>路亚技巧</span>
+      </a>
+
+      <a mat-list-item
+         routerLink="/lures"
+         routerLinkActive="is-active"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>category</mat-icon>
+        <span matListItemTitle>饵料库</span>
+      </a>
+
+      <a mat-list-item
+         routerLink="/gear"
+         routerLinkActive="is-active"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>build</mat-icon>
+        <span matListItemTitle>装备推荐</span>
+      </a>
+
+      <a mat-list-item
+         routerLink="/community"
+         routerLinkActive="is-active"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>forum</mat-icon>
+        <span matListItemTitle>社区</span>
+      </a>
+
+      <a mat-list-item
+         routerLink="/events"
+         routerLinkActive="is-active"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>event</mat-icon>
+        <span matListItemTitle>活动</span>
+      </a>
+
+      <a mat-list-item
+         routerLink="/guides"
+         routerLinkActive="is-active"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>menu_book</mat-icon>
+        <span matListItemTitle>Guides</span>
+      </a>
+
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+  <!-- 主内容 + 顶部导航（桌面端） -->
+  <mat-sidenav-content>
+    <!-- 你原来的 header/nav 保持不动 -->
+    <header>
+      <nav class="docs-navbar-header">
+        <button class="menu-button" mat-icon-button (click)="drawer.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <img class="app-logo pointer" src="logo.svg" routerLink="/" alt="logo">
+        <span class="app-name" routerLink="/">路亚宝</span>
+
+        <a mat-button class="docs-navbar-hide-small"
+           routerLink="/"
+           routerLinkActive="docs-navbar-header-item-selected"
+           [routerLinkActiveOptions]="{ exact: true }">首页</a>
+
+        <a mat-button class="docs-navbar-hide-small"
+           routerLink="/spots"
+           routerLinkActive="docs-navbar-header-item-selected">钓点地图</a>
+
+        <a mat-button class="docs-navbar-hide-small"
+           routerLink="/techniques"
+           routerLinkActive="docs-navbar-header-item-selected">路亚技巧</a>
+
+        <a mat-button class="docs-navbar-hide-small"
+           routerLink="/lures"
+           routerLinkActive="docs-navbar-header-item-selected">饵料库</a>
+
+        <a mat-button class="docs-navbar-hide-small"
+           routerLink="/gear"
+           routerLinkActive="docs-navbar-header-item-selected">装备推荐</a>
+
+        <a mat-button class="docs-navbar-hide-small"
+           routerLink="/community"
+           routerLinkActive="docs-navbar-header-item-selected">社区</a>
+
+        <a mat-button class="docs-navbar-hide-small"
+           routerLink="/events"
+           routerLinkActive="docs-navbar-header-item-selected">活动</a>
+
+        <a mat-button class="docs-navbar-hide-small"
+           routerLink="/guides"
+           routerLinkActive="docs-navbar-header-item-selected">Guides</a>
+
+        <div class="docs-flex-spacer"></div>
+
+        @if (authenticationService.isLoggedIn()) {
+        <a mat-button (click)="logout()">Logout</a>
+        } @else {
+        <a mat-button
+           [routerLink]="'/register'">
+          <mat-icon>person_add</mat-icon>
+          注册
+        </a>
+        <a mat-button
+           [routerLink]="'/login'"
+           [queryParams]="{ returnUrl: router.url }">
+          <mat-icon>login</mat-icon>
+          登录
+        </a>
+        }
+      </nav>
+    </header>
+
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
