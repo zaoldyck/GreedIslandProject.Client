@@ -5,12 +5,8 @@
 <div class="card-list">
   @for (item of items; track item.id) {
   <mat-card class="fish-card">
-    <img mat-card-image
-         [src]="resolveImageUrl(item.imageUrl)"
-         [alt]="item.name"
-         loading="lazy"
-         (error)="onImgError($event)" />
-
+    <img mat-card-image src="{{ resolveImageUrl(item.imageUrl) }}" (error)="onImgError($event)" >
+ 
     <mat-card-header>
       <mat-card-title>{{ item.name }}</mat-card-title>
       <mat-card-subtitle>{{ item.scientificName }}</mat-card-subtitle>

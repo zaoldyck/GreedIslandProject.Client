@@ -1,6 +1,6 @@
 // lure-fish-species.component.ts
 import { Component, inject } from '@angular/core';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
 import { Observable } from 'rxjs';
 import { LureFishSpeciesService } from '../../lure-fish-species-service';
 import { PagedResult } from '../../../../../core/models/common-models';
@@ -12,7 +12,7 @@ import { MatListModule } from '@angular/material/list';
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [AsyncPipe, MatListModule, MatCardModule],
+  imports: [NgOptimizedImage,AsyncPipe, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })
@@ -37,12 +37,25 @@ export class LureFishSpecies {
     this.result$ = this.svc.search(req);
   }
 
+
   resolveImageUrl(url?: string | null): string {
-    return url && url.trim().length > 0 ? url : this.fallbackImage;
+    const u = (url ?? '').trim();
+    return u.length > 0 ? u : this.fallbackImage;
   }
 
-  /** 图片加载失败时替换为占位图 */
+  /** 图片加载失败时替换为占位图（防止循环） */
   onImgError(evt: Event) {
-    (evt.target as HTMLImageElement).src = this.fallbackImage;
+    const img = evt.target as HTMLImageElement;
+    if (!img.src.endsWith(this.fallbackImage)) {
+      img.src = this.fallbackImage;
+      img.classList.add('is-fallback'); // 可选：加样式弱化
+    }
   }
+
+  /** 加载完成后（可选）移除骨架或做样式调整 */
+  onImgLoad(evt: Event) {
+    const card = (evt.target as HTMLImageElement).closest('.fish-card');
+    card?.querySelector('.img-skeleton')?.remove();
+  }
+
 }
