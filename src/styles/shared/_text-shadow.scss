@@ -1,0 +1,181 @@
+
+/* -------------------------------------------------------
+ * Text Shadow Utilities (Neon / Glow) — Softer Version
+ * 依赖：你的 _colors.scss 已在 :root/.docs-dark-mode 输出 CSS 变量
+ * ----------------------------------------------------- */
+
+/* 阴影尺寸与强度（更柔和的默认值，可在页面或容器上覆盖） */
+:root {
+  /* 改为相对单位：随字体大小适配，不易过度扩散 */
+  --ts-size-sm: 0.12em; /* 原 10px 左右 */
+  --ts-size-md: 0.28em; /* 原 20px 左右 */
+  --ts-size-lg: 0.48em; /* 原 40px 左右（默认不启用） */
+  /* 明/暗模式透明度：整体下调，暗色稍强但不过分 */
+  --ts-alpha-light: 0.35; /* 原 0.6 */
+  --ts-alpha-dark: 0.55; /* 原 0.85 */
+}
+
+/* 暗色模式基线再提高一点，但保持柔和 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ts-alpha-light: 0.40;
+    --ts-alpha-dark: 0.60;
+  }
+}
+
+/* 单色霓虹阴影：基于某个 CSS 变量（如 --indigo-blue 或 --mat-sys-primary）
+   默认使用两层（sm、md），lg 层改为可选增强层，避免喧宾夺主 */
+@mixin text-shadow-var( $color-var, $sm: var(--ts-size-sm), $md: var(--ts-size-md), $lg: var(--ts-size-lg), $alpha-light: var(--ts-alpha-light), $alpha-dark: var(--ts-alpha-dark) ) {
+  /* light 模式下的阴影（两层） */
+  text-shadow: 0 0 #{$sm} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-light } * 100%))), 0 0 #{$md} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-light } * 100%)));
+  /* 可选：需要更“发光”的场景再叠加 lg（通过 .ts-glow 类控制） */
+  &.ts-glow {
+    text-shadow: 0 0 #{$sm} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-light } * 100%))), 0 0 #{$md} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-light } * 100%))), 0 0 #{$lg} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-light } * 100%)));
+  }
+  /* dark 模式覆盖更强但有限 */
+  @media (prefers-color-scheme: dark) {
+    text-shadow: 0 0 #{$sm} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-dark } * 100%))), 0 0 #{$md} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-dark } * 100%)));
+
+    &.ts-glow {
+      text-shadow: 0 0 #{$sm} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-dark } * 100%))), 0 0 #{$md} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-dark } * 100%))), 0 0 #{$lg} color-mix(in srgb, var(#{$color-var}) 100%, transparent calc(100% - (#{ $alpha-dark } * 100%)));
+    }
+  }
+}
+
+/* -----------------------------
+ * 品牌色（你在 root-definitions() 里定义的变量）
+ * --------------------------- */
+.text-shadow-indigo {
+  @include text-shadow-var(--indigo-blue);
+}
+
+.text-shadow-bright-blue {
+  @include text-shadow-var(--bright-blue);
+}
+
+.text-shadow-electric {
+  @include text-shadow-var(--electric-violet);
+}
+
+.text-shadow-vivid-pink {
+  @include text-shadow-var(--vivid-pink);
+}
+
+.text-shadow-hot-pink {
+  @include text-shadow-var(--hot-pink);
+}
+
+.text-shadow-orange-red {
+  @include text-shadow-var(--orange-red);
+}
+
+.text-shadow-super-green {
+  @include text-shadow-var(--super-green);
+}
+
+/* -----------------------------
+ * Material System 主题色
+ * --------------------------- */
+.text-shadow-primary {
+  @include text-shadow-var(--mat-sys-primary);
+}
+
+.text-shadow-secondary {
+  @include text-shadow-var(--mat-sys-secondary);
+}
+
+.text-shadow-tertiary {
+  @include text-shadow-var(--mat-sys-tertiary);
+}
+
+.text-shadow-error {
+  @include text-shadow-var(--mat-sys-error);
+}
+
+.text-shadow-on-surface {
+  @include text-shadow-var(--mat-sys-on-surface);
+}
+
+.text-shadow-surface-tint {
+  @include text-shadow-var(--mat-sys-surface-tint);
+}
+
+.text-shadow-outline {
+  @include text-shadow-var(--mat-sys-outline);
+}
+
+.text-shadow-inverse-primary {
+  @include text-shadow-var(--mat-sys-inverse-primary);
+}
+
+.text-shadow-inverse-surface {
+  @include text-shadow-var(--mat-sys-inverse-surface);
+}
+
+.text-shadow-inverse-on-surface {
+  @include text-shadow-var(--mat-sys-inverse-on-surface);
+}
+
+/* -----------------------------
+ * 尺寸变体（按需叠加）
+ * 用法例：<h1 class="text-shadow-primary ts-sm">Title</h1>
+ * --------------------------- */
+.ts-sm {
+  --ts-size-sm: 0.10em;
+  --ts-size-md: 0.22em;
+  --ts-size-lg: 0.40em;
+}
+
+.ts-md {
+  --ts-size-sm: 0.12em;
+  --ts-size-md: 0.28em;
+  --ts-size-lg: 0.48em;
+}
+
+.ts-lg {
+  --ts-size-sm: 0.14em;
+  --ts-size-md: 0.34em;
+  --ts-size-lg: 0.58em;
+}
+
+/* -----------------------------
+ * 强度变体（更弱/更柔）
+ * 可与尺寸类叠加
+ * --------------------------- */
+.ts-soft {
+  --ts-alpha-light: 0.28;
+  --ts-alpha-dark: 0.45;
+}
+
+.ts-subtle {
+  --ts-alpha-light: 0.20;
+  --ts-alpha-dark: 0.35;
+}
+
+/* -----------------------------
+ * 交互增强（仅在需要时）
+ * hover 时稍微加强，不再过度发光
+ * --------------------------- */
+.ts-hover-brighten:hover {
+  --ts-alpha-light: 0.40;
+  --ts-alpha-dark: 0.65;
+}
+
+/* -----------------------------
+ * 回退（旧浏览器不支持 color-mix/light-dark 时）
+ * 给关键类一个非常弱的阴影作为兜底
+ * --------------------------- */
+@supports not (color: color-mix(in srgb, red, white)) {
+  .text-shadow-primary,
+  .text-shadow-indigo,
+  .text-shadow-electric,
+  .text-shadow-vivid-pink,
+  .text-shadow-hot-pink,
+  .text-shadow-orange-red,
+  .text-shadow-super-green,
+  .text-shadow-secondary,
+  .text-shadow-tertiary {
+    /* 用 currentColor 做轻微柔光，避免突兀 */
+    text-shadow: 0 0 0.08em rgba(0,0,0,0.0), 0 0 0.18em currentColor;
+  }
+}

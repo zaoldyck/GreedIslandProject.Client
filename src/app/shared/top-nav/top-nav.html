@@ -85,68 +85,97 @@
 
   <!-- 主内容 + 顶部导航（桌面端） -->
   <mat-sidenav-content>
-    <!-- 你原来的 header/nav 保持不动 -->
+
     <header>
       <nav class="docs-navbar-header">
+        <!-- 左侧菜单按钮 -->
         <button class="menu-button" mat-icon-button (click)="drawer.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
 
         <img class="app-logo pointer" src="logo.svg" routerLink="/" alt="logo">
-        <span class="app-name" routerLink="/">路亚宝</span>
+        <span class="app-name text-shadow-primary ts-subtle" routerLink="/">路亚宝</span>
 
+        <!-- 顶部导航项（带图标） -->
         <a mat-button class="docs-navbar-hide-small"
            routerLink="/"
            routerLinkActive="docs-navbar-header-item-selected"
-           [routerLinkActiveOptions]="{ exact: true }">首页</a>
+           [routerLinkActiveOptions]="{ exact: true }">
+          <mat-icon>home</mat-icon>
+          <span>首页</span>
+        </a>
 
         <a mat-button class="docs-navbar-hide-small"
            routerLink="/spots"
-           routerLinkActive="docs-navbar-header-item-selected">钓点地图</a>
+           routerLinkActive="docs-navbar-header-item-selected">
+          <mat-icon>map</mat-icon>
+          <span>钓点地图</span>
+        </a>
 
         <a mat-button class="docs-navbar-hide-small"
            routerLink="/techniques"
-           routerLinkActive="docs-navbar-header-item-selected">路亚技巧</a>
+           routerLinkActive="docs-navbar-header-item-selected">
+          <mat-icon>tips_and_updates</mat-icon>
+          <span>路亚技巧</span>
+        </a>
 
         <a mat-button class="docs-navbar-hide-small"
            routerLink="/lures"
-           routerLinkActive="docs-navbar-header-item-selected">饵料库</a>
+           routerLinkActive="docs-navbar-header-item-selected">
+          <mat-icon>category</mat-icon>
+          <span>饵料库</span>
+        </a>
 
         <a mat-button class="docs-navbar-hide-small"
            routerLink="/gear"
-           routerLinkActive="docs-navbar-header-item-selected">装备推荐</a>
+           routerLinkActive="docs-navbar-header-item-selected">
+          <mat-icon>build</mat-icon>
+          <span>装备推荐</span>
+        </a>
 
         <a mat-button class="docs-navbar-hide-small"
            routerLink="/community"
-           routerLinkActive="docs-navbar-header-item-selected">社区</a>
+           routerLinkActive="docs-navbar-header-item-selected">
+          <mat-icon>forum</mat-icon>
+          <span>社区</span>
+        </a>
 
         <a mat-button class="docs-navbar-hide-small"
            routerLink="/events"
-           routerLinkActive="docs-navbar-header-item-selected">活动</a>
+           routerLinkActive="docs-navbar-header-item-selected">
+          <mat-icon>event</mat-icon>
+          <span>活动</span>
+        </a>
 
         <a mat-button class="docs-navbar-hide-small"
            routerLink="/guides"
-           routerLinkActive="docs-navbar-header-item-selected">Guides</a>
+           routerLinkActive="docs-navbar-header-item-selected">
+          <mat-icon>menu_book</mat-icon>
+          <span>Guides</span>
+        </a>
 
         <div class="docs-flex-spacer"></div>
 
+        <!-- 登录状态 -->
         @if (authenticationService.isLoggedIn()) {
-        <a mat-button (click)="logout()">Logout</a>
+        <a mat-button (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </a>
         } @else {
-        <a mat-button
-           [routerLink]="'/register'">
-          <mat-icon>person_add</mat-icon>
-          注册
-        </a>
-        <a mat-button
-           [routerLink]="'/login'"
-           [queryParams]="{ returnUrl: router.url }">
+        <a mat-button [routerLink]="'/login'" [queryParams]="{ returnUrl: router.url }">
           <mat-icon>login</mat-icon>
-          登录
+          <span>登录</span>
         </a>
+        <a mat-button [routerLink]="'/register'">
+          <mat-icon>person_add</mat-icon>
+          <span>注册</span>
+        </a>
+
         }
       </nav>
     </header>
+
 
     <router-outlet></router-outlet>
   </mat-sidenav-content>

@@ -1,31 +1,89 @@
 @use '@angular/material' as mat;
 @use './styles/shared/animations';
 @use './styles/shared/utilities';
+@use './styles/shared/colors';
+@use './styles/shared/text-shadow';
 @use './styles/shared/component-overrides';
 @use './styles/shared/material-overrides';
 
+/* Roboto 字体 */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: url('/fonts/Roboto-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/Roboto-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/Roboto-Medium.woff2') format('woff2');
+}
+
+/* Material Icons 字体 */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/MaterialIcons-Regular.woff2') format('woff2');
+}
+
+/* Material Icons 渲染规则（自托管必需） */
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* 默认图标大小 */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* 渲染优化 */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 确保 mat-icon 使用正确字体 */
+mat-icon {
+  font-family: 'Material Icons' !important;
+}
+
+/* Angular Material 主题初始化 */
 html {
   @include mat.theme(( color: ( primary: mat.$azure-palette, tertiary: mat.$blue-palette, ), typography: Roboto, density: 0, ));
 }
 
+/* 全局样式 */
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
-  // Reset the user agent margin.
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  --form-gap: 16px; // 默认间距
+  --form-gap: 16px;
 }
-/* You can add global styles to this file, and also import other style files */
 
 html, body {
   height: 100%;
+}
+:root {
+  @include colors.root-definitions();
+}
+
+.docs-dark-mode {
+  @include colors.root-definitions();
+  @include colors.dark-mode-definitions();
 }
