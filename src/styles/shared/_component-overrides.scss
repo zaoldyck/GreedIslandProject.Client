@@ -1,5 +1,4 @@
 app-top-nav nav {
   color: var(--mat-sys-primary);
-  background: var(--mat-sys-primary-container);
+  background: linear-gradient(to right, var(--mat-sys-secondary-container), var(--mat-sys-primary-container));
 }
-

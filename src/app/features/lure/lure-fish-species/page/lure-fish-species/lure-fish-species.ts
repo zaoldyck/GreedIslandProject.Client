@@ -12,7 +12,7 @@ import { MatListModule } from '@angular/material/list';
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [NgOptimizedImage,AsyncPipe, MatListModule, MatCardModule],
+  imports: [ AsyncPipe, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })
