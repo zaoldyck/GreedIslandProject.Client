@@ -2,3 +2,14 @@ app-top-nav nav {
   color: var(--mat-sys-primary);
   background: linear-gradient(to right, var(--mat-sys-secondary-container), var(--mat-sys-primary-container));
 }
+//滚动条样式
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .26) !important;
+}
+//滚动条样式
+::-webkit-scrollbar {
+  //横向滚动条高度
+  height: 5px;
+  //纵向滚动条宽度
+  width: 5px;
+}
