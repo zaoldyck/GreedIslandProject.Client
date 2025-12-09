@@ -37,3 +37,18 @@
 .pointer {
   cursor: pointer;
 }
+.mat-shadow-1 {
+  box-shadow: var(--mat-sys-level1);
+}
+.mat-shadow-2 {
+  box-shadow: var(--mat-sys-level2);
+}
+.mat-shadow-3 {
+  box-shadow: var(--mat-sys-level3);
+}
+.mat-shadow-4 {
+  box-shadow: var(--mat-sys-level4);
+}
+.mat-shadow-5 {
+  box-shadow: var(--mat-sys-level5);
+}

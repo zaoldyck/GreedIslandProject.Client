@@ -21,6 +21,7 @@
   height: 100%; /* 关键：强制填满容器高度 */
   object-fit: fill; /* 或去掉这一句也会因为 width/height 导致变形 */
 }
-.dd {
- 
+.app-card-header {
+  border-radius: var(--mat-sys-corner-medium) var(--mat-sys-corner-medium) 0 0;
+  background-image: radial-gradient(circle at center left, var(--app-tertiary-300),var(--app-primary-300));
 }

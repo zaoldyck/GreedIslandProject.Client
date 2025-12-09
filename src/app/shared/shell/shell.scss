@@ -1,13 +1,16 @@
 @use '../../../styles/shared/constants';
 .docs-homepage-promo {
-  align-items: center;
   display: flex;
   flex-direction: column;
   padding: 16px;
-  width: 75%;
+  width: 80%;
   max-width: 1200px;
-  margin: auto;
+  margin: 6px auto 16px;
   align-items: stretch; /* ✅ 子元素默认会占满可用宽度 */
+  min-height: 100vh;
+  @supports (height: 100dvh) {
+    min-height: 100dvh;
+  }
 }
 .app-sidenav-container {
   /* 保证容器高度稳定（dvh 回退写法） */
@@ -17,13 +20,14 @@
     height: 100dvh;
   }
 }
- 
+
 .docs-navbar-header {
   display: flex;
+  height: var(--navbar-height);
   white-space: nowrap;
   align-items: center;
   padding: 8px 16px;
- 
+
   > .mat-mdc-button {
     &:last-child {
       margin-left: auto;
@@ -50,7 +54,7 @@
 }
 
 .app-logo {
-  width: 42px;
+  width: 44px;
 }
 
 .app-name {
@@ -109,7 +113,7 @@
 
 
 /* 尺寸变量：按需调整 */
-$avatar-size: 38px; /* 头像直径 */
+$avatar-size: 40px; /* 头像直径 */
 $ring-gap: 2px; /* 外环与头像的间距 */
 
 .user-avatar-btn {
@@ -150,7 +154,7 @@ $ring-gap: 2px; /* 外环与头像的间距 */
   }
 
   .user-avatar-fallback {
-    background-image: linear-gradient(112.5deg, rgba(232, 232, 232, 0.03) 0%, rgba(232, 232, 232, 0.03) 2%,rgba(231, 231, 231, 0.03) 2%, rgba(231, 231, 231, 0.03) 4%,rgba(231, 231, 231, 0.03) 4%, rgba(231, 231, 231, 0.03) 11%,rgba(2, 2, 2, 0.03) 11%, rgba(2, 2, 2, 0.03) 67%,rgba(231, 231, 231, 0.03) 67%, rgba(231, 231, 231, 0.03) 90%,rgba(111, 111, 111, 0.03) 90%, rgba(111, 111, 111, 0.03) 100%),linear-gradient(157.5deg, rgba(210, 210, 210, 0.03) 0%, rgba(210, 210, 210, 0.03) 17%,rgba(254, 254, 254, 0.03) 17%, rgba(254, 254, 254, 0.03) 18%,rgba(96, 96, 96, 0.03) 18%, rgba(96, 96, 96, 0.03) 44%,rgba(159, 159, 159, 0.03) 44%, rgba(159, 159, 159, 0.03) 70%,rgba(24, 24, 24, 0.03) 70%, rgba(24, 24, 24, 0.03) 82%,rgba(16, 16, 16, 0.03) 82%, rgba(16, 16, 16, 0.03) 100%),linear-gradient(22.5deg, rgba(47, 47, 47, 0.03) 0%, rgba(47, 47, 47, 0.03) 32%,rgba(124, 124, 124, 0.03) 32%, rgba(124, 124, 124, 0.03) 40%,rgba(200, 200, 200, 0.03) 40%, rgba(200, 200, 200, 0.03) 42%,rgba(16, 16, 16, 0.03) 42%, rgba(16, 16, 16, 0.03) 64%,rgba(243, 243, 243, 0.03) 64%, rgba(243, 243, 243, 0.03) 94%,rgba(93, 93, 93, 0.03) 94%, rgba(93, 93, 93, 0.03) 100%),linear-gradient(90deg, #ffffff,#ffffff);
+    background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%);
     color: #333;
     font-weight: 600;
     font-size: calc(#{$avatar-size} / 2.8);
@@ -177,12 +181,15 @@ $ring-gap: 2px; /* 外环与头像的间距 */
 
 
 @media (max-width: constants.$small-breakpoint-width) {
-  .docs-navbar-hide-small {
-    display: none;
+  .docs-homepage-promo {
+    width: 90%;
   }
+    .docs-navbar-hide-small {
+      display: none;
+    }
 
-  .menu-button {
-    display: flex;
+    .menu-button {
+      display: flex;
+    }
   }
-}
 
