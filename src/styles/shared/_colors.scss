@@ -1,10 +1,5 @@
 @use '@angular/material' as mat;
-
-// Colors
-// Using OKLCH color space for better color reproduction on P3 displays,
-// as well as better human-readability
-// --> https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklch
-
+ 
 @mixin root-definitions() {
   // PRIMITIVES
   // Colors
@@ -23,7 +18,6 @@
 
   --deprecated-light: oklch(95% 0.02 304.04); // Base color
   --deprecated-docs-bg: var(--deprecated-light); // Alias specifically for deprecated docs
-
   // subtle-purple is used for inline-code bg, docs-card hover bg & docs-code header bg
   --subtle-purple: color-mix(in srgb, var(--bright-blue) 5%, white 10%);
   --subtle-blue: color-mix(in srgb, var(--bright-blue) 5%, white 95%);
@@ -31,7 +25,6 @@
   --light-violet: color-mix(in srgb, var(--electric-violet), white 65%);
   --light-orange: color-mix(in srgb, var(--orange-red), white 50%);
   --light-pink: color-mix(in srgb, var(--vivid-pink) 10%, white 80%);
-
   // SYMBOLIC COLORS
   // Used for Type Labels
   --symbolic-purple: oklch(42.86% 0.29 266.4); //#1801ea
@@ -46,7 +39,6 @@
   --symbolic-teal: oklch(57.59% 0.083 230.58); // #3f82a1
   --symbolic-brown: oklch(49.06% 0.128 46.41); // #994411
   --symbolic-lime: oklch(70.33% 0.2078857836035299 135.66843631046476); // #5dba00
-
   // Grays
   --gray-1000: oklch(16.93% 0.004 285.95); // #0f0f11
   --gray-900: oklch(19.37% 0.006 300.98); // #151417
@@ -59,148 +51,32 @@
   --gray-200: oklch(91.75% 0.004 301.42); // #e4e3e6
   --gray-100: oklch(97.12% 0.002 325.59); // #f6f5f6
   --gray-50: oklch(98.81% 0 0); // #fbfbfb
-
   // GRADIENTS
-  --red-to-pink-horizontal-gradient: linear-gradient(
-    90deg,
-    var(--hot-pink) 11.42%,
-    var(--hot-red) 34.83%,
-    var(--vivid-pink) 60.69%
-  );
-
-  --red-to-pink-to-purple-horizontal-gradient: linear-gradient(
-    90deg,
-    var(--orange-red) 0%,
-    var(--vivid-pink) 50%,
-    var(--electric-violet) 100%
-  );
-
-  --pink-to-highlight-to-purple-to-blue-horizontal-gradient: linear-gradient(
-    140deg,
-    var(--vivid-pink) 0%,
-    var(--vivid-pink) 15%,
-    color-mix(in srgb, var(--vivid-pink), var(--electric-violet) 50%) 25%,
-    color-mix(in srgb, var(--vivid-pink), var(--electric-violet) 10%) 35%,
-    color-mix(in srgb, var(--vivid-pink), var(--orange-red) 50%) 42%,
-    color-mix(in srgb, var(--vivid-pink), var(--orange-red) 50%) 44%,
-    color-mix(in srgb, var(--vivid-pink), var(--page-background) 70%) 47%,
-    var(--electric-violet) 48%,
-    var(--bright-blue) 60%
-  );
-
-  --purple-to-blue-horizontal-gradient: linear-gradient(
-    90deg,
-    var(--electric-violet) 0%,
-    var(--bright-blue) 100%
-  );
-  --purple-to-blue-vertical-gradient: linear-gradient(
-    0deg,
-    var(--electric-violet) 0%,
-    var(--bright-blue) 100%
-  );
-
-  --red-to-orange-horizontal-gradient: linear-gradient(
-    90deg,
-    var(--hot-pink) 0%,
-    var(--orange-red) 100%
-  );
-  --red-to-orange-vertical-gradient: linear-gradient(
-    0deg,
-    var(--hot-pink) 0%,
-    var(--orange-red) 100%
-  );
-
-  --pink-to-purple-horizontal-gradient: linear-gradient(
-    90deg,
-    var(--vivid-pink) 0%,
-    var(--electric-violet) 100%
-  );
-  --pink-to-purple-vertical-gradient: linear-gradient(
-    0deg,
-    var(--electric-violet) 0%,
-    var(--vivid-pink) 100%
-  );
-
-  --pink-to-white-horizontal-gradient: linear-gradient(
-    90deg,
-    var(--vivid-pink) 0%,
-    var(--gray-200) 60%
-  );
-
-  --light-pink-to-light-purple-horizontal-gradient: linear-gradient(
-    90deg,
-    var(--light-pink) 0%,
-    var(--light-purple) 100%
-  );
-
-  --light-vivid-pink-to-light-electric-violet-horizontal-gradient: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--vivid-pink), white 90%),
-    color-mix(in srgb, var(--electric-violet), white 90%)
-  );
-
-  --purple-to-light-purple-vertical-gradient: linear-gradient(
-    0deg,
-    var(--french-violet) 0%,
-    var(--light-violet) 100%
-  );
-
-  --green-to-cyan-vertical-gradient: linear-gradient(
-    0deg,
-    var(--symbolic-cyan) 0%,
-    var(--super-green) 100%
-  );
-
-  --blue-to-teal-vertical-gradient: linear-gradient(
-    0deg,
-    var(--bright-blue) 0%,
-    var(--light-blue) 100%
-  );
-
-  --blue-to-cyan-vertical-gradient: linear-gradient(
-    0deg,
-    var(--bright-blue) 0%,
-    var(--symbolic-cyan) 100%
-  );
-
-  --black-to-gray-vertical-gradient: linear-gradient(
-    0deg,
-    var(--primary-contrast) 0%,
-    var(--gray-400) 100%
-  );
-
+  --red-to-pink-horizontal-gradient: linear-gradient( 90deg, var(--hot-pink) 11.42%, var(--hot-red) 34.83%, var(--vivid-pink) 60.69% );
+  --red-to-pink-to-purple-horizontal-gradient: linear-gradient( 90deg, var(--orange-red) 0%, var(--vivid-pink) 50%, var(--electric-violet) 100% );
+  --pink-to-highlight-to-purple-to-blue-horizontal-gradient: linear-gradient( 140deg, var(--vivid-pink) 0%, var(--vivid-pink) 15%, color-mix(in srgb, var(--vivid-pink), var(--electric-violet) 50%) 25%, color-mix(in srgb, var(--vivid-pink), var(--electric-violet) 10%) 35%, color-mix(in srgb, var(--vivid-pink), var(--orange-red) 50%) 42%, color-mix(in srgb, var(--vivid-pink), var(--orange-red) 50%) 44%, color-mix(in srgb, var(--vivid-pink), var(--page-background) 70%) 47%, var(--electric-violet) 48%, var(--bright-blue) 60% );
+  --purple-to-blue-horizontal-gradient: linear-gradient( 90deg, var(--electric-violet) 0%, var(--bright-blue) 100% );
+  --purple-to-blue-vertical-gradient: linear-gradient( 0deg, var(--electric-violet) 0%, var(--bright-blue) 100% );
+  --red-to-orange-horizontal-gradient: linear-gradient( 90deg, var(--hot-pink) 0%, var(--orange-red) 100% );
+  --red-to-orange-vertical-gradient: linear-gradient( 0deg, var(--hot-pink) 0%, var(--orange-red) 100% );
+  --pink-to-purple-horizontal-gradient: linear-gradient( 90deg, var(--vivid-pink) 0%, var(--electric-violet) 100% );
+  --pink-to-purple-vertical-gradient: linear-gradient( 0deg, var(--electric-violet) 0%, var(--vivid-pink) 100% );
+  --pink-to-white-horizontal-gradient: linear-gradient( 90deg, var(--vivid-pink) 0%, var(--gray-200) 60% );
+  --light-pink-to-light-purple-horizontal-gradient: linear-gradient( 90deg, var(--light-pink) 0%, var(--light-violet) 100% );
+  --light-vivid-pink-to-light-electric-violet-horizontal-gradient: linear-gradient( 90deg, color-mix(in srgb, var(--vivid-pink), white 90%), color-mix(in srgb, var(--electric-violet), white 90%) );
+  --purple-to-light-purple-vertical-gradient: linear-gradient( 0deg, var(--french-violet) 0%, var(--light-violet) 100% );
+  --green-to-cyan-vertical-gradient: linear-gradient( 0deg, var(--symbolic-cyan) 0%, var(--super-green) 100% );
+  --blue-to-teal-vertical-gradient: linear-gradient( 0deg, var(--bright-blue) 0%, var(--light-blue) 100% );
+  --blue-to-cyan-vertical-gradient: linear-gradient( 0deg, var(--bright-blue) 0%, var(--symbolic-cyan) 100% );
+  --black-to-gray-vertical-gradient: linear-gradient( 0deg, var(--primary-contrast) 0%, var(--gray-400) 100% );
   --red-to-pink-vertical-gradient: linear-gradient(0deg, var(--hot-red) 0%, var(--vivid-pink) 100%);
-  --orange-to-pink-vertical-gradient: linear-gradient(
-    0deg,
-    var(--vivid-pink) 0%,
-    var(--light-orange) 100%
-  );
-
-  --white-to-light-blue-diagonal-gradient: linear-gradient(
-    132.83deg,
-    hsl(from color-mix(in srgb, var(--bright-blue), white 60%) h s l / 0) 45.38%,
-    hsl(from color-mix(in srgb, var(--bright-blue), white 60%) h s l / 0.3) 159.03%);
-
-  --white-to-light-pink-diagonal-gradient: linear-gradient(
-    135deg,
-    white 30%,
-    var(--light-pink) 100%
-  );
-
+  --orange-to-pink-vertical-gradient: linear-gradient( 0deg, var(--vivid-pink) 0%, var(--light-orange) 100% );
+  --white-to-light-blue-diagonal-gradient: linear-gradient( 132.83deg, hsl(from color-mix(in srgb, var(--bright-blue), white 60%) h s l / 0) 45.38%, hsl(from color-mix(in srgb, var(--bright-blue), white 60%) h s l / 0.3) 159.03%);
+  --white-to-light-pink-diagonal-gradient: linear-gradient( 135deg, white 30%, var(--light-pink) 100% );
   // Radial Gradients
   --page-bg-radial-gradient: radial-gradient(circle, white 0%, white 100%);
-  --soft-pink-radial-gradient: radial-gradient(
-    circle at center bottom,
-    var(--light-pink) 0%,
-    white 80%
-  );
-
-  --hot-pink-to-electric-violet-radial-gradient: radial-gradient(
-    circle at 60% bottom,
-    var(--hot-pink-header) 20%,
-    var(--electric-violet-header) 100%
-  );
-
+  --soft-pink-radial-gradient: radial-gradient( circle at center bottom, var(--light-pink) 0%, white 80% );
+  --hot-pink-to-electric-violet-radial-gradient: radial-gradient( circle at 60% bottom, var(--hot-pink-header) 20%, var(--electric-violet-header) 100% );
   // ABSTRACTIONS            light    - dark
   // --full-contrast:        black    - white
   // --primary-constrast:    gray-900 - gray-100
@@ -212,7 +88,6 @@
   // --septenary-contrast:   gray-100 - gray-800
   // --octonary-contrast:    gray-50  - gray-900
   // --page-background       white    - gray-1000
-
   // LIGHT MODE is default
   // contrast - light mode
   --full-contrast: black;
@@ -225,13 +100,25 @@
   --septenary-contrast: var(--gray-100);
   --octonary-contrast: var(--gray-50);
   --page-background: white;
-
   // Home page
   // for the "unfilled" portion of the word that hasn't
   // been highlighted by the gradient
   --gray-unfilled: var(--gray-400);
-  --webgl-page-background: var(var(--page-background))
-  --webgl-gray-unfilled: var(--gray-400);
+  /* 主色系：全部调亮，不再加黑色 */
+  --app-primary-900: color-mix(in oklab, var(--mat-sys-primary) 80%, white 20%);
+  --app-primary-700: color-mix(in oklab, var(--mat-sys-primary) 70%, white 30%);
+  --app-primary-500: color-mix(in oklab, var(--mat-sys-primary) 60%, white 40%);
+  --app-primary-400: color-mix(in oklab, var(--mat-sys-primary) 50%, white 50%);
+  --app-primary-300: color-mix(in oklab, var(--mat-sys-primary) 40%, white 60%);
+  --app-primary-200: color-mix(in oklab, var(--mat-sys-primary) 30%, white 70%);
+  /* 辅色系：同样调亮 */
+  --app-tertiary-900: color-mix(in oklab, var(--mat-sys-tertiary) 80%, white 20%);
+  --app-tertiary-700: color-mix(in oklab, var(--mat-sys-tertiary) 70%, white 30%);
+  --app-tertiary-600: color-mix(in oklab, var(--mat-sys-tertiary) 60%, white 40%);
+  --app-tertiary-500: color-mix(in oklab, var(--mat-sys-tertiary) 50%, white 50%);
+  --app-tertiary-400: color-mix(in oklab, var(--mat-sys-tertiary) 40%, white 60%);
+  --app-tertiary-300: color-mix(in oklab, var(--mat-sys-tertiary) 30%, white 70%);
+  --app-tertiary-200: color-mix(in oklab, var(--mat-sys-tertiary) 20%, white 80%);
 }
 
 @mixin dark-mode-definitions() {
@@ -327,41 +214,7 @@
     }
   }
 }
-
-@include mat.snack-bar-overrides(
-  (
-    container-shape: 0.25rem,
-    container-color: var(--page-background),
-    supporting-text-color: var(--primary-contrast),
-  )
-);
-
-@include mat.chips-overrides(
-  (
-    outline-color: var(--quinary-contrast),
-    disabled-outline-color: var(--quinary-contrast),
-    flat-selected-outline-width: 1px,
-    label-text-color: var(--tertiary-contrast),
-    label-text-size: 14px,
-    label-text-line-height: 20px,
-
-    with-icon-icon-color: var(--french-violet),
-    with-icon-selected-icon-color: var(--french-violet),
-    selected-label-text-color: var(--french-violet),
-    focus-outline-color: var(--french-violet),
-  )
-);
-
-:root {
-  @include mat.button-toggle-overrides(
-    (
-      text-color: var(--primary-contrast),
-      background-color: var(--octonary-contrast),
-      selected-state-text-color: var(--secondary-contrast),
-      selected-state-background-color: var(--senary-contrast),
-    )
-  );
-}
+ 
 
 // LIGHT MODE (Explicit)
 .docs-light-mode {

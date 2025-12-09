@@ -13,10 +13,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-  selector: 'app-top-nav',
+  selector: 'app-shell',
   standalone: true,
-  templateUrl: './top-nav.html',
-  styleUrls: ['./top-nav.scss'], // 注意这里用 styleUrls（数组），而不是 styleUrl
+  templateUrl: './shell.html',
+  styleUrls: ['./shell.scss'], // 注意这里用 styleUrls（数组），而不是 styleUrl
   imports: [
     // Router（若本组件里使用 <router-outlet> 就保留 RouterOutlet，否则可移除）
     RouterLinkActive, RouterLink, RouterOutlet,
@@ -29,7 +29,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDividerModule,
   ],
 })
-export class TopNav {
+export class Shell {
   public authenticationService = inject(AuthenticationService);
   public router = inject(Router);
 

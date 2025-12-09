@@ -4,23 +4,18 @@
   @if (items.length > 0) {
 <div class="card-list">
   @for (item of items; track item.id) {
-  <mat-card class="fish-card">
-    <img mat-card-image src="{{ resolveImageUrl(item.imageUrl) }}" (error)="onImgError($event)" >
- 
-    <mat-card-header>
+  <mat-card class="fish-card" appearance="outlined">
+    <mat-card-header class="dd">
       <mat-card-title>{{ item.name }}</mat-card-title>
       <mat-card-subtitle>{{ item.scientificName }}</mat-card-subtitle>
     </mat-card-header>
+    <div class="image-box stretch">
+      <img mat-card-image src="{{ resolveImageUrl(item.imageUrl) }}" (error)="onImgError($event)">
+     </div>
+      <mat-card-content>
+        <p>{{ item.description }}</p>
+      </mat-card-content>
 
-    <mat-card-content>
-      <p>{{ item.description }}</p>
-    </mat-card-content>
-
-    <mat-card-footer class="meta">
-      <span>排序：{{ item.sortOrder }}</span>
-      <span class="dot">·</span>
-      <span [class.enabled]="item.isEnabled">启用：{{ item.isEnabled ? '是' : '否' }}</span>
-    </mat-card-footer>
   </mat-card>
   }
 </div>

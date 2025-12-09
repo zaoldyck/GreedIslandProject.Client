@@ -1,4 +1,4 @@
-<mat-sidenav-container class="app-shell">
+<mat-sidenav-container class="app-sidenav-container">
   <!-- 抽屉：移动端菜单 -->
   <mat-sidenav #drawer="matSidenav" [mode]="'over'" class="app-sidenav" [autoFocus]="false">
     <!-- 顶部：Logo（左） + 关闭（右） -->
@@ -150,7 +150,7 @@
         </a>
 
         <div class="docs-flex-spacer"></div>
-       
+
         @if (authenticationService.isLoggedIn()) {
 
         <!-- 头像按钮：用 div 触发 mat-menu（最干净） -->
@@ -160,7 +160,6 @@
              aria-label="打开用户菜单"
              [matMenuTriggerFor]="userMenu"
              [matTooltip]="authenticationService.user()?.displayName ?? authenticationService.user()?.userName"
- 
              (keydown.enter)="menuTrigger.openMenu()"
              (keydown.space)="menuTrigger.openMenu()"
              #menuTrigger="matMenuTrigger">
@@ -206,7 +205,8 @@
         }
       </nav>
     </header>
-
-    <router-outlet></router-outlet>
+    <main class="docs-homepage-promo">
+      <router-outlet></router-outlet>
+    </main>
   </mat-sidenav-content>
 </mat-sidenav-container>
