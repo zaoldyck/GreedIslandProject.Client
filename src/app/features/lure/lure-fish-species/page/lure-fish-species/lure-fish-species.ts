@@ -8,11 +8,11 @@ import { LureFishSpecyViewModel } from '../../../../../core/view-models/lure-fis
 import { LureFishSpeciesSearchRequest } from '../../../../../core/models/lure/lure-fish-species-models';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
-
+import { MatRippleModule } from '@angular/material/core';
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [ AsyncPipe, MatListModule, MatCardModule],
+  imports: [ MatRippleModule,AsyncPipe, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })

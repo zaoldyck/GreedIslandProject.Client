@@ -4,7 +4,7 @@
   @if (items.length > 0) {
 <div class="card-list">
   @for (item of items; track item.id) {
-  <mat-card class="fish-card" appearance="outlined">
+  <mat-card matRipple class="fish-card pointer" >
     <mat-card-header class="app-card-header">
       <mat-card-title>{{ item.name }}</mat-card-title>
       <mat-card-subtitle>{{ item.scientificName }}</mat-card-subtitle>
@@ -12,7 +12,7 @@
     <div class="image-box stretch">
       <img mat-card-image src="{{ resolveImageUrl(item.imageUrl) }}" (error)="onImgError($event)">
      </div>
-      <mat-card-content>
+      <mat-card-content class="app-card-content">
         <p>{{ item.description }}</p>
       </mat-card-content>
 
