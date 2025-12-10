@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
- 
+
 @mixin root-definitions() {
   // PRIMITIVES
   // Colors
@@ -105,20 +105,8 @@
   // been highlighted by the gradient
   --gray-unfilled: var(--gray-400);
   /* 主色系：全部调亮，不再加黑色 */
-  --app-primary-900: color-mix(in oklab, var(--mat-sys-primary) 80%, white 20%);
-  --app-primary-700: color-mix(in oklab, var(--mat-sys-primary) 70%, white 30%);
-  --app-primary-500: color-mix(in oklab, var(--mat-sys-primary) 60%, white 40%);
-  --app-primary-400: color-mix(in oklab, var(--mat-sys-primary) 50%, white 50%);
-  --app-primary-300: color-mix(in oklab, var(--mat-sys-primary) 40%, white 60%);
-  --app-primary-200: color-mix(in oklab, var(--mat-sys-primary) 30%, white 70%);
-  /* 辅色系：同样调亮 */
-  --app-tertiary-900: color-mix(in oklab, var(--mat-sys-tertiary) 80%, white 20%);
-  --app-tertiary-700: color-mix(in oklab, var(--mat-sys-tertiary) 70%, white 30%);
-  --app-tertiary-600: color-mix(in oklab, var(--mat-sys-tertiary) 60%, white 40%);
-  --app-tertiary-500: color-mix(in oklab, var(--mat-sys-tertiary) 50%, white 50%);
-  --app-tertiary-400: color-mix(in oklab, var(--mat-sys-tertiary) 40%, white 60%);
-  --app-tertiary-300: color-mix(in oklab, var(--mat-sys-tertiary) 30%, white 70%);
-  --app-tertiary-200: color-mix(in oklab, var(--mat-sys-tertiary) 20%, white 80%);
+  --app-primary-container-900: color-mix(in oklab, var(--mat-sys-primary-container) 80%, var(--mat-sys-primary) 20%);
+  --app-tertiary-container-900: color-mix(in oklab, var(--mat-sys-tertiary-container) 80%, var(--mat-sys-tertiary) 20%);
 }
 
 @mixin dark-mode-definitions() {
