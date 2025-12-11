@@ -14,3 +14,10 @@ app-shell nav {
   //纵向滚动条宽度
   width: 5px;
 }
+
+.ng-progress-bar {
+  .ng-bar {
+    background: var(--red-to-pink-to-purple-horizontal-gradient) !important;
+    height: 3px !important;
+  }
+}

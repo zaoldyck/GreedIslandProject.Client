@@ -9,6 +9,7 @@ import { LureFishSpeciesSearchRequest } from '../../../../../core/models/lure/lu
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatRippleModule } from '@angular/material/core';
+import { Utilities } from '../../../../../core/utils/utilities';
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
@@ -18,7 +19,7 @@ import { MatRippleModule } from '@angular/material/core';
 })
 export class LureFishSpecies {
   private svc = inject(LureFishSpeciesService);
-
+  private utilities = inject(Utilities);
   // 用 Observable 供模板 async 管道订阅
   result$!: Observable<PagedResult<LureFishSpecyViewModel>>;
   private fallbackImage = 'placeholder-fish.svg';
@@ -29,12 +30,18 @@ export class LureFishSpecies {
       pageSize: 20,
       // 视你的模型再补充其它筛选字段
     };
-    this.result$ = this.svc.search(req);
+    this.result$ = this.svc.search(req).pipe(
+      this.utilities.withGlobalLoading() // ✅ 再次搜索同样包裹
+    );
   }
 
   // 如果需要手动触发搜索
   onSearch(req: LureFishSpeciesSearchRequest) {
-    this.result$ = this.svc.search(req);
+    this.result$ = this.svc.search(req)
+      .pipe(
+        this.utilities.withGlobalLoading() // ✅ 再次搜索同样包裹
+      );
+;
   }
 
 

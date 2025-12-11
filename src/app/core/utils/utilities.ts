@@ -1,5 +1,8 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { inject, Injectable, signal, Signal } from '@angular/core';
 import { HttpResponseBase, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { CommonService } from '../services/common-service';
+import { Observable } from 'rxjs/internal/Observable';
+import { defer, finalize } from 'rxjs';
 
 type HttpMessageSearchOptions = Readonly<{
   searchInCaption?: boolean;
@@ -11,8 +14,9 @@ type HttpMessageSearchOptions = Readonly<{
   resultType?: 'caption' | 'preferMessage' | 'both';
 }>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class Utilities {
+  private readonly commonService = inject(CommonService);
   public static readonly captionAndMessageSeparator = ':';
   public static readonly noNetworkMessageCaption = 'No Network';
   public static readonly noNetworkMessageDetail = 'The server cannot be reached';
@@ -24,6 +28,22 @@ export class Utilities {
   public static handleError(err: any, fallbackMessage = '请求失败，请稍后重试'): string {
     return err?.error?.message || err?.message || fallbackMessage;
   }
+
+  /**
+   * 包裹任意 Observable，使其在订阅时触发全局进度条：
+   * - 订阅开始：beginLoading()
+   * - 完成或错误：endLoading()
+   *
+   * 用法：source$.pipe(utilities.withGlobalLoading())
+   */
+  withGlobalLoading<T>() {
+    return (source$: Observable<T>): Observable<T> =>
+      defer(() => {
+        this.commonService.beginLoading();
+        return source$.pipe(finalize(() => this.commonService.endLoading()));
+      });
+  }
+ 
 
   public static mapSmsCodeReason(reason?: string | null): string {
     switch (reason) {
