@@ -1,27 +1,34 @@
-@let result = (result$ | async);
-@let items = result?.items ?? [];  <!-- 统一折叠为数组 -->
-@if (result) {
-  @if (items.length > 0) {
+<!-- lure-fish-species.html -->
+@let list = items();
+
+@if (list.length > 0) {
 <div class="card-list">
-  @for (item of items; track item.id) {
-  <mat-card matRipple class="fish-card pointer" >
+  @for (item of list; track item.id) {
+  <mat-card matRipple class="app-card pointer">
     <mat-card-header class="app-card-header">
       <mat-card-title>{{ item.name }}</mat-card-title>
       <mat-card-subtitle>{{ item.scientificName }}</mat-card-subtitle>
     </mat-card-header>
-    <div class="image-box stretch">
-      <img mat-card-image src="{{ resolveImageUrl(item.imageUrl) }}" (error)="onImgError($event)">
-     </div>
-      <mat-card-content class="app-card-content">
-        <p>{{ item.description }}</p>
-      </mat-card-content>
 
+    <div class="image-box stretch">
+      <img mat-card-image
+           [src]="resolveImageUrl(item.imageUrl)"
+           (error)="onImgError($event)">
+    </div>
+
+    <mat-card-content class="app-card-content">
+      <p>{{ item.description }}</p>
+    </mat-card-content>
   </mat-card>
   }
 </div>
-  } @else {
- 暂无数据  
-  }
-} @else {
- 正在加载... 
 }
+
+<!-- 无按钮版本的底部状态 -->
+<div class="footer">
+  @if (isLoading()) {
+  <div class="loading">加载中...</div>
+  } @else if (noMore()) {
+  <div class="no-more">已到底部</div>
+  }
+</div>

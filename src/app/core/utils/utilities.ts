@@ -43,7 +43,6 @@ export class Utilities {
         return source$.pipe(finalize(() => this.commonService.endLoading()));
       });
   }
- 
 
   public static mapSmsCodeReason(reason?: string | null): string {
     switch (reason) {

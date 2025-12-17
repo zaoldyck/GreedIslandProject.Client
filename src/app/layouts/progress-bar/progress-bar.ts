@@ -70,7 +70,7 @@ export class ProgressBar {
         e instanceof NavigationSkipped ||
         e instanceof NavigationError
       ),
-      take(1)
+ 
     ).subscribe(() => {
       clearTimeout(delayTimer);
       this.loading.setNavigating(false);

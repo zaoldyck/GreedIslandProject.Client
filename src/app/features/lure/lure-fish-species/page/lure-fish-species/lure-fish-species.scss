@@ -4,10 +4,10 @@
   gap: var(--card-gap);
 }
  
-.fish-card {
+.app-card {
   max-width: 480px; 
 }
-.fish-card:hover {
+.app-card:hover {
   box-shadow: var(--mat-sys-level2);
 }
 .image-box {
@@ -29,7 +29,25 @@
 }
 .app-card-content {
   border-top: 1px solid var(--mat-card-outlined-outline-color, var(--mat-sys-outline-variant));
+  height:100%;
 }
 .app-card-content:hover {
   background: var( --mat-sys-surface-container-high);
+}
+
+ 
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  color: #666;
+
+  .loading {
+    color: #888;
+  }
+
+  .no-more {
+    color: #999;
+  }
 }
