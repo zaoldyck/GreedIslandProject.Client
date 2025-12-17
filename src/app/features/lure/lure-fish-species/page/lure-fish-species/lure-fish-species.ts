@@ -11,11 +11,12 @@ import { PagedResult } from '../../../../../core/models/common-models';
 import { LureFishSpecyViewModel } from '../../../../../core/view-models/lure-fish-specy-view-model';
 import { LureFishSpeciesSearchRequest } from '../../../../../core/models/lure/lure-fish-species-models';
 import { Utilities } from '../../../../../core/utils/utilities';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [MatRippleModule, MatListModule, MatCardModule],
+  imports: [MatProgressSpinnerModule,MatRippleModule, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })

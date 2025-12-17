@@ -27,8 +27,8 @@
 <!-- 无按钮版本的底部状态 -->
 <div class="footer">
   @if (isLoading()) {
-  <div class="loading">加载中...</div>
+  <div class="loading"><mat-spinner [diameter]="32"></mat-spinner></div>
   } @else if (noMore()) {
-  <div class="no-more">已到底部</div>
+   <div class="divider-text">已到底部</div>
   }
 </div>
