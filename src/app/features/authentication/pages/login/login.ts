@@ -13,10 +13,11 @@ import { CaptchaService } from '../../../../core/services/captcha-service';
 import { catchError, EMPTY, exhaustMap, filter, finalize, of, switchMap, take, tap } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SendSmsRequest } from '../../../../core/models/authentication-models';
+import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-login',
   imports: [
-    MatTabsModule, ReactiveFormsModule, MatIconModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterLink
+    MatCardModule,MatTabsModule, ReactiveFormsModule, MatIconModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterLink
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
