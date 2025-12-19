@@ -21,3 +21,7 @@ app-shell nav {
     height: 3px !important;
   }
 }
+//禁用stepper的点击事件
+.register-stepper .mat-step-header {
+  pointer-events: none ;
+}

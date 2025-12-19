@@ -18,13 +18,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
 import { SendSmsRequest, VerifySmsRequest } from '../../../../core/models/authentication-models';
 import { CompleteRegisterRequest } from '../../../../core/models/register-models';
+import { MatCardModule } from '@angular/material/card';
  
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
 
 @Component({
   selector: 'app-register',
-  imports: [RouterModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatStepperModule, MatCheckboxModule, MatDialogModule],
+  imports: [MatCardModule,RouterModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatStepperModule, MatCheckboxModule, MatDialogModule],
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
