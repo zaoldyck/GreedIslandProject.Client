@@ -1,4 +1,3 @@
-
 import { Component, inject, signal, ElementRef } from '@angular/core';
 import { EMPTY, Subject } from 'rxjs';
 import { exhaustMap, tap, takeUntil } from 'rxjs/operators';
@@ -13,16 +12,23 @@ import { LureFishSpeciesSearchRequest } from '../../../../../core/models/lure/lu
 import { Utilities } from '../../../../../core/utils/utilities';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
+import { TagViewModel } from '../../../../../core/view-models/TagViewModel';
+import { CommonService } from '../../../../../core/services/common-service';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [RouterLink,MatProgressSpinnerModule,MatRippleModule, MatListModule, MatCardModule],
+  imports: [MatChipsModule,MatIconModule,MatFormFieldModule,MatAutocompleteModule,RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })
 export class LureFishSpecies {
   private svc = inject(LureFishSpeciesService);
+  private commonService = inject(CommonService);
   private utilities = inject(Utilities);
   private el = inject(ElementRef<HTMLElement>);
 
@@ -34,7 +40,7 @@ export class LureFishSpecies {
   readonly items = signal<LureFishSpecyViewModel[]>([]);
   readonly isLoading = signal(false);
   readonly noMore = signal(false);
-
+  readonly tags = signal<TagViewModel[]>([]);
   /** 分页（1-based）与搜索条件 */
   readonly page = signal(1);
   readonly pageSize = signal(20);
@@ -50,6 +56,12 @@ export class LureFishSpecies {
   private anchorEl?: Element | null;
 
   ngOnInit(): void {
+    this.commonService.getTags()
+      .subscribe({
+        next: (list) => this.tags.set(list ?? []),
+        error: (err) => console.error('getTags error:', err),
+      });
+
     // 单通道：上一请求未完成时忽略新触发（防并发、稳边界）
     this.nextPage$
       .pipe(
@@ -145,7 +157,6 @@ export class LureFishSpecies {
     // 首次尝试观察（视图可能未稳定，稍后也会在请求完成后再次观察）
     requestAnimationFrame(() => this.observePreloadAnchor());
   }
-
 
   /**
    * 观察“倒数第4张卡片”作为预加载锚点。

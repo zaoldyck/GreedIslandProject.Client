@@ -15,6 +15,8 @@
   }
 }
 .app-sidenav-container {
+  box-sizing: border-box;
+  padding-top: 60px;
   /* 保证容器高度稳定（dvh 回退写法） */
   height: 100vh;
 
@@ -22,7 +24,13 @@
     height: 100dvh;
   }
 }
-
+.docs-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
 .docs-navbar-header {
   display: flex;
   height: var(--navbar-height);
@@ -177,9 +185,7 @@ $ring-gap: 2px; /* 外环与头像的间距 */
     --angle: 360deg;
   }
 }
-
-
-
+ 
 @media (max-width: constants.$small-breakpoint-width) {
   .docs-homepage-promo {
     width: 90%;

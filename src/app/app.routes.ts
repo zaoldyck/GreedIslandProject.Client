@@ -21,7 +21,7 @@ export const routes: Routes = [
       // ✅ 保留原路径：两个路径都能访问同一页面
       { path: 'lure/lure-fish-species', component: LureFishSpecies },
 
-      { path: 'lure/lure-fish-species/detail/:id', canActivate: [requireAuthenticationGuard], component: LureFishSpeciesDetail },
+      { path: 'lure/lure-fish-species/detail/:id',  component: LureFishSpeciesDetail },
     ]
   },
 

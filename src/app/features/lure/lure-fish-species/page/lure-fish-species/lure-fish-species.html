@@ -1,10 +1,9 @@
-<!-- lure-fish-species.html -->
 @let list = items();
 
 @if (list.length > 0) {
 <div class="card-list">
   @for (item of list; track item.id) {
-  <mat-card matRipple class="app-card pointer"  [routerLink]="['/lure/lure-fish-species/detail', item.id]" [state]="{ from: '/lure/lure-fish-species' }">
+  <mat-card matRipple class="app-card pointer" [routerLink]="['/lure/lure-fish-species/detail', item.id]" [state]="{ from: '/lure/lure-fish-species' }">
     <mat-card-header class="app-card-header">
       <mat-card-title>{{ item.name }}</mat-card-title>
       <mat-card-subtitle>{{ item.scientificName }}</mat-card-subtitle>
@@ -29,6 +28,6 @@
   @if (isLoading()) {
   <div class="loading"><mat-spinner [diameter]="32"></mat-spinner></div>
   } @else if (noMore()) {
-   <div class="divider-text">已到底部</div>
+  <div class="divider-text">已到底部</div>
   }
 </div>

@@ -1,3 +1,4 @@
+
 <mat-sidenav-container class="app-sidenav-container">
   <!-- 抽屉：移动端菜单 -->
   <mat-sidenav #drawer="matSidenav" [mode]="'over'" class="app-sidenav" [autoFocus]="false">
@@ -80,8 +81,7 @@
 
   <!-- 主内容 + 顶部导航（桌面端） -->
   <mat-sidenav-content class="utilities-background">
-
-    <header>
+    <header class="docs-header">
       <nav class="docs-navbar-header">
         <!-- 左侧菜单按钮 -->
         <button class="menu-button" mat-icon-button (click)="drawer.toggle()">

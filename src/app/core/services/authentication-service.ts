@@ -45,7 +45,7 @@ export class AuthenticationService {
         // ✅ 后端优先：登录成功后，直接覆盖为账户偏好（如果有）
         const userProvinceId = user?.preferredProvinceId;
         if (userProvinceId) {
-          this.commonService.setPreferredProvinceId(userProvinceId);
+          //this.commonService.setPreferredProvinceId(userProvinceId);
         }
       }),
       map(() => this.isLoggedIn()),

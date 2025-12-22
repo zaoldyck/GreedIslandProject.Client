@@ -15,4 +15,9 @@ export class LureFishSpeciesService {
   search(req: LureFishSpeciesSearchRequest): Observable<PagedResult<LureFishSpecyViewModel>> {
     return this.http.post<PagedResult<LureFishSpecyViewModel>>(`${this.base}/search`, req);
   }
+
+  /** 按 id 获取详情；后端未找到时返回 null（200 OK） */
+  getLureFishSpeciesById(id: number): Observable<LureFishSpecyViewModel | null> {
+    return this.http.get<LureFishSpecyViewModel | null>(`${this.base}/${id}`);
+  }
 }
