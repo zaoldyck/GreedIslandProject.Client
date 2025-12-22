@@ -18,11 +18,12 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [MatChipsModule,MatIconModule,MatFormFieldModule,MatAutocompleteModule,RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
+  imports: [MatInputModule,MatChipsModule,MatIconModule,MatFormFieldModule,MatAutocompleteModule,RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })

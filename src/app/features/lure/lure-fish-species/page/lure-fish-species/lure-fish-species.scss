@@ -91,3 +91,17 @@
     }
   }
 }
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border: 1px solid var(--senary-contrast);
+  border-radius: .25rem;
+  margin: 0 -6px 1rem -6px;
+  background-image: repeating-linear-gradient(135deg, rgba(240, 240, 240,0.02) 0px, rgba(240, 240, 240,0.02) 21px,rgba(224, 224, 224,0.02) 21px, rgba(224, 224, 224,0.02) 42px,rgba(208, 208, 208,0.02) 42px, rgba(208, 208, 208,0.02) 63px,rgba(192, 192, 192,0.02) 63px, rgba(192, 192, 192,0.02) 84px,rgba(175, 175, 175,0.02) 84px, rgba(175, 175, 175,0.02) 105px,rgba(159, 159, 159,0.02) 105px, rgba(159, 159, 159,0.02) 126px,rgba(143, 143, 143,0.02) 126px, rgba(143, 143, 143,0.02) 147px,rgba(127, 127, 127,0.02) 147px, rgba(127, 127, 127,0.02) 168px),repeating-linear-gradient(45deg, rgba(232, 232, 232,0.02) 0px, rgba(232, 232, 232,0.02) 21px,rgba(209, 209, 209,0.02) 21px, rgba(209, 209, 209,0.02) 42px,rgba(185, 185, 185,0.02) 42px, rgba(185, 185, 185,0.02) 63px,rgba(162, 162, 162,0.02) 63px, rgba(162, 162, 162,0.02) 84px,rgba(138, 138, 138,0.02) 84px, rgba(138, 138, 138,0.02) 105px,rgba(115, 115, 115,0.02) 105px, rgba(115, 115, 115,0.02) 126px,rgba(91, 91, 91,0.02) 126px, rgba(91, 91, 91,0.02) 147px,rgba(68, 68, 68,0.02) 147px, rgba(68, 68, 68,0.02) 168px),linear-gradient(90deg, var(--mat-sys-background),var(--mat-sys-background));
+}
+.filter-item {
+  margin: 1rem 1rem 0 1rem;
+}

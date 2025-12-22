@@ -9,6 +9,7 @@
   color: var(--mat-sys-on-surface-variant);
   align-items: stretch; /* ✅ 子元素默认会占满可用宽度 */
   min-height: 100vh;
+  box-sizing:border-box;
 
   @supports (height: 100dvh) {
     min-height: 100dvh;
