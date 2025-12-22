@@ -1,12 +1,15 @@
+
 .card-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); // 或 auto-fit
   gap: var(--card-gap);
+  justify-items: center; /* ✅ 让每个格子里的内容居中 */
 }
- 
+
 .app-card {
-  max-width: 480px; 
+  max-width: 480px; /* ✅ 卡片不会撑满 1fr 列，居中显示 */
 }
+
 .app-card:hover {
   box-shadow: var(--mat-sys-level2);
 }
