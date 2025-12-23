@@ -19,7 +19,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
 import { TagTypeViewModel } from '../../../../../core/view-models/tag-type-view-model';
-
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
