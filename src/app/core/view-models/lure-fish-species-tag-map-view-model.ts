@@ -1,5 +1,5 @@
-import { TagViewModel } from "./TagViewModel";
-
+import { TagViewModel } from "./tag-view-model";
+ 
 export class LureFishSpeciesTagMapViewModel {
   constructor() {
     this.speciesId = 0;

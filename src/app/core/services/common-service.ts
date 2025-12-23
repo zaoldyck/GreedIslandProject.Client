@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, computed } from '@angular/core';
-import { catchError, map, Observable, of, shareReplay, tap, throwError } from 'rxjs';
-import { ProvinceViewModel } from '../view-models/province-view-model';
-import { Constants } from '../constants/constants';
-import { TagViewModel } from '../view-models/TagViewModel';
+
+import { TagTypeViewModel } from '../view-models/tag-type-view-model';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CommonService {
@@ -41,7 +40,7 @@ export class CommonService {
 
   // —— 供路由监听使用（你已有） —— //
   setNavigating(on: boolean) { this.navigating.set(on); }
-  getTags(): Observable<TagViewModel[]> {
-    return this.http.get<TagViewModel[]>(`${this.base}/common/tags`);
+  getTagTypes(): Observable<TagTypeViewModel[]> {
+    return this.http.get<TagTypeViewModel[]>(`${this.base}/common/tagtypes`);
   }
 }

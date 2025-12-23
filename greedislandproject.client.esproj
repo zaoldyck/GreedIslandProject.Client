@@ -44,7 +44,10 @@
     <None Update="src\app\core\view-models\province-view-model.ts">
       <CustomToolNamespace>ViewModels\ProvinceViewModel.cs</CustomToolNamespace>
     </None>
-    <None Update="src\app\core\view-models\TagViewModel.ts">
+    <None Update="src\app\core\view-models\tag-type-view-model.ts">
+      <CustomToolNamespace>ViewModels\TagTypeViewModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="src\app\core\view-models\tag-view-model.ts">
       <CustomToolNamespace>ViewModels\TagViewModel.cs</CustomToolNamespace>
     </None>
   </ItemGroup>

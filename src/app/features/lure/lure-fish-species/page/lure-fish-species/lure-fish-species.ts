@@ -12,18 +12,18 @@ import { LureFishSpeciesSearchRequest } from '../../../../../core/models/lure/lu
 import { Utilities } from '../../../../../core/utils/utilities';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
-import { TagViewModel } from '../../../../../core/view-models/TagViewModel';
 import { CommonService } from '../../../../../core/services/common-service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
+import { TagTypeViewModel } from '../../../../../core/view-models/tag-type-view-model';
 
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [MatInputModule,MatChipsModule,MatIconModule,MatFormFieldModule,MatAutocompleteModule,RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
+  imports: [MatInputModule, MatChipsModule, MatIconModule, MatFormFieldModule, MatAutocompleteModule, RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })
@@ -41,7 +41,7 @@ export class LureFishSpecies {
   readonly items = signal<LureFishSpecyViewModel[]>([]);
   readonly isLoading = signal(false);
   readonly noMore = signal(false);
-  readonly tags = signal<TagViewModel[]>([]);
+  readonly tagTypes = signal<TagTypeViewModel[]>([]);
   /** 分页（1-based）与搜索条件 */
   readonly page = signal(1);
   readonly pageSize = signal(20);
@@ -57,9 +57,9 @@ export class LureFishSpecies {
   private anchorEl?: Element | null;
 
   ngOnInit(): void {
-    this.commonService.getTags()
+    this.commonService.getTagTypes()
       .subscribe({
-        next: (list) => this.tags.set(list ?? []),
+        next: (list) => this.tagTypes.set(list ?? []),
         error: (err) => console.error('getTags error:', err),
       });
 
