@@ -19,16 +19,22 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
 import { TagTypeViewModel } from '../../../../../core/view-models/tag-type-view-model';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { TagViewModel } from '../../../../../core/view-models/tag-view-model';
+import { MatDialog } from '@angular/material/dialog';
+import { TagSelectDialog } from '../../../../../shared/tag-select-dialog/tag-select-dialog';
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [MatInputModule, MatChipsModule, MatIconModule, MatFormFieldModule, MatAutocompleteModule, RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
+  imports: [MatButtonModule,ReactiveFormsModule,MatInputModule, MatChipsModule, MatIconModule, MatFormFieldModule, MatAutocompleteModule, RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })
 export class LureFishSpecies {
   private svc = inject(LureFishSpeciesService);
-  private commonService = inject(CommonService);
+  private fb = inject(FormBuilder);
+  private dialog = inject(MatDialog);
   private utilities = inject(Utilities);
   private el = inject(ElementRef<HTMLElement>);
 
@@ -40,7 +46,7 @@ export class LureFishSpecies {
   readonly items = signal<LureFishSpecyViewModel[]>([]);
   readonly isLoading = signal(false);
   readonly noMore = signal(false);
-  readonly tagTypes = signal<TagTypeViewModel[]>([]);
+
   /** 分页（1-based）与搜索条件 */
   readonly page = signal(1);
   readonly pageSize = signal(20);
@@ -55,13 +61,14 @@ export class LureFishSpecies {
   /** 记录当前正在观察的锚点元素，便于切换时取消观察 */
   private anchorEl?: Element | null;
 
-  ngOnInit(): void {
-    this.commonService.getTagTypes()
-      .subscribe({
-        next: (list) => this.tagTypes.set(list ?? []),
-        error: (err) => console.error('getTags error:', err),
-      });
+  form = this.fb.nonNullable.group({
+    keyword: '',
+    tags: this.fb.nonNullable.control<TagViewModel[]>([]),
+    tagMatchAll: true,
+  });
 
+  ngOnInit(): void {
+ 
     // 单通道：上一请求未完成时忽略新触发（防并发、稳边界）
     this.nextPage$
       .pipe(
@@ -129,6 +136,45 @@ export class LureFishSpecies {
     // 初始化 IO 并触发首屏
     this.initIntersectionObserver();
     this.resetAndLoadFirstPage();
+  }
+
+  clearKeyword() {
+    this.form.controls.keyword.setValue('');
+  }
+
+  reset() {
+    this.form.reset();
+  }
+
+  removeTag(tag: TagViewModel) {
+    const current = this.form.controls.tags.value;
+    this.form.controls.tags.setValue(current.filter(t => t.id !== tag.id));
+  }
+
+  // 打开 shared 通用标签选择对话框
+  openTagSelectDialog(): void {
+    const ref = this.dialog.open<TagSelectDialog, any, TagViewModel[]>(
+      TagSelectDialog,
+      {
+        width: '640px',
+        data: {
+          selected: this.form.controls.tags.value, // 初始选中
+          title: '选择标签',
+          allowMultiple: true,
+          // all: 可选，传入你自己的标签池；不传则在组件内部使用默认或自行加载
+        },
+        autoFocus: false,
+        restoreFocus: true,
+      }
+    );
+
+    ref.afterClosed().subscribe((result?: TagViewModel[]) => {
+      if (result) {
+        this.form.controls.tags.setValue(result);
+        // 你现在是“点击后再搜索”，选完标签后触发一次搜索
+        this.onSearch();
+      }
+    });
   }
 
   /** 自动无限加载：初始化 IO */
@@ -243,9 +289,7 @@ export class LureFishSpecies {
   }
 
   /** 外部检索（自动重置并拉取） */
-  onSearch(req: LureFishSpeciesSearchRequest) {
-    this.keyword.set((req.keyword ?? '').trim());
-    this.pageSize.set(req.pageSize ?? this.pageSize());
+  onSearch() {
     this.resetAndLoadFirstPage();
   }
 

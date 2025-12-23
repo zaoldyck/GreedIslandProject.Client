@@ -1,9 +1,66 @@
-<div class="filter-bar">
-  <mat-form-field class="filter-item full-width"  appearance="outline"  floatLabel="always" >
-    <mat-label>关键字</mat-label>
-    <input matInput placeholder="Ex. Pizza" value="Sushi">
+
+<form [formGroup]="form" class="filter-bar" (ngSubmit)="onSearch()">
+
+  <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+    <mat-label>搜索关键字</mat-label>
+    <input matInput
+           placeholder="请输入关键字"
+           formControlName="keyword"
+           (keydown.enter)="onSearch()" />
+
+    <span matSuffix class="suffix-box">
+      @if (form.controls.keyword.value) {
+      <button mat-icon-button
+              type="button"
+              aria-label="清空关键字"
+              (click)="clearKeyword()">
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+
+      <button mat-icon-button
+              type="submit"
+              aria-label="搜索">
+        <mat-icon>search</mat-icon>
+      </button>
+    </span>
   </mat-form-field>
-</div>
+
+
+  <mat-form-field appearance="outline" floatLabel="always" class="filter-item filter-tags pointer" (click)="openTagSelectDialog()">
+    <mat-label>标签</mat-label>
+
+    <mat-chip-grid aria-label="已选择的标签">
+      @for (tag of form.controls.tags.value; track tag.id) {
+      <mat-chip-row [removable]="true" (removed)="removeTag(tag)">
+        {{ tag.name }}
+        <button matChipRemove aria-label="移除标签">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-chip-row>
+      } 
+    </mat-chip-grid>
+
+
+
+    <!-- 后缀按钮：打开标签选择弹窗 -->
+    <button mat-icon-button
+            matSuffix
+            type="button"
+            aria-label="选择标签"
+            (click)="openTagSelectDialog()">
+      <mat-icon>tune</mat-icon>
+    </button>
+
+  </mat-form-field>
+
+  <div class="filter-item filter-bar-btns">
+    <button class="filter-bar-btn" matButton="tonal" type="button" (click)="reset()">重置</button>
+  </div>
+</form>
+ 
+
+
 @let list = items();
 
 @if (list.length > 0) {
