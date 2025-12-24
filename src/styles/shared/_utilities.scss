@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 .utilities-background {
   background-image: linear-gradient(74deg, rgba(236, 236, 236,0.05) 0%, rgba(236, 236, 236,0.05) 13%,transparent 13%, transparent 64%,rgba(55, 55, 55,0.05) 64%, rgba(55, 55, 55,0.05) 71%,rgba(239, 239, 239,0.05) 71%, rgba(239, 239, 239,0.05) 100%),linear-gradient(170deg, rgba(8, 8, 8,0.05) 0%, rgba(8, 8, 8,0.05) 1%,transparent 1%, transparent 60%,rgba(9, 9, 9,0.05) 60%, rgba(9, 9, 9,0.05) 80%,rgba(198, 198, 198,0.05) 80%, rgba(198, 198, 198,0.05) 100%),linear-gradient(118deg, rgba(134, 134, 134,0.05) 0%, rgba(134, 134, 134,0.05) 30%,transparent 30%, transparent 43%,rgba(85, 85, 85,0.05) 43%, rgba(85, 85, 85,0.05) 47%,rgba(103, 103, 103,0.05) 47%, rgba(103, 103, 103,0.05) 100%),linear-gradient(249deg, rgba(178, 178, 178,0.05) 0%, rgba(178, 178, 178,0.05) 8%,transparent 8%, transparent 47%,rgba(161, 161, 161,0.05) 47%, rgba(161, 161, 161,0.05) 61%,rgba(19, 19, 19,0.05) 61%, rgba(19, 19, 19,0.05) 100%),linear-gradient(90deg, rgb(255,255,255),rgb(255,255,255));
 }
@@ -52,4 +53,17 @@
 }
 .mat-shadow-5 {
   box-shadow: var(--mat-sys-level5);
+}
+.warn-button {
+  @include mat.button-overrides((text-label-text-color:var(--mat-sys-error),tonal-container-color:var(--mat-sys-on-primary), tonal-label-text-color:var(--mat-sys-error)) );
+}
+
+.warn-icon-button {
+  @include mat.icon-button-overrides((icon-color:var(--mat-sys-error) ));
+}
+.warn-icon {
+  @include mat.icon-overrides((color:var(--mat-sys-error) ));
+}
+.switch-slide-toggle {
+  @include mat.slide-toggle-overrides((unselected-handle-horizontal-margin:0px 0px 0px 4px,unselected-handle-size:var(--mat-slide-toggle-selected-handle-size, 24px),unselected-focus-handle-color:var(--mat-sys-primary-container),unselected-pressed-handle-color:var(--mat-sys-primary-container),unselected-hover-handle-color:var(--mat-sys-primary-container),unselected-pressed-state-layer-color:var(--mat-sys-primary), unselected-focus-state-layer-color:var(--mat-sys-primary),unselected-hover-state-layer-color:var(--mat-sys-primary),unselected-handle-color:var(--mat-sys-on-primary),unselected-track-color: var(--mat-sys-primary), unselected-focus-track-color: var(--mat-sys-primary), track-outline-color: var(--mat-sys-primary),unselected-hover-track-color: var(--mat-sys-primary),unselected-pressed-track-color:var(--mat-sys-primary) ));
 }

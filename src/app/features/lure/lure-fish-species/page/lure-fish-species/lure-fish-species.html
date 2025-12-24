@@ -48,7 +48,7 @@
             matSuffix
             type="button"
             aria-label="选择标签"
-            (click)="openTagSelectDialog()">
+             >
       <mat-icon>tune</mat-icon>
     </button>
 
@@ -88,8 +88,9 @@
 
 <!-- 无按钮版本的底部状态 -->
 <div class="footer">
+
   @if (isLoading()) {
-  <div class="loading"><mat-spinner [diameter]="32"></mat-spinner></div>
+  <div><mat-spinner [diameter]="32"></mat-spinner></div>
   } @else if (noMore()) {
   <div class="divider-text">已到底部</div>
   }

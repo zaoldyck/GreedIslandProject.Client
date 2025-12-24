@@ -24,10 +24,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { TagViewModel } from '../../../../../core/view-models/tag-view-model';
 import { MatDialog } from '@angular/material/dialog';
 import { TagSelectDialog } from '../../../../../shared/tag-select-dialog/tag-select-dialog';
+import { TagSelectDialogData } from '../../../../../shared/tag-select-dialog/tag-select-dialog-data';
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [MatButtonModule,ReactiveFormsModule,MatInputModule, MatChipsModule, MatIconModule, MatFormFieldModule, MatAutocompleteModule, RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
+  imports: [MatButtonModule, ReactiveFormsModule, MatInputModule, MatChipsModule, MatIconModule, MatFormFieldModule, MatAutocompleteModule, RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })
@@ -37,7 +38,7 @@ export class LureFishSpecies {
   private dialog = inject(MatDialog);
   private utilities = inject(Utilities);
   private el = inject(ElementRef<HTMLElement>);
-
+  private readonly currentModuleCode = "LUREFISHSPECIES";
   /** —— RxJS：唯一触发入口 + 生命周期清理 —— */
   private nextPage$ = new Subject<void>();
   private destroy$ = new Subject<void>();
@@ -68,7 +69,6 @@ export class LureFishSpecies {
   });
 
   ngOnInit(): void {
- 
     // 单通道：上一请求未完成时忽略新触发（防并发、稳边界）
     this.nextPage$
       .pipe(
@@ -151,17 +151,21 @@ export class LureFishSpecies {
     this.form.controls.tags.setValue(current.filter(t => t.id !== tag.id));
   }
 
-  // 打开 shared 通用标签选择对话框
   openTagSelectDialog(): void {
-    const ref = this.dialog.open<TagSelectDialog, any, TagViewModel[]>(
+    const ref = this.dialog.open<TagSelectDialog, TagSelectDialogData, TagViewModel[]>(
       TagSelectDialog,
       {
-        width: '640px',
+
+        width: 'min(720px, 90vw)',   // 宽度不超过 720px，同时在小屏占到 90% 视口宽
+        maxWidth: '90vw',            // Material 默认是 80vw，你也可提高到 90vw
+        maxHeight: '80vh',           // 避免内容超出视口高度
+
         data: {
           selected: this.form.controls.tags.value, // 初始选中
           title: '选择标签',
           allowMultiple: true,
-          // all: 可选，传入你自己的标签池；不传则在组件内部使用默认或自行加载
+          moduleCode: this.currentModuleCode,      // 或者传 moduleCode: this.currentModuleCode
+          // all: 如果你已经有完整标签池，可以直接传；否则让弹窗内部自己加载
         },
         autoFocus: false,
         restoreFocus: true,

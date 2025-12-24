@@ -1,51 +1,46 @@
-<!-- tag-select-dialog.html -->
 
-<h2 mat-dialog-title>
-  <mat-icon style="vertical-align: middle; margin-right: 6px;">local_offer</mat-icon>
-  选择标签类型
-</h2>
+<h2 mat-dialog-title>选择标签</h2>
 
-<div mat-dialog-content class="content">
-  <!-- 加载态（如果你有 isLoading 信号/变量，可以加上 @if） -->
-  @if (tagTypes().length === 0) {
-  <div class="empty">
-    <mat-icon color="accent">info</mat-icon>
-    <span>暂无标签类型</span>
+<mat-dialog-content class="tag-select-dialog-content">
+  @if (isLoading()) {
+  <div class="loading-center">
+    <mat-spinner [diameter]="32"></mat-spinner>
   </div>
   } @else {
-  <div class="tag-grid">
-    @for (t of tagTypes(); track t.id) {
-    <button mat-stroked-button
-            color="primary"
-            [class.active]="isSelected(t)"
-            (click)="toggle(t)">
-      <mat-icon *ngIf="isSelected(t)" style="margin-right:4px">check</mat-icon>
-      {{ t.name }}
-    </button>
-    }
-  </div>
 
-  <!-- 可选：已选预览 chips -->
-  @if (selected().length > 0) {
-  <div class="selected-preview">
-    <div class="caption">已选择：</div>
-    <mat-chip-listbox>
-      @for (t of selected(); track t.id) {
-      <mat-chip-row [removable]="true" (removed)="toggle(t)">
-        {{ t.name }}
-        <button matChipRemove aria-label="移除">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-chip-row>
-      }
-    </mat-chip-listbox>
+  @if (tagTypes().length === 0) {
+  <div class="empty">
+    <mat-icon class="warn-icon">info</mat-icon>
+    <span>暂无可选标签类型</span>
+  </div>
+  } @else {
+  @for (type of tagTypes(); track type.id) {
+  <div class="tag-type">
+    <div class="tag-type-header">
+      <mat-icon>label</mat-icon>
+      <h4>{{ type.name }}</h4>
+    </div>
+    <div class="tag-type-tags">
+
+    </div>
   </div>
   }
   }
-</div>
+  }
+</mat-dialog-content>
 
-<div mat-dialog-actions align="end">
-  <button mat-button (click)="clear()">清空</button>
+<mat-dialog-actions class="actions">
+
+  <mat-slide-toggle [checked]="matchMode === 'OR'"
+                    (change)="onMatchModeChange($event)"
+                    class="switch-slide-toggle"
+                    [hideIcon]="true"
+                    aria-label="匹配模式切换">
+    {{ matchMode === 'AND' ? '匹配全部 (AND)' : '匹配任意 (OR)' }}
+  </mat-slide-toggle>
+
+  <span class="spacer"></span>
+  <button mat-button class="warn-button" (click)="clear()">清空</button>
   <button mat-button (click)="cancel()">取消</button>
-  <button mat-flat-button color="primary" (click)="confirm()">确定</button>
-</div>
+  <button mat-button (click)="confirm()">确定</button>
+</mat-dialog-actions>

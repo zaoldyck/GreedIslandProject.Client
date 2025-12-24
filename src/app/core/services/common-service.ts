@@ -40,7 +40,7 @@ export class CommonService {
 
   // —— 供路由监听使用（你已有） —— //
   setNavigating(on: boolean) { this.navigating.set(on); }
-  getTagTypes(): Observable<TagTypeViewModel[]> {
-    return this.http.get<TagTypeViewModel[]>(`${this.base}/common/tagtypes`);
+  getTagTypes(tagTypeCodes:string[]): Observable<TagTypeViewModel[]> {
+    return this.http.post<TagTypeViewModel[]>(`${this.base}/common/tagtypes`, tagTypeCodes);
   }
 }
