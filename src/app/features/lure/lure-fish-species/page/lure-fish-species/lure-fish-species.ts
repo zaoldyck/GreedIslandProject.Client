@@ -151,21 +151,23 @@ export class LureFishSpecies {
     this.form.controls.tags.setValue(current.filter(t => t.id !== tag.id));
   }
 
+
   openTagSelectDialog(): void {
+    // 从表单里拿当前已选的标签对象数组
+    const currentTags: TagViewModel[] = this.form.controls.tags.value ?? [];
+
     const ref = this.dialog.open<TagSelectDialog, TagSelectDialogData, TagViewModel[]>(
       TagSelectDialog,
       {
-
-        width: 'min(720px, 90vw)',   // 宽度不超过 720px，同时在小屏占到 90% 视口宽
-        maxWidth: '90vw',            // Material 默认是 80vw，你也可提高到 90vw
-        maxHeight: '80vh',           // 避免内容超出视口高度
-
+        width: 'min(720px, 90dvw)',
+        maxWidth: '90dvw',
+        minHeight: '50dvh',
+        maxHeight: '90dvh',
         data: {
-          selected: this.form.controls.tags.value, // 初始选中
+          selectedIds: currentTags.map(t => t.id), // ✅ 只传 id
           title: '选择标签',
           allowMultiple: true,
-          moduleCode: this.currentModuleCode,      // 或者传 moduleCode: this.currentModuleCode
-          // all: 如果你已经有完整标签池，可以直接传；否则让弹窗内部自己加载
+          moduleCode: this.currentModuleCode,
         },
         autoFocus: false,
         restoreFocus: true,
@@ -174,12 +176,12 @@ export class LureFishSpecies {
 
     ref.afterClosed().subscribe((result?: TagViewModel[]) => {
       if (result) {
-        this.form.controls.tags.setValue(result);
-        // 你现在是“点击后再搜索”，选完标签后触发一次搜索
+        this.form.controls.tags.setValue(result); // ✅ 弹窗返回对象数组
         this.onSearch();
       }
     });
   }
+
 
   /** 自动无限加载：初始化 IO */
   private initIntersectionObserver() {

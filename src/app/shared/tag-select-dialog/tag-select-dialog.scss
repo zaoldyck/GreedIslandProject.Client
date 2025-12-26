@@ -1,8 +1,7 @@
-.loading-center {
  
+.loading-center {
   display: flex;
   justify-content: center;
- 
   min-height: 50px; // 或者 40vh，根据你的内容调整
 }
 
@@ -14,42 +13,95 @@
 
 /* 用你自己的类 .actions 来控制布局，避免覆盖库的默认选择器 */
 .actions {
-  justify-content: space-between;
+  flex-direction:column;
+  gap:6px;
 }
-
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  width:100%;
+}
 /* spacer 推动右侧按钮到最右边 */
-.actions .spacer {
+.action-buttons .spacer {
   flex: 1 1 auto;
 }
+
 .tag-type {
-  border: 1px solid var(--mat-sys-primary-container);
+  /* 边框与圆角 */
+  border: 1px solid var(--type-color);
+  border-radius: 6px;
+ 
+
+  .tag-type-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* 用浅背景增强可读性：给颜色降透明度或配合混合色 */
+    background: color-mix(in oklab, var(--type-color) 16%, white);
+    border-radius: 6px 6px 0 0; /* 只给顶部圆角 */
+ 
+    color: var(--type-color);
+    padding: 2px 12px;
+
+    mat-icon {
+      color: var(--type-color);
+    }
+
+    h4 {
+      margin: 0;
+    }
+  }
+
+
+
+  .tag-type-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    padding: 2px 12px;
+
+  }
 }
 
 .tag-select-dialog-content {
   display: flex;
   flex-direction: column;
+  padding-bottom:2px;
+  gap:12px;
 }
 
-.tag-type-header {
-  display: flex;
-  align-items: center; // 图标与文本竖直居中对齐
-  gap: 8px; // 元素间间距（也可用 margin-left）
-  background: var(--mat-sys-primary-container);
-  color: var(--mat-sys-primary);
-}
+  .tag-type-header {
+    display: flex;
+    align-items: center; // 图标与文本竖直居中对齐
+    gap: 8px; // 元素间间距（也可用 margin-left）
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-primary);
+  }
+ 
+/* 整体容器：贴底、柔和分隔与阴影 */
+.selected-summary {
+  padding: 2px 12px 0px;
+  border: 1px solid color-mix(in oklab, var(--mat-sys-primary) 24%, transparent);
+  border-radius: 6px;
+  /* 背景：主题容器色与白色轻混合，保持柔和与统一 */
+  background: color-mix(in oklab, var(--mat-sys-primary-container) 22%, white);
+  width: 100%;
+  box-sizing: border-box;
 
+  .summary-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--mat-sys-on-surface);
 
-.tag-type-header mat-icon {
-  font-size: 20px; // 依据你设计规范调整
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-}
+    .spacer {
+      flex: 1;
+    }
+  }
 
-.tag-type-header h4 {
-  margin: 0; // 去掉 h4 默认的上下外边距
-  font-weight: 600; // 可选，视觉强化
-}
-.tag-type-tags{
-    min-height:20px;
+  .chip-set {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap; /* ✅ 可换行 */
+  }
 }

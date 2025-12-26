@@ -1,5 +1,9 @@
+
+
+
 export class TagViewModel {
   constructor() {
+
     this.id = 0;
 
     this.typeId = null;
@@ -17,6 +21,9 @@ export class TagViewModel {
     this.sortOrder = 0;
 
     this.isEnabled = null;
+
+    this.typeColor = null;
+
   }
 
   public id: number;
@@ -36,4 +43,7 @@ export class TagViewModel {
   public sortOrder: number;
 
   public isEnabled: boolean | null;
+
+  public typeColor: string | null;
+
 }

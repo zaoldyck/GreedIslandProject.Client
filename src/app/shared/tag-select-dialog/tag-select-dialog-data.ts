@@ -4,6 +4,6 @@ import { TagViewModel } from "../../core/view-models/tag-view-model";
 export interface TagSelectDialogData {
   title: string;
   allowMultiple: boolean;
-  selected?: TagViewModel[];       // 初始选中
-  moduleCode?: string;             // 当前模块名（或）
+  selectedIds?: Array<number>;  
+  moduleCode?: string;         
 }

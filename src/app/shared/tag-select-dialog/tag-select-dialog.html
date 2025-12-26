@@ -1,6 +1,4 @@
-
 <h2 mat-dialog-title>选择标签</h2>
-
 <mat-dialog-content class="tag-select-dialog-content">
   @if (isLoading()) {
   <div class="loading-center">
@@ -14,33 +12,70 @@
     <span>暂无可选标签类型</span>
   </div>
   } @else {
+
   @for (type of tagTypes(); track type.id) {
-  <div class="tag-type">
+  <div class="tag-type"
+       [style.--type-color]="type.color">
+    <!-- ← 把类型颜色塞进 CSS 变量 -->
     <div class="tag-type-header">
       <mat-icon>label</mat-icon>
-      <h4>{{ type.name }}</h4>
+      <h4 *transloco="let t">
+        {{ t(type.name ?? '') }}
+      </h4>
     </div>
-    <div class="tag-type-tags">
 
+    <div class="tag-type-tags">
+      @for (tag of type.tags; track tag.id) {
+      <mat-checkbox class="colorful-checkbox" [checked]="isSelected(tag)"
+                    (change)="toggle(tag, $event.checked)">
+        {{ tag.name }}
+      </mat-checkbox>
+      }
     </div>
   </div>
   }
+
+
   }
   }
+
 </mat-dialog-content>
 
 <mat-dialog-actions class="actions">
+  @if(selectedTags().length > 0){
 
-  <mat-slide-toggle [checked]="matchMode === 'OR'"
-                    (change)="onMatchModeChange($event)"
-                    class="switch-slide-toggle"
-                    [hideIcon]="true"
-                    aria-label="匹配模式切换">
-    {{ matchMode === 'AND' ? '匹配全部 (AND)' : '匹配任意 (OR)' }}
-  </mat-slide-toggle>
+  <div class="selected-summary">
+    <div class="summary-header">
+      <span>已选标签：{{ selectedTags().length }}</span>
+      <span class="spacer"></span>
+      <button mat-button class="warn-button" (click)="clear()">重新选择</button>
+    </div>
 
-  <span class="spacer"></span>
-  <button mat-button class="warn-button" (click)="clear()">清空</button>
-  <button mat-button (click)="cancel()">取消</button>
-  <button mat-button (click)="confirm()">确定</button>
+    <mat-chip-set class="chip-set" aria-label="已选标签">
+      @for (tag of selectedTags(); track tag.id) {
+      <mat-chip class="selected-chip"
+                [style.--chip-color]="tag.typeColor"
+                [removable]="true"
+                (removed)="remove(tag.id)">
+        <span>{{ tag.name }}</span>
+        <button matChipRemove aria-label="移除 {{tag.name}}">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+      }
+    </mat-chip-set>
+  </div>
+  }
+  <div class="action-buttons">
+    <mat-slide-toggle [checked]="matchMode === 'OR'"
+                      (change)="onMatchModeChange($event)"
+                      class="switch-slide-toggle"
+                      [hideIcon]="true"
+                      aria-label="匹配模式切换">
+      {{ matchMode === 'AND' ? '匹配全部 (AND)' : '匹配任意 (OR)' }}
+    </mat-slide-toggle>
+    <span class="spacer"></span>
+    <button mat-button (click)="cancel()">取消</button>
+    <button mat-button (click)="confirm()">确定</button>
+  </div>
 </mat-dialog-actions>

@@ -1,5 +1,5 @@
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Component, DestroyRef, inject, Inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, Inject, signal } from '@angular/core';
 import { TagTypeViewModel } from '../../core/view-models/tag-type-view-model';
 import { CommonService } from '../../core/services/common-service';
 import { moduleTagTypeMappers } from '../../core/config/module-tag-type-mapper';
@@ -13,29 +13,51 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { TranslocoModule } from '@jsverse/transloco';
 @Component({
   selector: 'app-tag-select-dialog',
-  imports: [ MatSlideToggleModule,MatProgressSpinnerModule,MatButtonModule,MatDialogModule,MatIconModule, MatChipsModule],
+  imports: [ TranslocoModule,MatCheckboxModule,MatSlideToggleModule,MatProgressSpinnerModule,MatButtonModule,MatDialogModule,MatIconModule, MatChipsModule],
   templateUrl: './tag-select-dialog.html',
-  styleUrl: './tag-select-dialog.scss',
+  styleUrl: './tag-select-dialog.scss' 
 })
 export class TagSelectDialog {
   private commonService = inject(CommonService);
 
   readonly tagTypes = signal<TagTypeViewModel[]>([]);
-  readonly selected = signal<TagViewModel[]>([]);
+  private readonly _selectedIds = signal<Set<number>>(new Set());
+
+  // 已选标签对象数组（派生）
+  readonly selectedTags = computed<TagViewModel[]>(() => {
+    const ids = this._selectedIds();
+    const out: TagViewModel[] = [];
+    for (const type of this.tagTypes()) {
+      for (const tag of type.tags ?? []) {
+        if (ids.has(tag.id)) out.push(tag);
+      }
+    }
+    return out;
+  });
+
   readonly isLoading = signal(false);
   private destroyRef = inject(DestroyRef);
   matchMode: 'AND' | 'OR' = 'AND';
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: TagSelectDialogData,
-    private ref: MatDialogRef<TagSelectDialog, TagTypeViewModel[]>
+    private ref: MatDialogRef<TagSelectDialog, TagViewModel[]>
   ) {
-    // 初始选中
-    this.selected.set([...(data?.selected ?? [])]);
+
+    const initIds = new Set<number>();
+
+    if (data?.selectedIds?.length) {
+      for (const id of data.selectedIds) initIds.add(id);
+    } 
+
+    this._selectedIds.set(initIds); // ✅ 单一事实来源：Set<number>
+
   }
  
+
 ngOnInit() {
   const allowedCodes = this.resolveAllowedCodes(this.data);
 
@@ -77,21 +99,39 @@ ngOnInit() {
     return [];
   }
 
-  isSelected(t: TagTypeViewModel): boolean {
-    return this.selected().some(x => String(x.id) === String(t.id));
+
+  isSelected(tag: TagViewModel): boolean {
+    return this._selectedIds().has(tag.id);
   }
 
-  toggle(t: TagTypeViewModel): void {
-   
+
+  remove(tagId: number): void {
+    const next = new Set(this._selectedIds());
+    next.delete(tagId);
+    this._selectedIds.set(next);
   }
+
+
+  toggle(tag: TagViewModel, checked: boolean): void {
+    const next = new Set(this._selectedIds());
+    if (checked) next.add(tag.id);
+    else next.delete(tag.id);
+    this._selectedIds.set(next);
+  }
+
+
 
   clear(): void {
-    this.selected.set([]);
+    this._selectedIds.set(new Set());
   }
 
+
+
   confirm(): void {
-    
+    const result = this.selectedTags(); // TagViewModel[]
+    this.ref.close(result);
   }
+
 
   cancel(): void {
     this.ref.close(undefined);
