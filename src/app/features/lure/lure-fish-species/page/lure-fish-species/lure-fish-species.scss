@@ -1,4 +1,4 @@
-
+@use '../../../../../../styles/shared/constants';
 .card-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); // 或 auto-fit
@@ -111,6 +111,7 @@
   min-width: 240px;
 }
 
+
 .filter-bar-btns {
   flex: 0 0 auto;
   display: flex;
@@ -118,6 +119,9 @@
 }
 .filter-bar-btn {
   margin-top: 6px;
+}
+.filter-slide-toggle {
+  margin-top: 10px;
 }
 
 /* 后缀容器固定宽度，避免因 close 出现/消失导致输入框宽度变化 */
@@ -130,6 +134,13 @@
  
   justify-content: flex-end;
 }
- 
 
+@media (max-width: constants.$extra-small-breakpoint-width) {
+  .filter-slide-toggle{
+      display:none;
+  }
+  .filter-bar-btns {
+    display: none;
+  }
+}
  

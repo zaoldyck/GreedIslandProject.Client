@@ -3,5 +3,5 @@ export interface LureFishSpeciesSearchRequest {
   pageSize: number;
   keyword?: string | null;
   tagIds?: number[] | null;
-  tagMatchAll?: boolean; // 默认 true
+  matchMode?: string;  
 }

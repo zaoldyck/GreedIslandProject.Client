@@ -1,4 +1,4 @@
-import { Component, inject, signal, ElementRef } from '@angular/core';
+import { Component, inject, signal, ElementRef, ViewChild } from '@angular/core';
 import { EMPTY, Subject } from 'rxjs';
 import { exhaustMap, tap, takeUntil } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
@@ -11,7 +11,7 @@ import { LureFishSpecyViewModel } from '../../../../../core/view-models/lure-fis
 import { LureFishSpeciesSearchRequest } from '../../../../../core/models/lure/lure-fish-species-models';
 import { Utilities } from '../../../../../core/utils/utilities';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonService } from '../../../../../core/services/common-service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,16 +24,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { TagViewModel } from '../../../../../core/view-models/tag-view-model';
 import { MatDialog } from '@angular/material/dialog';
 import { TagSelectDialog } from '../../../../../shared/tag-select-dialog/tag-select-dialog';
-import { TagSelectDialogData } from '../../../../../shared/tag-select-dialog/tag-select-dialog-data';
+import { MatchMode, TagSelectDialogData, TagSelectResult } from '../../../../../shared/tag-select-dialog/tag-select-dialog-data';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [MatButtonModule, ReactiveFormsModule, MatInputModule, MatChipsModule, MatIconModule, MatFormFieldModule, MatAutocompleteModule, RouterLink, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
+  imports: [MatSlideToggleModule,MatButtonModule, ReactiveFormsModule, MatInputModule, MatChipsModule, MatIconModule, MatFormFieldModule, MatAutocompleteModule,  MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })
+ 
 export class LureFishSpecies {
   private svc = inject(LureFishSpeciesService);
+  private commonService = inject(CommonService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private dialog = inject(MatDialog);
   private utilities = inject(Utilities);
@@ -51,8 +56,7 @@ export class LureFishSpecies {
   /** 分页（1-based）与搜索条件 */
   readonly page = signal(1);
   readonly pageSize = signal(20);
-  readonly keyword = signal('');
-
+ 
   /** 最近一次响应（如需显示 totalCount/totalPages） */
   readonly lastResult = signal<PagedResult<LureFishSpecyViewModel> | null>(null);
 
@@ -65,20 +69,76 @@ export class LureFishSpecies {
   form = this.fb.nonNullable.group({
     keyword: '',
     tags: this.fb.nonNullable.control<TagViewModel[]>([]),
-    tagMatchAll: true,
+    matchMode: 'AND', // ✅ 用字面量类型，默认 OR
   });
 
   ngOnInit(): void {
-    // 单通道：上一请求未完成时忽略新触发（防并发、稳边界）
+    // 1) 初始化 IntersectionObserver（你的方法）
+    this.initIntersectionObserver();
+
+    // 2) 建立搜索管道：就是你原来 this.nextPage$.pipe(...).subscribe() 那段
+    this.setupSearchPipeline();
+    // 3) 读取浏览器历史条目的 state，判断是否来自详情页
+    const st = history.state as {
+      from?: string;
+      keyword?: string;
+      tags?: TagViewModel[];
+      matchMode?: 'AND' | 'OR';
+      page?: number;
+      pageSize?: number;
+      scrollTop?: number;
+    };
+
+    const fromDetail = st?.from === '/lure/lure-fish-species';
+
+    if (fromDetail) {
+      // —— 恢复筛选条件（仅在从详情返回时）——
+      this.form.controls.keyword.setValue(st.keyword ?? '');
+      this.form.controls.tags.setValue(st.tags ?? []);
+      this.form.controls.matchMode.setValue(st.matchMode ?? 'AND');
+
+      // （可选）如果你确实要恢复分页，请取消注释：
+      // this.page.set(st.page ?? 1);
+      // this.pageSize.set(st.pageSize ?? 20);
+
+      // 清空并按当前条件拉首屏
+      this.items.set([]);
+      this.noMore.set(false);
+      this.isLoading.set(false);
+      this.unobserveCurrentAnchor();
+
+      // 下一帧：恢复滚动位置（可选）+ 触发首屏请求
+      requestAnimationFrame(() => {
+        if (typeof st.scrollTop === 'number') {
+          window.scrollTo({ top: st.scrollTop, behavior: 'auto' });
+        } else {
+          this.commonService.scrollToTop('auto');
+        }
+        this.nextPage$.next();
+      });
+    } else {
+      // 非详情返回（例如菜单/外链进入），按初始流程清空并拉取第 1 页
+      this.resetAndLoadFirstPage();
+    }
+  }
+
+
+  private setupSearchPipeline() {
     this.nextPage$
       .pipe(
         exhaustMap(() => {
           if (this.isLoading() || this.noMore()) return EMPTY;
           this.isLoading.set(true);
 
+          const keyword = this.form.controls.keyword.value.trim() || undefined;
+          const tagIds = (this.form.controls.tags.value ?? []).map(t => t.id);
+          const effectiveTagIds = tagIds.length ? tagIds : undefined;
+
           const req: LureFishSpeciesSearchRequest = {
-            keyword: this.keyword(),
-            page: this.page(),        // 1-based
+            keyword,                                  // ✅ 关键字（undefined 代表不筛）
+            tagIds: effectiveTagIds,                  // ✅ 标签id（undefined 代表不筛）
+            matchMode: this.form.controls.matchMode.value, // ✅ 'AND' | 'OR' 作为 string 传
+            page: this.page(),                        // 1-based
             pageSize: this.pageSize(),
           };
 
@@ -132,14 +192,11 @@ export class LureFishSpecies {
         takeUntil(this.destroy$)
       )
       .subscribe();
-
-    // 初始化 IO 并触发首屏
-    this.initIntersectionObserver();
-    this.resetAndLoadFirstPage();
   }
 
   clearKeyword() {
     this.form.controls.keyword.setValue('');
+    this.onSearch();
   }
 
   reset() {
@@ -149,14 +206,17 @@ export class LureFishSpecies {
   removeTag(tag: TagViewModel) {
     const current = this.form.controls.tags.value;
     this.form.controls.tags.setValue(current.filter(t => t.id !== tag.id));
+    this.onSearch();
   }
 
 
-  openTagSelectDialog(): void {
-    // 从表单里拿当前已选的标签对象数组
-    const currentTags: TagViewModel[] = this.form.controls.tags.value ?? [];
 
-    const ref = this.dialog.open<TagSelectDialog, TagSelectDialogData, TagViewModel[]>(
+  openTagSelectDialog(): void {
+    // 从表单里拿当前已选的标签和匹配模式
+    const currentTags: TagViewModel[] = this.form.controls.tags.value ?? [];
+    const currentMatchMode = (this.form.controls.matchMode?.value ?? 'AND') as MatchMode;
+
+    const ref = this.dialog.open<TagSelectDialog, TagSelectDialogData, TagSelectResult>(
       TagSelectDialog,
       {
         width: 'min(720px, 90dvw)',
@@ -168,19 +228,26 @@ export class LureFishSpecies {
           title: '选择标签',
           allowMultiple: true,
           moduleCode: this.currentModuleCode,
+          matchMode: currentMatchMode,            // ✅ 传入当前模式
         },
         autoFocus: false,
         restoreFocus: true,
+        // disableClose: false, // 是否允许点击遮罩关闭，按你的需求
       }
     );
 
-    ref.afterClosed().subscribe((result?: TagViewModel[]) => {
-      if (result) {
-        this.form.controls.tags.setValue(result); // ✅ 弹窗返回对象数组
-        this.onSearch();
+    ref.afterClosed().subscribe((result?: TagSelectResult) => {
+      if (!result) return;
+
+      // 写回 form：tags + matchMode
+      this.form.controls.tags.setValue(result.tags);
+      if (this.form.controls.matchMode) {
+        this.form.controls.matchMode.setValue(result.matchMode);
       }
+      this.onSearch();
     });
   }
+
 
 
   /** 自动无限加载：初始化 IO */
@@ -279,7 +346,7 @@ export class LureFishSpecies {
       this.anchorEl = null;
     }
   }
-
+ 
   /** 重置并拉取第 1 页（自动） */
   private resetAndLoadFirstPage() {
     this.items.set([]);
@@ -291,8 +358,15 @@ export class LureFishSpecies {
 
     // 初次渲染通常没有锚点；首屏完成后会自动设置锚点
     this.unobserveCurrentAnchor();
-    this.nextPage$.next(); // 自动首屏
+
+    // 下一帧滚到顶部（更稳），再触发首屏请求
+    requestAnimationFrame(() => {
+      this.commonService.scrollToTop('auto');  // 或 'smooth'
+      this.nextPage$.next();
+    });
+
   }
+
 
   /** 外部检索（自动重置并拉取） */
   onSearch() {
@@ -303,6 +377,36 @@ export class LureFishSpecies {
     this.destroy$.next();
     this.destroy$.complete();
     this.io?.disconnect();
+  }
+
+
+  onOpenDetail(id: number) {
+    // 1) 先把当前列表页的历史条目写入需要恢复的 state
+    const restoreState = {
+      from: '/lure/lure-fish-species',
+      keyword: this.form.controls.keyword.value ?? '',
+      tags: this.form.controls.tags.value ?? [],
+      matchMode: (this.form.controls.matchMode.value ?? 'AND') as 'AND' | 'OR',
+      scrollTop: window.scrollY,  // 可选：返回时恢复滚动位置
+      // page: this.page(),        // 可选：是否恢复页码
+      // pageSize: this.pageSize(),
+    };
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      state: restoreState,
+      replaceUrl: true    // 替换当前历史条目，不改变 URL
+    });
+
+    // 2) 再导航到详情页（可选择是否传 state 给详情）
+    this.router.navigate(['/lure/lure-fish-species/detail', id], {
+      state: { from: '/lure/lure-fish-species' }
+    });
+  }
+
+  onMatchModeChange(ev: MatSlideToggleChange) {
+    this.form.controls.matchMode.setValue(ev.checked ? 'OR' : 'AND');
+    this.onSearch();
   }
 
   /** 图片工具（保持你的逻辑） */

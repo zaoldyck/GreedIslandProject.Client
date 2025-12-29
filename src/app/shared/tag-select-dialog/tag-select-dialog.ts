@@ -5,14 +5,14 @@ import { CommonService } from '../../core/services/common-service';
 import { moduleTagTypeMappers } from '../../core/config/module-tag-type-mapper';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
-import { TagSelectDialogData } from './tag-select-dialog-data';
+import { TagSelectDialogData, TagSelectResult } from './tag-select-dialog-data';
 import { TagViewModel } from '../../core/view-models/tag-view-model';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslocoModule } from '@jsverse/transloco';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
@@ -45,7 +45,7 @@ export class TagSelectDialog {
   matchMode: 'AND' | 'OR' = 'AND';
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: TagSelectDialogData,
-    private ref: MatDialogRef<TagSelectDialog, TagViewModel[]>
+    private ref: MatDialogRef<TagSelectDialog, TagSelectResult>
   ) {
 
     const initIds = new Set<number>();
@@ -55,6 +55,10 @@ export class TagSelectDialog {
     } 
 
     this._selectedIds.set(initIds); // ✅ 单一事实来源：Set<number>
+
+    if (data?.matchMode) {
+      this.matchMode = data.matchMode;
+    }
 
   }
  
@@ -86,15 +90,17 @@ ngOnInit() {
 }
 
 
-  onMatchModeChange(evt: { checked: boolean }) {
-    // ✅ 未选中(checked=false) → AND；选中(checked=true) → OR
+
+  onMatchModeChange(evt: MatSlideToggleChange) {
+    // 选中 => OR；未选中 => AND （与你之前的逻辑一致）
     this.matchMode = evt.checked ? 'OR' : 'AND';
   }
 
-  /** 根据 data.moduleCode 或 data.moduleName 解析允许的标签 code（全大写） */
+
+ 
   private resolveAllowedCodes(data: TagSelectDialogData): string[] {
     if (data?.moduleCode) {
-      const m = moduleTagTypeMappers.find(x => x.moduleCode.toUpperCase() === data.moduleCode!.toUpperCase());
+      const m = moduleTagTypeMappers.find(x => x.moduleCode=== data.moduleCode!);
       return m?.tagTypeCodes ?? [];
     }
     return [];
@@ -128,10 +134,17 @@ ngOnInit() {
 
 
 
+
+
   confirm(): void {
-    const result = this.selectedTags(); // TagViewModel[]
+    const result: TagSelectResult = {
+      tags: this.selectedTags(),
+      matchMode: this.matchMode,
+    };
     this.ref.close(result);
   }
+
+
 
 
   cancel(): void {

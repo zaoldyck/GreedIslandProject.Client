@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthenticationService } from '../../core/services/authentication-service';
 
@@ -11,6 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommonService } from '../../core/services/common-service';
 
 @Component({
   selector: 'app-shell',
@@ -29,9 +30,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDividerModule,
   ],
 })
-export class Shell {
+export class Shell implements AfterViewInit {
   public authenticationService = inject(AuthenticationService);
+  public commonService = inject(CommonService);
   public router = inject(Router);
+
+  @ViewChild('content', { read: ElementRef }) private contentEl?: ElementRef<HTMLElement>;
+
+  ngAfterViewInit() {
+    const el = this.contentEl?.nativeElement;
+    if (el) {
+      this.commonService.registerScrollHost(el);
+    }
+  }
 
   logout() {
     this.authenticationService.logout().subscribe({
