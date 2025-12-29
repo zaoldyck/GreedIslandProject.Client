@@ -1,4 +1,13 @@
- 
+.tag-select-dialog-title {
+  cursor: move;
+  user-select: none;
+}
+.dialog-close-abs {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
 .loading-center {
   display: flex;
   justify-content: center;

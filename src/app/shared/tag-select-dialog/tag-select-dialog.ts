@@ -15,9 +15,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslocoModule } from '@jsverse/transloco';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-tag-select-dialog',
-  imports: [ TranslocoModule,MatCheckboxModule,MatSlideToggleModule,MatProgressSpinnerModule,MatButtonModule,MatDialogModule,MatIconModule, MatChipsModule],
+  imports: [CdkDrag,CdkDragHandle,TranslocoModule,MatCheckboxModule,MatSlideToggleModule,MatProgressSpinnerModule,MatButtonModule,MatDialogModule,MatIconModule, MatChipsModule],
   templateUrl: './tag-select-dialog.html',
   styleUrl: './tag-select-dialog.scss' 
 })

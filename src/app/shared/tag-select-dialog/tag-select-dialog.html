@@ -1,4 +1,16 @@
-<h2 mat-dialog-title>选择标签</h2>
+<h2 mat-dialog-title class="tag-select-dialog-title" cdkDragHandle
+   cdkDrag                        
+   cdkDragRootElement=".cdk-overlay-pane"
+>选择标签</h2>
+
+<button mat-icon-button
+        mat-dialog-close
+        aria-label="关闭"
+        class="dialog-close-abs">
+  <mat-icon>close</mat-icon>
+</button>
+
+
 <mat-dialog-content class="tag-select-dialog-content">
   @if (isLoading()) {
   <div class="loading-center">
