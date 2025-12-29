@@ -18,7 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
-import { TagTypeViewModel } from '../../../../../core/view-models/tag-type-view-model';
+ 
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { TagViewModel } from '../../../../../core/view-models/tag-view-model';
@@ -26,6 +26,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TagSelectDialog } from '../../../../../shared/tag-select-dialog/tag-select-dialog';
 import { MatchMode, TagSelectDialogData, TagSelectResult } from '../../../../../shared/tag-select-dialog/tag-select-dialog-data';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
@@ -38,7 +39,7 @@ export class LureFishSpecies {
   private svc = inject(LureFishSpeciesService);
   private commonService = inject(CommonService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private location = inject(Location);
   private fb = inject(FormBuilder);
   private dialog = inject(MatDialog);
   private utilities = inject(Utilities);
@@ -78,17 +79,14 @@ export class LureFishSpecies {
 
     // 2) 建立搜索管道：就是你原来 this.nextPage$.pipe(...).subscribe() 那段
     this.setupSearchPipeline();
+
     // 3) 读取浏览器历史条目的 state，判断是否来自详情页
     const st = history.state as {
       from?: string;
       keyword?: string;
       tags?: TagViewModel[];
       matchMode?: 'AND' | 'OR';
-      page?: number;
-      pageSize?: number;
-      scrollTop?: number;
     };
-
     const fromDetail = st?.from === '/lure/lure-fish-species';
 
     if (fromDetail) {
@@ -97,7 +95,7 @@ export class LureFishSpecies {
       this.form.controls.tags.setValue(st.tags ?? []);
       this.form.controls.matchMode.setValue(st.matchMode ?? 'AND');
 
-      // （可选）如果你确实要恢复分页，请取消注释：
+      // （可选）恢复分页：
       // this.page.set(st.page ?? 1);
       // this.pageSize.set(st.pageSize ?? 20);
 
@@ -109,13 +107,16 @@ export class LureFishSpecies {
 
       // 下一帧：恢复滚动位置（可选）+ 触发首屏请求
       requestAnimationFrame(() => {
-        if (typeof st.scrollTop === 'number') {
-          window.scrollTo({ top: st.scrollTop, behavior: 'auto' });
-        } else {
-          this.commonService.scrollToTop('auto');
-        }
+   
+        this.commonService.scrollToTop('auto');
+  
         this.nextPage$.next();
       });
+
+      // ✅ 关键：用完即清空当前历史条目的 state，避免刷新或再次返回误恢复
+      if (typeof window !== 'undefined' && 'replaceState' in window.history) {
+        window.history.replaceState({}, '', window.location.pathname + window.location.search + window.location.hash);
+      }
     } else {
       // 非详情返回（例如菜单/外链进入），按初始流程清空并拉取第 1 页
       this.resetAndLoadFirstPage();
@@ -201,6 +202,7 @@ export class LureFishSpecies {
 
   reset() {
     this.form.reset();
+    this.onSearch();
   }
 
   removeTag(tag: TagViewModel) {
@@ -361,7 +363,7 @@ export class LureFishSpecies {
 
     // 下一帧滚到顶部（更稳），再触发首屏请求
     requestAnimationFrame(() => {
-      this.commonService.scrollToTop('auto');  // 或 'smooth'
+      this.commonService.scrollToTop('smooth');  // 或 'smooth'
       this.nextPage$.next();
     });
 
@@ -380,29 +382,25 @@ export class LureFishSpecies {
   }
 
 
+
   onOpenDetail(id: number) {
-    // 1) 先把当前列表页的历史条目写入需要恢复的 state
+    // 1) 写入当前列表页的历史条目 state（不导航）
     const restoreState = {
       from: '/lure/lure-fish-species',
       keyword: this.form.controls.keyword.value ?? '',
-      tags: this.form.controls.tags.value ?? [],
-      matchMode: (this.form.controls.matchMode.value ?? 'AND') as 'AND' | 'OR',
-      scrollTop: window.scrollY,  // 可选：返回时恢复滚动位置
-      // page: this.page(),        // 可选：是否恢复页码
-      // pageSize: this.pageSize(),
+      tags: (this.form.controls.tags.value ?? []).map(t => ({ id: t.id, name: t.name,typeColor:t.typeColor })), // 建议降维成可序列化的轻量对象
+      matchMode: (this.form.controls.matchMode.value ?? 'AND') as 'AND' | 'OR'
     };
 
-    this.router.navigate([], {
-      relativeTo: this.route,
-      state: restoreState,
-      replaceUrl: true    // 替换当前历史条目，不改变 URL
-    });
+    // 注意：第三个参数是 state；第二个参数是 query string（通常传空）
+    this.location.replaceState(this.router.url, '', restoreState);
 
-    // 2) 再导航到详情页（可选择是否传 state 给详情）
+    // 2) 导航到详情页（如需可传入简短的 from）
     this.router.navigate(['/lure/lure-fish-species/detail', id], {
       state: { from: '/lure/lure-fish-species' }
     });
   }
+
 
   onMatchModeChange(ev: MatSlideToggleChange) {
     this.form.controls.matchMode.setValue(ev.checked ? 'OR' : 'AND');

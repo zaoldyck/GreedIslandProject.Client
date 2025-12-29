@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AfterViewInit, Component, DestroyRef, ElementRef, inject, ViewChild } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthenticationService } from '../../core/services/authentication-service';
 
 // Angular Material（standalone）
@@ -12,6 +12,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonService } from '../../core/services/common-service';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-shell',
@@ -34,8 +36,25 @@ export class Shell implements AfterViewInit {
   public authenticationService = inject(AuthenticationService);
   public commonService = inject(CommonService);
   public router = inject(Router);
-
+  private destroyRef = inject(DestroyRef);
   @ViewChild('content', { read: ElementRef }) private contentEl?: ElementRef<HTMLElement>;
+
+
+
+  ngOnInit(): void {
+    this.router.events
+      .pipe(
+        filter(e => e instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        const isBrowser = typeof window !== 'undefined';
+        if (isBrowser) {
+          this.commonService.scrollToTop('auto'); // ✅ 统一入口
+        }
+      });
+  }
+
 
   ngAfterViewInit() {
     const el = this.contentEl?.nativeElement;

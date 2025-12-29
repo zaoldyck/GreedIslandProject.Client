@@ -29,6 +29,7 @@
   <mat-form-field appearance="outline"
                   floatLabel="always"
                   class="filter-item filter-tags pointer"
+                  (mousedown)="$event.preventDefault()"
                   (click)="openTagSelectDialog()">
     <mat-label>标签</mat-label>
 
