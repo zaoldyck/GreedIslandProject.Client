@@ -1,3 +1,4 @@
+
 <form [formGroup]="form" class="filter-bar" (ngSubmit)="onSearch()">
 
   <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
@@ -28,6 +29,7 @@
   <mat-form-field appearance="outline"
                   floatLabel="always"
                   class="filter-item filter-tags pointer"
+                  (mousedown)="$event.preventDefault()"
                   (click)="openTagSelectDialog()">
     <mat-label>标签</mat-label>
 
@@ -72,6 +74,8 @@
     <button class="filter-bar-btn" matButton="tonal" type="button" (click)="reset()">重置</button>
   </div>
 </form>
+
+
 
 @let list = items();
 
