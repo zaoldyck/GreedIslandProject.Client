@@ -18,15 +18,15 @@
          [routerLinkActiveOptions]="{ exact: true }"
          (click)="drawer.close()">
         <mat-icon matListItemIcon>home</mat-icon>
-        <span matListItemTitle>首页</span>
+        <span matListItemTitle>路亚鱼种</span>
       </a>
 
       <a mat-list-item
-         routerLink="/spots"
+         routerLink="/lure/lure-fish-types"
          routerLinkActive="is-active"
          (click)="drawer.close()">
-        <mat-icon matListItemIcon>map</mat-icon>
-        <span matListItemTitle>钓点地图</span>
+        <mat-icon matListItemIcon>category</mat-icon>
+        <span matListItemTitle>拟饵类别</span>
       </a>
 
       <a mat-list-item
@@ -97,14 +97,14 @@
            routerLinkActive="docs-navbar-header-item-selected"
            [routerLinkActiveOptions]="{ exact: true }">
           <mat-icon>home</mat-icon>
-          <span>首页</span>
+          <span>路亚鱼种</span>
         </a>
 
         <a mat-button class="docs-navbar-hide-small"
-           routerLink="/spots"
+           routerLink="/lure/lure-fish-types"
            routerLinkActive="docs-navbar-header-item-selected">
-          <mat-icon>map</mat-icon>
-          <span>钓点地图</span>
+          <mat-icon>category</mat-icon>
+          <span>拟饵类别</span>
         </a>
 
         <a mat-button class="docs-navbar-hide-small"

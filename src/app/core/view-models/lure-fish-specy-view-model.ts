@@ -16,13 +16,7 @@ export class LureFishSpecyViewModel {
 
     this.isEnabled = null;
 
-    this.createdBy = null;
-
-    this.createdDate = new Date();
-
-    this.updatedBy = null;
-
-    this.updatedDate = null;
+ 
 
     this.lureFishSpeciesTagMaps = [];
   }
@@ -40,14 +34,7 @@ export class LureFishSpecyViewModel {
   public sortOrder: number;
 
   public isEnabled: boolean | null;
-
-  public createdBy: string | null;
-
-  public createdDate: Date;
-
-  public updatedBy: string | null;
-
-  public updatedDate: Date | null;
+ 
 
   public lureFishSpeciesTagMaps: LureFishSpeciesTagMapViewModel[];
 }

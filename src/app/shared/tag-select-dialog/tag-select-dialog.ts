@@ -11,14 +11,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslocoModule } from '@jsverse/transloco';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { Loading } from '../loading/loading';
 @Component({
   selector: 'app-tag-select-dialog',
-  imports: [CdkDrag,CdkDragHandle,TranslocoModule,MatCheckboxModule,MatSlideToggleModule,MatProgressSpinnerModule,MatButtonModule,MatDialogModule,MatIconModule, MatChipsModule],
+  imports: [CdkDrag, CdkDragHandle, TranslocoModule, MatCheckboxModule, MatSlideToggleModule, Loading,MatButtonModule,MatDialogModule,MatIconModule, MatChipsModule],
   templateUrl: './tag-select-dialog.html',
   styleUrl: './tag-select-dialog.scss' 
 })
