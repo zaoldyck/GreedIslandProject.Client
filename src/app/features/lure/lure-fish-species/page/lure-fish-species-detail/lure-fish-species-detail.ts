@@ -1,15 +1,20 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map, filter, exhaustMap, tap, catchError, finalize } from 'rxjs';
 import { EMPTY } from 'rxjs';
 
 import { LureFishSpeciesService } from '../../lure-fish-species-service';
 import { Utilities } from '../../../../../core/utils/utilities';
 import { LureFishSpecyViewModel } from '../../../../../core/view-models/lure-fish-specy-view-model';
-
+import { Breadcrumb } from '../../../../../shared/breadcrumb/breadcrumb';
+import { Loading } from '../../../../../shared/loading/loading';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatChipsModule } from '@angular/material/chips';
 @Component({
   selector: 'app-lure-fish-species-detail',
-  imports: [],
+  imports: [RouterLink,MatChipsModule,MatDividerModule,MatCardModule,MatIconModule,Breadcrumb,Loading],
   templateUrl: './lure-fish-species-detail.html',
   styleUrl: './lure-fish-species-detail.scss'
 })

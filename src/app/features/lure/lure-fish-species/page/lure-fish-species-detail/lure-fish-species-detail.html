@@ -1,5 +1,88 @@
-@if (vm()) {
-1
-} @else {
-2
+<!-- lure-fish-species-detail.component.html -->
+
+<app-breadcrumb></app-breadcrumb>
+
+@if (vm()) {<!-- 加载成功 -->
+<mat-card class="detail-card">
+  <div class="header">
+    <div class="image-wrap">
+      @if (vm()!.imageUrl) {
+      <img [src]="vm()!.imageUrl!" alt="{{ vm()!.name ?? vm()!.scientificName ?? 'fish' }}" />
+      } @else {
+      <div class="img-placeholder">
+        <mat-icon fontIcon="image_not_supported"></mat-icon>
+      </div>
+      }
+    </div>
+
+    <div class="title-block">
+      <h1 class="name">
+        {{ vm()!.name ?? '未命名' }}
+      </h1>
+      @if (vm()!.scientificName) {
+      <div class="sci-name">
+        <mat-icon fontIcon="science" aria-hidden="true"></mat-icon>
+        <span>{{ vm()!.scientificName }}</span>
+      </div>
+      }
+    </div>
+  </div>
+
+  @if (vm()!.description) {
+  <mat-divider></mat-divider>
+  <section class="desc">
+    <h2>物种描述</h2>
+    <p>{{ vm()!.description }}</p>
+  </section>
+  }
+
+  @if (vm()!.lureFishSpeciesTagMaps.length) {
+  <mat-divider></mat-divider>
+  <section class="tags">
+    <h2>标签</h2>
+    <mat-chip-set>
+      @for (t of vm()!.lureFishSpeciesTagMaps; track t) {
+      <mat-chip>
+        {{ t.tag.name ?? (t.tagId ? ('#' + t.tagId) : '标签') }}
+      </mat-chip>
+      }
+    </mat-chip-set>
+  </section>
+  }
+
+  <mat-divider></mat-divider>
+  <section class="meta">
+    <div class="meta-row">
+      <span class="label">启用状态：</span>
+      <span class="value">
+        @if (vm()!.isEnabled === true) {
+        <mat-icon class="ok" fontIcon="check_circle"></mat-icon> 启用
+        } @else if (vm()!.isEnabled === false) {
+        <mat-icon class="warn" fontIcon="cancel"></mat-icon> 禁用
+        } @else {
+        <mat-icon class="muted" fontIcon="help"></mat-icon> 未知
+        }
+      </span>
+    </div>
+
+    <div class="meta-row">
+      <span class="label">排序值：</span>
+      <span class="value">{{ vm()!.sortOrder }}</span>
+    </div>
+
+
+  </section>
+
+  <section class="actions">
+    <!-- 返回列表：使用 componentless route 的父层路径 -->
+    <a mat-stroked-button color="primary" [routerLink]="['/lure/lure-fish-species']">
+      <mat-icon fontIcon="arrow_back"></mat-icon>
+      返回列表
+    </a>
+  </section>
+</mat-card>
+
+}  @else {
+<!-- 初次加载或刷新 -->
+<app-loading></app-loading>
 }

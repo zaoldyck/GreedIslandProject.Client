@@ -1,4 +1,4 @@
-﻿
+
 
 
     export class LureFishVariantViewModel {
@@ -20,13 +20,7 @@
             
                 this.isEnabled = null;
             
-                this.createdBy = null;
-            
-                this.createdDate = new Date();
-            
-                this.updatedBy = null;
-            
-                this.updatedDate = null;
+      
             
         }
         
@@ -45,13 +39,6 @@
             public sortOrder: number;
         
             public isEnabled: boolean | null;
-        
-            public createdBy: string|null;
-        
-            public createdDate: Date;
-        
-            public updatedBy: string | null;
-        
-            public updatedDate: Date | null;
+ 
         
     }

@@ -13,11 +13,8 @@
 
 <mat-dialog-content class="tag-select-dialog-content">
   @if (isLoading()) {
-  <div class="loading-center">
-    <mat-spinner [diameter]="32"></mat-spinner>
-  </div>
+  <app-loading> </app-loading>
   } @else {
-
   @if (tagTypes().length === 0) {
   <div class="empty">
     <mat-icon class="warn-icon">info</mat-icon>

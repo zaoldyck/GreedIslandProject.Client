@@ -1,0 +1,20 @@
+@use '@angular/material' as mat;
+.breadcrumb {
+  display: flex;
+  align-items: center;
+}
+.breadcrumb-button {
+  min-width: 32px;
+  @include mat.button-overrides(( text-label-text-weight:350,text-label-text-size:16px,text-horizontal-padding:8px,text-container-height:32px ));
+}
+.last-button {
+ 
+  cursor: default; /* 鼠标保持默认箭头 */
+  @include mat.button-overrides(( text-label-text-weight:500,text-label-text-color:var(--mat-sys-on-primary-fixed-variant) ));
+}
+.breadcrumb-icon{
+    margin-top:3px;
+}
+.breadcrumb-divider{
+    margin:5px 0px 5px 0px;
+}

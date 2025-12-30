@@ -12,6 +12,7 @@
   <ItemGroup>
     <Folder Include="src\app\core\toast\components\" />
     <Folder Include="src\app\features\authentication\pages\" />
+    <Folder Include="src\app\features\lure\lure-bait-type\page\" />
     <Folder Include="src\app\features\lure\lure-fish-species\page\" />
     <Folder Include="src\app\features\users\models\" />
     <Folder Include="src\app\features\users\pages\" />
@@ -40,6 +41,12 @@
     </None>
     <None Update="src\app\core\view-models\lure-fish-variant-view-model.ts">
       <CustomToolNamespace>ViewModels\LureFishVariantViewModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="src\app\core\view-models\lure-bait-type-tag-map-view-model.ts">
+      <CustomToolNamespace>ViewModels\LureBaitTypeTagMapViewModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="src\app\core\view-models\lure-bait-type-view-model.ts">
+      <CustomToolNamespace>ViewModels\LureBaitTypeViewModel.cs</CustomToolNamespace>
     </None>
     <None Update="src\app\core\view-models\province-view-model.ts">
       <CustomToolNamespace>ViewModels\ProvinceViewModel.cs</CustomToolNamespace>

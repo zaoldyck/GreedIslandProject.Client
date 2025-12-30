@@ -2,14 +2,14 @@
 .docs-homepage-promo {
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 8px 16px;
   width: 80%;
   max-width: 1200px;
   margin: 6px auto 16px;
   color: var(--mat-sys-on-surface-variant);
   align-items: stretch; /* ✅ 子元素默认会占满可用宽度 */
   min-height: 100vh;
-  box-sizing:border-box;
+  box-sizing: border-box;
 
   @supports (height: 100dvh) {
     min-height: 100dvh;
