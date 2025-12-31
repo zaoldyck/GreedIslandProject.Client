@@ -9,7 +9,7 @@ export const moduleTagTypeMappers: ModuleTagTypeMapper[] = [
     tagTypeCodes: ['SEASON', 'ACTIVE_TIME']
   },
   {
-    moduleCode: 'USERCENTER',
-    tagTypeCodes: ['BLOG', 'NOTICE']
+    moduleCode: 'LUREBAITTYPE',
+    tagTypeCodes: ['BAIT_CATEGORY', 'DEPTH']
   }
 ]

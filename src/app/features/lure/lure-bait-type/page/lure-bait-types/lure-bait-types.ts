@@ -43,7 +43,7 @@ export class LureBaitTypes {
   private dialog = inject(MatDialog);
   private utilities = inject(Utilities);
   private el = inject(ElementRef<HTMLElement>);
-  private readonly currentModuleCode = "LUREFISHSPECIES";
+  private readonly currentModuleCode = "LUREBAITTYPE";
   /** —— RxJS：唯一触发入口 + 生命周期清理 —— */
   private nextPage$ = new Subject<void>();
   private destroy$ = new Subject<void>();

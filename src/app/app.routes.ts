@@ -41,7 +41,7 @@ export const routes: Routes = [
 
           /** ----------------------------- 拟饵类别 ----------------------------- **/
           {
-            path: 'lure-fish-types',
+            path: 'lure-bait-types',
             // 这里你说模块名叫“拟饵”，如果你想在面包屑显示“拟饵”，也可以写成 '拟饵'
             data: { breadcrumb: '拟饵类别' }, // 父 crumb，或改成 '拟饵'
             children: [

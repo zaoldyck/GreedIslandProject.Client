@@ -1,5 +1,20 @@
 @use '../../../../../../styles/shared/constants';
+.header-row {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  gap: 8px; /* 两者之间的间距 */
+  margin-bottom: 10px;
+}
 
+.module-title {
+  margin: 0;
+  font-weight: 500;
+}
+
+.total-count {
+  font-size: 14px;
+  color: var(--mat-sys-secondary);
+}
 .card-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); // 或 auto-fit
@@ -9,6 +24,7 @@
 
 .app-card {
   max-width: 480px; /* ✅ 卡片不会撑满 1fr 列，居中显示 */
+  width: 100%;
 }
 
 .app-card:hover {

@@ -1,4 +1,12 @@
 
+<div class="header-row">
+  <h3 class="module-title">路亚鱼种</h3>
+  @if(lastResult()){
+  <span class="total-count">
+     {{ (lastResult()?.totalCount ?? 0) }}个结果
+  </span>
+  }
+</div>
 <form [formGroup]="form" class="filter-bar" (ngSubmit)="onSearch()">
 
   <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
@@ -74,11 +82,8 @@
     <button class="filter-bar-btn" matButton="tonal" type="button" (click)="reset()">重置</button>
   </div>
 </form>
- 
-
 
 @let list = items();
-
 @if (list.length > 0) {
 <div class="card-list">
   @for (item of list; track item.id) {

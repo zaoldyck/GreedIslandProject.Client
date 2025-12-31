@@ -1,4 +1,12 @@
 
+<div class="header-row">
+  <h3 class="module-title">拟饵类别</h3>
+  @if(lastResult()){
+  <span class="total-count">
+    {{ (lastResult()?.totalCount ?? 0) }}个结果
+  </span>
+  }
+</div>
 <form [formGroup]="form" class="filter-bar" (ngSubmit)="onSearch()">
 
   <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
