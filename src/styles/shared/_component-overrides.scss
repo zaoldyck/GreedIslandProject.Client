@@ -33,7 +33,7 @@
 
 
 .selected-chip {
-  @include mat.chips-overrides(( focus-outline-color: var(--chip-color),label-text-color: var(--chip-color), outline-color: var(--chip-color), with-trailing-icon-trailing-icon-color: var(--chip-color), trailing-action-state-layer-color: var(--chip-color),hover-state-layer-color:var(--chip-color) ));
+  @include mat.chips-overrides(( focus-state-layer-color: var(--chip-color),focus-outline-color: var(--chip-color),label-text-color: var(--chip-color), outline-color: var(--chip-color), with-trailing-icon-trailing-icon-color: var(--chip-color), trailing-action-state-layer-color: var(--chip-color),hover-state-layer-color:var(--chip-color) ));
 }
 .filter-tags .mat-mdc-form-field-infix {
   padding-top: 8px !important;

@@ -1,10 +1,9 @@
-<!-- lure-fish-species-detail.component.html -->
-
 <app-breadcrumb></app-breadcrumb>
 
-@if (vm()) {<!-- 加载成功 -->
+
  
+@if (vm()) {
+<div echarts [options]="radarOption()" style="height:420px;"></div>
 }  @else {
-<!-- 初次加载或刷新 -->
 <app-loading></app-loading>
 }

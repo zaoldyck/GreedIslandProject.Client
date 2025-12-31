@@ -1,15 +1,15 @@
 import { Component, ElementRef, inject, signal } from '@angular/core';
- 
+
 import { CommonService } from '../../../../../core/services/common-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Utilities } from '../../../../../core/utils/utilities';
 import { EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
- 
+
 import { PagedResult } from '../../../../../core/models/common-models';
 import { TagViewModel } from '../../../../../core/view-models/tag-view-model';
- 
+
 import { TagSelectDialog } from '../../../../../shared/tag-select-dialog/tag-select-dialog';
 import { MatchMode, TagSelectDialogData, TagSelectResult } from '../../../../../shared/tag-select-dialog/tag-select-dialog-data';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -106,7 +106,6 @@ export class LureBaitTypes {
 
       // 下一帧：恢复滚动位置（可选）+ 触发首屏请求
       requestAnimationFrame(() => {
-
         this.commonService.scrollToTop('auto');
 
         this.nextPage$.next();
@@ -121,7 +120,6 @@ export class LureBaitTypes {
       this.resetAndLoadFirstPage();
     }
   }
-
 
   private setupSearchPipeline() {
     this.nextPage$
@@ -210,8 +208,6 @@ export class LureBaitTypes {
     this.onSearch();
   }
 
-
-
   openTagSelectDialog(): void {
     // 从表单里拿当前已选的标签和匹配模式
     const currentTags: TagViewModel[] = this.form.controls.tags.value ?? [];
@@ -248,8 +244,6 @@ export class LureBaitTypes {
       this.onSearch();
     });
   }
-
-
 
   /** 自动无限加载：初始化 IO */
   private initIntersectionObserver() {
@@ -365,9 +359,7 @@ export class LureBaitTypes {
       this.commonService.scrollToTop('smooth');  // 或 'smooth'
       this.nextPage$.next();
     });
-
   }
-
 
   /** 外部检索（自动重置并拉取） */
   onSearch() {
@@ -379,8 +371,6 @@ export class LureBaitTypes {
     this.destroy$.complete();
     this.io?.disconnect();
   }
-
-
 
   onOpenDetail(id: number) {
     // 1) 写入当前列表页的历史条目 state（不导航）
@@ -399,7 +389,6 @@ export class LureBaitTypes {
       state: { from: '/lure/lure-bait-types' }
     });
   }
-
 
   onMatchModeChange(ev: MatSlideToggleChange) {
     this.form.controls.matchMode.setValue(ev.checked ? 'OR' : 'AND');
