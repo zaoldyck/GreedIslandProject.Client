@@ -13,6 +13,7 @@
     <Folder Include="src\app\core\toast\components\" />
     <Folder Include="src\app\features\authentication\pages\" />
     <Folder Include="src\app\features\lure\lure-bait-type\page\" />
+    <Folder Include="src\app\features\lure\lure-community\page\" />
     <Folder Include="src\app\features\lure\lure-fish-species\page\" />
     <Folder Include="src\app\features\users\models\" />
     <Folder Include="src\app\features\users\pages\" />

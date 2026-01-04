@@ -18,7 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
- 
+
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { TagViewModel } from '../../../../../core/view-models/tag-view-model';
@@ -30,11 +30,11 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-lure-fish-species',
   standalone: true,
-  imports: [MatSlideToggleModule,MatButtonModule, ReactiveFormsModule, MatInputModule, MatChipsModule, MatIconModule, MatFormFieldModule, MatAutocompleteModule,  MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
+  imports: [MatSlideToggleModule, MatButtonModule, ReactiveFormsModule, MatInputModule, MatChipsModule, MatIconModule, MatFormFieldModule, MatAutocompleteModule, MatProgressSpinnerModule, MatRippleModule, MatListModule, MatCardModule],
   templateUrl: './lure-fish-species.html',
   styleUrls: ['./lure-fish-species.scss']
 })
- 
+
 export class LureFishSpecies {
   private svc = inject(LureFishSpeciesService);
   private commonService = inject(CommonService);
@@ -57,7 +57,7 @@ export class LureFishSpecies {
   /** 分页（1-based）与搜索条件 */
   readonly page = signal(1);
   readonly pageSize = signal(20);
- 
+
   /** 最近一次响应（如需显示 totalCount/totalPages） */
   readonly lastResult = signal<PagedResult<LureFishSpecyViewModel> | null>(null);
 
@@ -87,7 +87,7 @@ export class LureFishSpecies {
       tags?: TagViewModel[];
       matchMode?: 'AND' | 'OR';
     };
-    const fromDetail = st?.from === '/lure/lure-fish-species';
+    const fromDetail = st?.from === '/lure/fish-species';
 
     if (fromDetail) {
       // —— 恢复筛选条件（仅在从详情返回时）——
@@ -107,9 +107,8 @@ export class LureFishSpecies {
 
       // 下一帧：恢复滚动位置（可选）+ 触发首屏请求
       requestAnimationFrame(() => {
-   
         this.commonService.scrollToTop('auto');
-  
+
         this.nextPage$.next();
       });
 
@@ -122,7 +121,6 @@ export class LureFishSpecies {
       this.resetAndLoadFirstPage();
     }
   }
-
 
   private setupSearchPipeline() {
     this.nextPage$
@@ -211,8 +209,6 @@ export class LureFishSpecies {
     this.onSearch();
   }
 
-
-
   openTagSelectDialog(): void {
     // 从表单里拿当前已选的标签和匹配模式
     const currentTags: TagViewModel[] = this.form.controls.tags.value ?? [];
@@ -249,8 +245,6 @@ export class LureFishSpecies {
       this.onSearch();
     });
   }
-
-
 
   /** 自动无限加载：初始化 IO */
   private initIntersectionObserver() {
@@ -348,7 +342,7 @@ export class LureFishSpecies {
       this.anchorEl = null;
     }
   }
- 
+
   /** 重置并拉取第 1 页（自动） */
   private resetAndLoadFirstPage() {
     this.items.set([]);
@@ -366,9 +360,7 @@ export class LureFishSpecies {
       this.commonService.scrollToTop('smooth');  // 或 'smooth'
       this.nextPage$.next();
     });
-
   }
-
 
   /** 外部检索（自动重置并拉取） */
   onSearch() {
@@ -381,14 +373,12 @@ export class LureFishSpecies {
     this.io?.disconnect();
   }
 
-
-
   onOpenDetail(id: number) {
     // 1) 写入当前列表页的历史条目 state（不导航）
     const restoreState = {
-      from: '/lure/lure-fish-species',
+      from: '/lure/fish-species',
       keyword: this.form.controls.keyword.value ?? '',
-      tags: (this.form.controls.tags.value ?? []).map(t => ({ id: t.id, name: t.name,typeColor:t.typeColor })), // 建议降维成可序列化的轻量对象
+      tags: (this.form.controls.tags.value ?? []).map(t => ({ id: t.id, name: t.name, typeColor: t.typeColor })), // 建议降维成可序列化的轻量对象
       matchMode: (this.form.controls.matchMode.value ?? 'AND') as 'AND' | 'OR'
     };
 
@@ -396,11 +386,10 @@ export class LureFishSpecies {
     this.location.replaceState(this.router.url, '', restoreState);
 
     // 2) 导航到详情页（如需可传入简短的 from）
-    this.router.navigate(['/lure/lure-fish-species/detail', id], {
-      state: { from: '/lure/lure-fish-species' }
+    this.router.navigate(['/lure/fish-species/detail', id], {
+      state: { from: '/lure/fish-species' }
     });
   }
-
 
   onMatchModeChange(ev: MatSlideToggleChange) {
     this.form.controls.matchMode.setValue(ev.checked ? 'OR' : 'AND');

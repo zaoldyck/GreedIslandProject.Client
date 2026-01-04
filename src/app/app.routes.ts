@@ -9,6 +9,7 @@ import { MainLayout } from './layouts/main-layout/main-layout';
 import { requireAnonymousGuard } from './core/services/require-anonymous-guard';
 import { LureBaitTypes } from './features/lure/lure-bait-type/page/lure-bait-types/lure-bait-types';
 import { LureBaitTypeDetail } from './features/lure/lure-bait-type/page/lure-bait-type-detail/lure-bait-type-detail';
+import { LureCommunityHome } from './features/lure/lure-community/page/lure-community-home/lure-community-home';
 
 export const routes: Routes = [
   {
@@ -25,7 +26,7 @@ export const routes: Routes = [
         children: [
           /** ----------------------------- 路亚鱼种 ----------------------------- **/
           {
-            path: 'lure-fish-species',
+            path: 'fish-species',
             data: { breadcrumb: '路亚鱼种' }, // 父 crumb
             children: [
               { path: '', component: LureFishSpecies }, // 列表（独立页面）
@@ -41,7 +42,7 @@ export const routes: Routes = [
 
           /** ----------------------------- 拟饵类别 ----------------------------- **/
           {
-            path: 'lure-bait-types',
+            path: 'bait-types',
             // 这里你说模块名叫“拟饵”，如果你想在面包屑显示“拟饵”，也可以写成 '拟饵'
             data: { breadcrumb: '拟饵类别' }, // 父 crumb，或改成 '拟饵'
             children: [
@@ -55,6 +56,19 @@ export const routes: Routes = [
                 data: { breadcrumb: '详情' },
                 // 可选：用 resolver 将 crumb 改为该类别的中文名，如“米诺”
                 // resolve: { title: LureBaitTypeTitleResolver },
+              },
+            ],
+          },
+          {
+            path: 'community',
+            data: { breadcrumb: '交流区' },
+            children: [
+              { path: '', component: LureCommunityHome },
+
+              {
+                path: 'detail/:id',
+                component: LureBaitTypeDetail,
+                data: { breadcrumb: '详情' },
               },
             ],
           },

@@ -6,7 +6,6 @@
   width: 80%;
   max-width: 1200px;
   margin: 6px auto 16px;
-  color: var(--mat-sys-on-surface-variant);
   align-items: stretch; /* ✅ 子元素默认会占满可用宽度 */
   min-height: 100vh;
   box-sizing: border-box;
@@ -15,6 +14,15 @@
     min-height: 100dvh;
   }
 }
+
+/* ✅ 交流区：加宽（你可按密度改 1280/1400/1600） */
+.docs-homepage-promo.wide-page {
+  width: 100%;
+  padding: 0px;
+  margin: auto;
+  max-width: 9999px;
+}
+
 .app-sidenav-container {
   box-sizing: border-box;
   padding-top: 60px;
@@ -190,6 +198,10 @@ $ring-gap: 2px; /* 外环与头像的间距 */
 @media (max-width: constants.$small-breakpoint-width) {
   .docs-homepage-promo {
     width: 90%;
+  }
+  .docs-homepage-promo.wide-page {
+    width: 100%;
+    max-width: none;
   }
     .docs-navbar-hide-small {
       display: none;

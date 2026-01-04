@@ -86,7 +86,7 @@ export class LureBaitTypes {
       tags?: TagViewModel[];
       matchMode?: 'AND' | 'OR';
     };
-    const fromDetail = st?.from === '/lure/lure-bait-types';
+    const fromDetail = st?.from === '/lure/bait-types';
 
     if (fromDetail) {
       // —— 恢复筛选条件（仅在从详情返回时）——
@@ -375,7 +375,7 @@ export class LureBaitTypes {
   onOpenDetail(id: number) {
     // 1) 写入当前列表页的历史条目 state（不导航）
     const restoreState = {
-      from: '/lure/lure-bait-types',
+      from: '/lure/bait-types',
       keyword: this.form.controls.keyword.value ?? '',
       tags: (this.form.controls.tags.value ?? []).map(t => ({ id: t.id, name: t.name, typeColor: t.typeColor })), // 建议降维成可序列化的轻量对象
       matchMode: (this.form.controls.matchMode.value ?? 'AND') as 'AND' | 'OR'
@@ -385,8 +385,8 @@ export class LureBaitTypes {
     this.location.replaceState(this.router.url, '', restoreState);
 
     // 2) 导航到详情页（如需可传入简短的 from）
-    this.router.navigate(['/lure/lure-bait-types/detail', id], {
-      state: { from: '/lure/lure-bait-types' }
+    this.router.navigate(['/lure/bait-types/detail', id], {
+      state: { from: '/lure/bait-types' }
     });
   }
 
