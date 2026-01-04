@@ -1,0 +1,35 @@
+
+/* community-home.component.scss */
+.community-container {
+  width: 100%;
+}
+
+.community-drawer {
+  width: 280px;
+  transition: width .25s ease;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+}
+
+@media (max-width: constants.$extra-small-breakpoint-width) {
+  .community-drawer {
+    width: 64px;
+  }
+  /* 仅图标列 */
+  .sidebar-link {
+    justify-content: center;
+  }
+  /* 图标居中 */
+  .sidebar-link .label {
+    display: none;
+  }
+  /* 隐藏文字 */
+}

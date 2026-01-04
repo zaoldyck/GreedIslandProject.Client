@@ -1,1 +1,18 @@
-<p>lure-community-home works!</p>
+<!-- community-home.component.html（关键部分） -->
+<mat-drawer-container class="community-container">
+  <mat-drawer class="community-drawer" mode="side" opened>
+    <nav class="sidebar">
+      <a class="sidebar-link" routerLink="/lure/community" [queryParams]="{ tab: 'latest' }">
+        <mat-icon>schedule</mat-icon><span class="label">最新</span>
+      </a>
+      <a class="sidebar-link" routerLink="/lure/community" [queryParams]="{ tab: 'hot' }">
+        <mat-icon>local_fire_department</mat-icon><span class="label">热门</span>
+      </a>
+      <!-- ……更多菜单项 -->
+    </nav>
+  </mat-drawer>
+
+  <mat-drawer-content class="community-content">
+    <!-- 主内容 -->
+  </mat-drawer-content>
+</mat-drawer-container>
