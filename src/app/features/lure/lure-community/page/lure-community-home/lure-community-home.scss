@@ -1,35 +1,27 @@
-
-/* community-home.component.scss */
-.community-container {
-  width: 100%;
+@use '../../../../../../styles/shared/constants';
+.community-drawer-container{
+    height:100vh;
+    background:red;
+}
+/* 列表：作为唯一滚动容器 */
+.community-nav-list {
+  flex: 1 1 auto;
+  overflow: auto; /* 只在这里滚动 */
+  padding: 8px 0;
+  box-sizing: border-box;
 }
 
-.community-drawer {
-  width: 280px;
-  transition: width .25s ease;
+/* 只影响侧边栏这个列表 */
+.community-nav-list a.mat-mdc-list-item.is-active {
+  background: rgba(0, 0, 0, 0.06); /* 选中背景，不影响 hover ripple */
 }
 
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 6px;
-  text-decoration: none;
-  color: inherit;
+.community-nav-list a.mat-mdc-list-item.is-active:hover {
+  background: rgba(0, 0, 0, 0.08);
 }
+
+ 
 
 @media (max-width: constants.$extra-small-breakpoint-width) {
-  .community-drawer {
-    width: 64px;
-  }
-  /* 仅图标列 */
-  .sidebar-link {
-    justify-content: center;
-  }
-  /* 图标居中 */
-  .sidebar-link .label {
-    display: none;
-  }
-  /* 隐藏文字 */
+ 
 }

@@ -15,13 +15,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonService } from '../../core/services/common-service';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Footer } from '../footer/footer';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
   templateUrl: './shell.html',
   styleUrls: ['./shell.scss'],
-  imports: [
+  imports: [Footer,
     RouterLinkActive, RouterLink, RouterOutlet,
     MatMenuModule, MatIconModule, MatTooltipModule,
     MatButtonModule, MatSidenavModule, MatListModule, MatDividerModule,

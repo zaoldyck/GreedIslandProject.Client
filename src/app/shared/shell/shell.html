@@ -27,7 +27,7 @@
         <mat-icon matListItemIcon>category</mat-icon>
         <span matListItemTitle>拟饵类别</span>
       </a>
-    
+
 
       <a mat-list-item
          routerLink="/lure/community"
@@ -36,7 +36,7 @@
         <mat-icon matListItemIcon>forum</mat-icon>
         <span matListItemTitle>交流区</span>
       </a>
- 
+
     </mat-nav-list>
   </mat-sidenav>
 
@@ -67,8 +67,8 @@
           <mat-icon>category</mat-icon>
           <span>拟饵类别</span>
         </a>
- 
-    
+
+
 
         <a mat-button class="docs-navbar-hide-small"
            routerLink="/lure/community"
@@ -76,7 +76,7 @@
           <mat-icon>forum</mat-icon>
           <span>交流区</span>
         </a>
- 
+
         <div class="docs-flex-spacer"></div>
 
         @if (authenticationService.isLoggedIn()) {
@@ -135,5 +135,8 @@
     <main class="docs-homepage-promo mat-shadow-2" [class.wide-page]="isWide">
       <router-outlet></router-outlet>
     </main>
+    <app-footer></app-footer>
   </mat-sidenav-content>
+
 </mat-sidenav-container>
+
