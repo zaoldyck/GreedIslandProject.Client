@@ -10,6 +10,7 @@ import { requireAnonymousGuard } from './core/services/require-anonymous-guard';
 import { LureBaitTypes } from './features/lure/lure-bait-type/page/lure-bait-types/lure-bait-types';
 import { LureBaitTypeDetail } from './features/lure/lure-bait-type/page/lure-bait-type-detail/lure-bait-type-detail';
 import { LureCommunityHome } from './features/lure/lure-community/page/lure-community-home/lure-community-home';
+import { LureCommunityShell } from './features/lure/lure-community/page/lure-community-shell/lure-community-shell';
 
 export const routes: Routes = [
   {
@@ -61,9 +62,10 @@ export const routes: Routes = [
           },
           {
             path: 'community',
+            component:LureCommunityShell,
             data: { breadcrumb: '交流区' },
             children: [
-              { path: '', component: LureCommunityHome },
+              { path: '', component: LureBaitTypes },
 
               {
                 path: 'detail/:id',

@@ -1,0 +1,93 @@
+@use '@angular/material' as mat;
+.scroll-visible {
+  overflow: visible; /* 关键修改 */
+}
+ 
+.docs-component-sidenav-body-content {
+  display: flex;
+}
+
+.docs-component-viewer-nav {
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+
+  .docs-component-viewer-nav-content {
+    /* 展开态（默认） */
+    width: 280px;
+    padding: 16px 8px;
+    overflow: auto;
+    box-sizing: border-box;
+    transition: width 160ms ease, padding 120ms ease;
+    /* 折叠态：统一联动的细节 */
+    &.is-collapsed {
+      width: 64px; /* 折叠宽度：可改 56/72/80 等 */
+      padding: 8px 4px; /* 折叠态更紧凑 */
+      /* 仅显示图标，隐藏标题文字 */
+      [matListItemTitle] {
+        display: none;
+      }
+      /* 图标居中，项内边距更小 */
+      a.mat-mdc-list-item {
+        justify-content: center;
+        padding: 0 4px;
+      }
+      /* 图标右侧本来有间距，折叠态清零避免“空槽” */
+      [matListItemIcon] {
+        margin-right: 0;
+      }
+      /* 折叠态滚动条更细（可选） */
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(0,0,0,0.2);
+        border-radius: 3px;
+      }
+    }
+
+    justify-content: center; /* 选中 & hover 保持你的既有风格（展开/折叠通用） */
+    line-height: 1;
+    transform-origin: center;
+  }
+
+  a.mat-mdc-list-item.is-active {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  a.mat-mdc-list-item.is-active:hover {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  a.mat-mdc-list-item:hover .mdc-list-item__ripple {
+    background-color: rgba(0,0,0,0.04);
+  }
+}
+
+.community-component-content {
+  flex: 1 1 auto;
+  padding: 8px 16px;
+  box-sizing: border-box;
+}
+
+.resizable-area {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  height: 40px;
+  display: flex;
+  justify-content: flex-end; /* 水平靠右 */
+  align-items: center; /* 垂直居中 */
+  padding: 0 8px;
+}
+
+.resizable-button {
+  // 同步缩小 icon、状态层、触摸目标，避免圆层与图标不对齐
+  @include mat.icon-button-overrides((  
+  state-layer-size: 32px, // hover/press 圆层直径
+  touch-target-size:32px, // 触摸目标直径
+  ));
+}
+ 

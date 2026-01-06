@@ -29,37 +29,65 @@
   src: url('/fonts/Roboto-Medium.woff2') format('woff2');
 }
 
-/* Material Icons 字体 */
 @font-face {
-  font-family: 'Material Icons';
+  font-family: 'Material Symbols Outlined';
   font-style: normal;
   font-weight: 400;
-  src: url('/fonts/MaterialIcons-Regular.woff2') format('woff2');
+  src: url('/fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2') format('woff2');
 }
 
-/* Material Icons 渲染规则（自托管必需） */
-.material-icons {
-  font-family: 'Material Icons';
+/* 这个类名必须与 setDefaultFontSetClass 的字符串一致 */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px; /* 默认图标大小 */
-  display: inline-block;
+  font-size: 24px;
   line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-  /* 渲染优化 */
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'OPSZ' 24;
 }
 
-/* 确保 mat-icon 使用正确字体 */
-mat-icon {
-  font-family: 'Material Icons' !important;
+/* Material Symbols Rounded 字体（可变字体） */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/MaterialSymbolsRounded[FILL,GRAD,opsz,wght].woff2') format('woff2');
 }
+
+/* 对应 Angular 的 fontSet：material-symbols-rounded */
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* 默认图标大小，可在局部覆盖 */
+  line-height: 1;
+  display: inline-block;
+  /* 可变字体轴（按需调整） */
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'OPSZ' 24;
+}
+
+/* Material Symbols Sharp 字体（可变字体） */
+@font-face {
+  font-family: 'Material Symbols Sharp';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/MaterialSymbolsSharp[FILL,GRAD,opsz,wght].woff2') format('woff2');
+}
+
+/* 对应 Angular 的 fontSet：material-symbols-sharp */
+.material-symbols-sharp {
+  font-family: 'Material Symbols Sharp';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;   /* 默认图标大小，可在局部覆盖 */
+  line-height: 1;
+  display: inline-block;
+  /* 可变字体轴（按需调整） */
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'OPSZ' 24;
+}
+
+
 
 /* Angular Material 主题初始化 */
 html {

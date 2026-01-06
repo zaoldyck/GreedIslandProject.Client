@@ -1,0 +1,153 @@
+ <mat-sidenav-container class="scroll-visible">
+   <mat-sidenav-content class="scroll-visible">
+         <div class="docs-component-sidenav-body-content">
+         
+           <div>
+             <div class="docs-component-viewer-nav">
+
+               <div class="docs-component-viewer-nav-content"  [class.is-collapsed]="collapsed()">
+                 <mat-nav-list>
+
+                   <!-- 交流区首页 -->
+                   <a mat-list-item
+                      routerLink="/lure/community"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: true }">
+                     <mat-icon matListItemIcon>home</mat-icon>
+                     <span matListItemTitle>交流区首页</span>
+                   </a>
+
+                   <!-- 搜索 -->
+                   <a mat-list-item
+                      routerLink="/lure/community/search"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>search</mat-icon>
+                     <span matListItemTitle>搜索</span>
+                   </a>
+
+                   <!-- 最新主题 -->
+                   <a mat-list-item
+                      routerLink="/lure/community/latest"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>chat</mat-icon>
+                     <span matListItemTitle>最新话题</span>
+                   </a>
+
+                   <!-- 热门主题 -->
+                   <a mat-list-item
+                      routerLink="/lure/community/top"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>star</mat-icon>
+                     <span matListItemTitle>热门话题</span>
+                   </a>
+
+                   <!-- 我的书签 -->
+                   <a mat-list-item
+                      routerLink="/my/activity/bookmarks"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>bookmark</mat-icon>
+                     <span matListItemTitle>我的书签</span>
+                   </a>
+
+                   <!-- Unity 引擎 -->
+                   <a mat-list-item
+                      routerLink="/c/unity-engine"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>extension</mat-icon>
+                     <span matListItemTitle>Unity 引擎</span>
+                   </a>
+
+                   <!-- 全部分类 -->
+                   <a mat-list-item
+                      routerLink="/categories"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>category</mat-icon>
+                     <span matListItemTitle>全部分类</span>
+                   </a>
+
+                   <!-- Bug 标签 -->
+                   <a mat-list-item
+                      routerLink="/tags/bug"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>bug_report</mat-icon>
+                     <span matListItemTitle>Bug</span>
+                   </a>
+
+                   <!-- 交流标签 -->
+                   <a mat-list-item
+                      routerLink="/tags/conversation"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>forum</mat-icon>
+                     <span matListItemTitle>交流</span>
+                   </a>
+
+                   <!-- 反馈标签 -->
+                   <a mat-list-item
+                      routerLink="/tags/feedback"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>feedback</mat-icon>
+                     <span matListItemTitle>反馈</span>
+                   </a>
+
+                   <!-- 官方标签 -->
+                   <a mat-list-item
+                      routerLink="/tags/official"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>verified</mat-icon>
+                     <span matListItemTitle>官方</span>
+                   </a>
+
+                   <!-- 提问标签 -->
+                   <a mat-list-item
+                      routerLink="/tags/question"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>help</mat-icon>
+                     <span matListItemTitle>提问</span>
+                   </a>
+               
+                   <!-- 全部标签 -->
+                   <a mat-list-item
+                      routerLink="/tags"
+                      routerLinkActive="is-active"
+                      [routerLinkActiveOptions]="{ exact: false }">
+                     <mat-icon matListItemIcon>list</mat-icon>
+                     <span matListItemTitle>全部标签</span>
+                   </a>
+
+                 </mat-nav-list>   
+               </div>
+               <div class="resizable-area">
+                 @if(collapsed())
+                 {
+                 <button matIconButton class="resizable-button" aria-label="展开" (click)="onExpand()">
+                   <mat-icon>left_panel_open</mat-icon>
+                 </button>
+                 }
+                 @else {       
+                 <button matIconButton class="resizable-button" aria-label="收起" (click)="onCollapse()">
+                   <mat-icon>left_panel_close</mat-icon>
+                 </button>
+                 }
+
+               </div>
+             </div>
+           </div>
+         <div class="community-component-content">
+            <router-outlet></router-outlet>
+         </div>
+           
+         </div>
+ 
+   </mat-sidenav-content>
+</mat-sidenav-container>
