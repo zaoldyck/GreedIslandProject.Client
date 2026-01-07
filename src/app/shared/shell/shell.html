@@ -8,8 +8,8 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
-
-    <mat-nav-list class="app-nav-list">
+    @if (menuType === 'main') {
+      <mat-nav-list class="app-nav-list">
 
       <a mat-list-item
          routerLink="/"
@@ -38,22 +38,156 @@
       </a>
 
     </mat-nav-list>
-  </mat-sidenav>
+    }
+    @if(showCommunityMenuButton&&menuType === 'community')
+    {
+      <mat-nav-list class="app-nav-list">
 
+      <!-- 交流区首页 -->
+      <a mat-list-item
+         routerLink="/lure/community"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>home</mat-icon>
+        <span matListItemTitle>交流区首页</span>
+      </a>
+
+      <!-- 搜索 -->
+      <a mat-list-item
+         routerLink="/lure/community/search"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>search</mat-icon>
+        <span matListItemTitle>搜索</span>
+      </a>
+
+      <!-- 最新主题 -->
+      <a mat-list-item
+         routerLink="/lure/community/latest"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>chat</mat-icon>
+        <span matListItemTitle>最新话题</span>
+      </a>
+
+      <!-- 热门主题 -->
+      <a mat-list-item
+         routerLink="/lure/community/top"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>star</mat-icon>
+        <span matListItemTitle>热门话题</span>
+      </a>
+
+      <!-- 我的书签 -->
+      <a mat-list-item
+         routerLink="/lure/community/bookmarks"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>bookmark</mat-icon>
+        <span matListItemTitle>我的书签</span>
+      </a>
+
+      <!-- Unity 引擎 -->
+      <a mat-list-item
+         routerLink="/c/unity-engine"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>extension</mat-icon>
+        <span matListItemTitle>Unity 引擎</span>
+      </a>
+
+      <!-- 全部分类 -->
+      <a mat-list-item
+         routerLink="/categories"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>category</mat-icon>
+        <span matListItemTitle>全部分类</span>
+      </a>
+
+      <!-- Bug 标签 -->
+      <a mat-list-item
+         routerLink="/tags/bug"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>bug_report</mat-icon>
+        <span matListItemTitle>Bug</span>
+      </a>
+
+      <!-- 交流标签 -->
+      <a mat-list-item
+         routerLink="/tags/conversation"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>forum</mat-icon>
+        <span matListItemTitle>交流</span>
+      </a>
+
+      <!-- 反馈标签 -->
+      <a mat-list-item
+         routerLink="/tags/feedback"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>feedback</mat-icon>
+        <span matListItemTitle>反馈</span>
+      </a>
+
+      <!-- 官方标签 -->
+      <a mat-list-item
+         routerLink="/tags/official"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>verified</mat-icon>
+        <span matListItemTitle>官方</span>
+      </a>
+
+      <!-- 提问标签 -->
+      <a mat-list-item
+         routerLink="/tags/question"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>help</mat-icon>
+        <span matListItemTitle>提问</span>
+      </a>
+
+      <!-- 全部标签 -->
+      <a mat-list-item
+         routerLink="/tags"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="drawer.close()">
+        <mat-icon matListItemIcon>list</mat-icon>
+        <span matListItemTitle>全部标签</span>
+      </a>
+    </mat-nav-list>
+    }
+  </mat-sidenav>
+ 
+ 
   <!-- 主内容 + 顶部导航（桌面端） -->
   <mat-sidenav-content class="utilities-background" #content>
     <header class="docs-header">
       <nav class="docs-navbar-header">
-        <!-- 左侧菜单按钮 -->
-        <button class="menu-button" mat-icon-button (click)="drawer.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
+
 
         <img class="app-logo pointer" src="logo.svg" routerLink="/" alt="logo">
         <span class="app-name text-shadow-primary ts-sm ts-subtle" routerLink="/">示例网站</span>
 
         <!-- 顶部导航项（带图标） -->
-        <a mat-button class="docs-navbar-hide-small"
+        <a matButton class="docs-navbar-hide-small"
            routerLink="/"
            routerLinkActive="docs-navbar-header-item-selected"
            [routerLinkActiveOptions]="{ exact: true }">
@@ -61,7 +195,7 @@
           <span>路亚鱼种</span>
         </a>
 
-        <a mat-button class="docs-navbar-hide-small"
+        <a matButton class="docs-navbar-hide-small"
            routerLink="/lure/bait-types"
            routerLinkActive="docs-navbar-header-item-selected">
           <mat-icon>category</mat-icon>
@@ -70,7 +204,7 @@
 
 
 
-        <a mat-button class="docs-navbar-hide-small"
+        <a matButton class="docs-navbar-hide-small"
            routerLink="/lure/community"
            routerLinkActive="docs-navbar-header-item-selected">
           <mat-icon>forum</mat-icon>
@@ -121,18 +255,37 @@
         </mat-menu>
         } @else {
         <!-- 未登录：登录 / 注册 -->
-        <a mat-button [routerLink]="'/login'" [queryParams]="{ returnUrl: router.url }">
+        <a matButton [routerLink]="'/login'" [queryParams]="{ returnUrl: router.url }">
           <mat-icon>login</mat-icon>
           <span>登录</span>
         </a>
-        <a mat-button [routerLink]="'/register'">
+        <a matButton [routerLink]="'/register'">
           <mat-icon>person_add</mat-icon>
           <span>注册</span>
         </a>
         }
       </nav>
+      <nav class="secondary-navbar-header docs-navbar-show-small">
+
+        <button matButton class="menu-button" (click)="openMenu(drawer, 'main')">
+          <mat-icon>menu</mat-icon>
+          <span>主菜单</span>
+        </button>
+        @if(showCommunityMenuButton)
+        {
+          <button matButton class="community-menu-button" (click)="openMenu(drawer, 'community')">
+          <mat-icon>menu</mat-icon>
+          <span>交流区菜单</span>
+        </button>
+        }
+
+        <div class="docs-flex-spacer"></div>
+
+
+      </nav>
     </header>
-    <main class="docs-homepage-promo mat-shadow-2" [class.wide-page]="isWide">
+
+    <main class="docs-homepage-promo mat-shadow-2" [class.wide-page]="showCommunityMenuButton">
       <router-outlet></router-outlet>
     </main>
     <app-footer></app-footer>

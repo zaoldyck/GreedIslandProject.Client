@@ -1,21 +1,20 @@
 
 import { AfterViewInit, Component, DestroyRef, ElementRef, inject, ViewChild } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AuthenticationService } from '../../core/services/authentication-service';
-
-// Angular Material（standalone）
-import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { Footer } from '../footer/footer';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { AuthenticationService } from '../../core/services/authentication-service';
+import { CommonService } from '../../core/services/common-service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { CommonService } from '../../core/services/common-service';
-import { filter } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Footer } from '../footer/footer';
+type MenuType = 'main' | 'community';
 
 @Component({
   selector: 'app-shell',
@@ -33,36 +32,47 @@ export class Shell implements AfterViewInit {
   public commonService = inject(CommonService);
   public router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);           // ✅ 新增：注入 ActivatedRoute
 
-  @ViewChild('content', { read: ElementRef }) private contentEl?: ElementRef<HTMLElement>;
+  @ViewChild('content', { read: ElementRef })
+  private contentEl?: ElementRef<HTMLElement>;
 
-  /** ✅ 新增：是否加宽页面（交流区） */
-  isWide = false;
+ 
 
+  /** ✅ 新增：是否显示“交流区菜单”按钮（由路由 data 决定） */
+  showCommunityMenuButton = false;
+  menuType: MenuType = 'main';
   ngOnInit(): void {
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd), takeUntilDestroyed(this.destroyRef))
       .subscribe((e: NavigationEnd) => {
-        // 原有：导航后滚动复位
-        const isBrowser = typeof window !== 'undefined';
-        if (isBrowser) {
+        // 1) 原有：导航后滚动复位
+        if (typeof window !== 'undefined') {
           this.commonService.scrollToTop('auto');
         }
-        // 新增：根据当前 URL 计算是否加宽
-        const url = e.urlAfterRedirects ?? e.url ?? '';
-        this.isWide = this.isWideUrl(url);
+
+ 
+        // 3) ✅ 由路由 data 决定是否显示按钮
+        this.showCommunityMenuButton = this.calculateShowCommunityButton();
       });
-
-    // 首次进入也计算一次（避免首次渲染未触发 NavigationEnd）
-    this.isWide = this.isWideUrl(this.router.url);
+ 
+    this.showCommunityMenuButton = this.calculateShowCommunityButton();
   }
+ 
 
-  /** 仅在 /lure/community 以及其子路由下加宽 */
-  private isWideUrl(url: string): boolean {
-    const clean = (url || '').split('?')[0].split('#')[0];
-    return clean.startsWith('/lure/community');
-    // 如果你只想首页加宽、详情页不加宽，把上面改成：
-    // return clean === '/lure/community';
+  /** ✅ 回溯当前激活路由链，查找 data.showCommunityMenuButton */
+  private calculateShowCommunityButton(): boolean {
+    // 走到当前“最深”的激活路由
+    let r: ActivatedRoute | null = this.route;
+    while (r?.firstChild) r = r.firstChild;
+
+    // 从最深层开始，向上回溯到根，查找 data.showCommunityMenuButton
+    let p: ActivatedRoute | null = r;
+    while (p) {
+      if (p.snapshot?.data?.['showCommunityMenuButton']) return true;
+      p = p.parent ?? null;
+    }
+    return false;
   }
 
   ngAfterViewInit() {
@@ -82,4 +92,10 @@ export class Shell implements AfterViewInit {
     if (!name) return '?';
     return name.slice(0, 2).toUpperCase();
   }
+
+  openMenu(drawer: { open: () => void }, type: MenuType) {
+    this.menuType = type;
+    drawer.open();
+  }
+
 }

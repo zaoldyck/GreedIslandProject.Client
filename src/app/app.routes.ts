@@ -11,6 +11,10 @@ import { LureBaitTypes } from './features/lure/lure-bait-type/page/lure-bait-typ
 import { LureBaitTypeDetail } from './features/lure/lure-bait-type/page/lure-bait-type-detail/lure-bait-type-detail';
 import { LureCommunityHome } from './features/lure/lure-community/page/lure-community-home/lure-community-home';
 import { LureCommunityShell } from './features/lure/lure-community/page/lure-community-shell/lure-community-shell';
+import { LureCommunitySearch } from './features/lure/lure-community/page/lure-community-search/lure-community-search';
+import { LureCommunityBookmarks } from './features/lure/lure-community/page/lure-community-bookmarks/lure-community-bookmarks';
+import { LureCommunityLatest } from './features/lure/lure-community/page/lure-community-latest/lure-community-latest';
+import { LureCommunityTop } from './features/lure/lure-community/page/lure-community-top/lure-community-top';
 
 export const routes: Routes = [
   {
@@ -63,10 +67,13 @@ export const routes: Routes = [
           {
             path: 'community',
             component:LureCommunityShell,
-            data: { breadcrumb: '交流区' },
+            data: { breadcrumb: '交流区', showCommunityMenuButton: true },
             children: [
-              { path: '', component: LureBaitTypes },
-
+              { path: '', component: LureCommunityHome },
+              { path: 'search', component: LureCommunitySearch },
+              { path: 'latest', component: LureCommunityLatest },
+              { path: 'top', component: LureCommunityTop },
+              { path: 'bookmarks', component: LureCommunityBookmarks },
               {
                 path: 'detail/:id',
                 component: LureBaitTypeDetail,

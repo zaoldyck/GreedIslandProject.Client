@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use '../../../../../../styles/shared/constants';
 .scroll-visible {
   overflow: visible; /* 关键修改 */
 }
@@ -19,40 +20,40 @@
     /* 展开态（默认） */
     width: 280px;
     padding: 16px 8px;
+    /* ↓ 动画期间不要让滚动条参与；先用 clip（不影响内容布局） */
     overflow: auto;
     box-sizing: border-box;
-    transition: width 160ms ease, padding 120ms ease;
+    transition: width 160ms cubic-bezier(0.25, 0.8, 0.25, 1);
+    flex: 1 1 auto;
+    /* ↓ 给浏览器一个优化提示（不影响效果） */
+    will-change: width;
+    /* ↓ 限定重排/重绘范围，减少外部影响（不影响布局） */
+    contain: layout paint;
+
+    a.mat-mdc-list-item {
+      margin-top: 2px;
+    }
     /* 折叠态：统一联动的细节 */
     &.is-collapsed {
       width: 64px; /* 折叠宽度：可改 56/72/80 等 */
       padding: 8px 4px; /* 折叠态更紧凑 */
-      /* 仅显示图标，隐藏标题文字 */
-      [matListItemTitle] {
-        display: none;
-      }
       /* 图标居中，项内边距更小 */
       a.mat-mdc-list-item {
         justify-content: center;
+        flex-direction: column;
+        height: auto;
         padding: 0 4px;
-      }
-      /* 图标右侧本来有间距，折叠态清零避免“空槽” */
-      [matListItemIcon] {
-        margin-right: 0;
-      }
-      /* 折叠态滚动条更细（可选） */
-      &::-webkit-scrollbar {
-        width: 6px;
+        border-radius: 4px;
       }
 
-      &::-webkit-scrollbar-thumb {
-        background: rgba(0,0,0,0.2);
-        border-radius: 3px;
+      [matListItemTitle] {
+        display: block;
+        text-align: center;
+        font-size: 0.5em;
+        overflow-wrap: anywhere;
+        line-height: 1.5;
       }
     }
-
-    justify-content: center; /* 选中 & hover 保持你的既有风格（展开/折叠通用） */
-    line-height: 1;
-    transform-origin: center;
   }
 
   a.mat-mdc-list-item.is-active {
@@ -67,7 +68,7 @@
     background-color: rgba(0,0,0,0.04);
   }
 }
-
+ 
 .community-component-content {
   flex: 1 1 auto;
   padding: 8px 16px;
@@ -81,6 +82,10 @@
   justify-content: flex-end; /* 水平靠右 */
   align-items: center; /* 垂直居中 */
   padding: 0 8px;
+
+  &.is-collapsed {
+    justify-content:center;
+  }
 }
 
 .resizable-button {
@@ -90,4 +95,10 @@
   touch-target-size:32px, // 触摸目标直径
   ));
 }
- 
+
+
+@media (max-width: constants.$extra-small-breakpoint-width) {
+  .docs-component-viewer-nav{
+      display:none;
+  }
+}

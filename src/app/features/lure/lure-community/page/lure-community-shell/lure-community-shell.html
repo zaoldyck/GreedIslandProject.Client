@@ -46,7 +46,7 @@
 
                    <!-- 我的书签 -->
                    <a mat-list-item
-                      routerLink="/my/activity/bookmarks"
+                      routerLink="/lure/community/bookmarks"
                       routerLinkActive="is-active"
                       [routerLinkActiveOptions]="{ exact: false }">
                      <mat-icon matListItemIcon>bookmark</mat-icon>
@@ -124,10 +124,9 @@
                      <mat-icon matListItemIcon>list</mat-icon>
                      <span matListItemTitle>全部标签</span>
                    </a>
-
                  </mat-nav-list>   
                </div>
-               <div class="resizable-area">
+               <div class="resizable-area" [class.is-collapsed]="collapsed()">
                  @if(collapsed())
                  {
                  <button matIconButton class="resizable-button" aria-label="展开" (click)="onExpand()">
@@ -143,9 +142,10 @@
                </div>
              </div>
            </div>
-         <div class="community-component-content">
-            <router-outlet></router-outlet>
-         </div>
+           <div class="community-component-content">
+        
+             <router-outlet></router-outlet>
+           </div>
            
          </div>
  

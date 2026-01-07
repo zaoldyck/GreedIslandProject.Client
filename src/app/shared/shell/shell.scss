@@ -7,12 +7,15 @@
   max-width: 1200px;
   margin: 6px auto 16px;
   align-items: stretch; /* ✅ 子元素默认会占满可用宽度 */
-  min-height: 100vh;
+  min-height: calc(100dvh - 100px);
   box-sizing: border-box;
 
   @supports (height: 100dvh) {
-    min-height: 100dvh;
+    .your-container {
+      min-height: calc(100dvh - 100px);
+    }
   }
+ 
 }
 
 /* ✅ 交流区：加宽（你可按密度改 1280/1400/1600） */
@@ -43,7 +46,7 @@
 }
 .docs-navbar-header {
   display: flex;
-  height: var(--navbar-height);
+ 
   white-space: nowrap;
   align-items: center;
   padding: 8px 16px;
@@ -58,7 +61,18 @@
     background: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
   }
 }
+.secondary-navbar-header {
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+  padding: 0px 16px;
 
+   .mat-mdc-button {
+   
+      margin-left: auto;
+  }
+ 
+}
 .app-sidenav {
   width: var(--drawer-width);
   overflow: hidden;
@@ -89,12 +103,14 @@
   flex-grow: 1;
 }
 .menu-button {
-  margin-right: 10px;
+ 
   display: none;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--mat-sys-outline); // Material Design 主题的轮廓色
-  background-color: transparent;
+  
+}
+.community-menu-button {
+ 
+  display: none;
+ 
 }
 
 
@@ -108,11 +124,12 @@
   align-items: center;
   justify-content: space-between; /* 左 logo 右 close */
   gap: 12px;
-  padding: 12px 16px;
+  padding: 12px 8px;
   border-bottom: 1px solid rgba(0,0,0,0.08);
   padding-top: calc(12px + env(safe-area-inset-top, 0px)); /* iOS 安全区（可选） */
 }
 
+ 
 /* 列表：作为唯一滚动容器 */
 .app-nav-list {
   flex: 1 1 auto;
@@ -129,7 +146,9 @@
 .app-nav-list a.mat-mdc-list-item.is-active:hover {
   background: rgba(0, 0, 0, 0.08);
 }
-
+.docs-navbar-show-small {
+  display:none;
+}
 
 
 /* 尺寸变量：按需调整 */
@@ -199,6 +218,7 @@ $ring-gap: 2px; /* 外环与头像的间距 */
 @media (max-width: constants.$small-breakpoint-width) {
   .docs-homepage-promo {
     width: 90%;
+    padding: 8px 8px;
   }
   .docs-homepage-promo.wide-page {
     width: 100%;
@@ -211,5 +231,18 @@ $ring-gap: 2px; /* 外环与头像的间距 */
     .menu-button {
       display: flex;
     }
+  .docs-navbar-show-small {
+    display: flex;
+  }
+  .app-sidenav-container {
+    padding-top: 100px;
+    }
+  }
+@media (max-width: constants.$extra-small-breakpoint-width) {
+ 
+  .community-menu-button {
+    display: flex;
+  }
+
 }
 
