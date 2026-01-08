@@ -48,9 +48,23 @@
                 </a>
                 }
               </mat-menu>
-           
-              @for (item of constants.lureCommunityQuickLinks; track item.link) {
-              <a mat-list-item
+              <mat-divider></mat-divider>
+
+              <!-- 快速链接折叠标题（默认展开） -->
+              <button mat-list-item
+                      type="button"
+                      class="quick-links-header"
+                      (click)="toggleQuickLinks()"
+                      aria-controls="quick-links-section"
+                      [attr.aria-expanded]="!quickLinksCollapsed()">
+                <mat-icon matListItemIcon class="caret">
+                  {{ quickLinksCollapsed() ? 'chevron_right' : 'expand_more' }}
+                </mat-icon>
+                <span matListItemTitle>快速链接</span>
+              </button>
+              @if (!quickLinksCollapsed()) {
+               @for (item of constants.lureCommunityQuickLinks; track item.link) {
+                <a mat-list-item
                  [routerLink]="item.link"
                  [queryParams]="item.queryParams"
                  routerLinkActive="is-active"
@@ -58,6 +72,7 @@
                 <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
                 <span matListItemTitle>{{ item.label }}</span>
               </a>
+               }
               }
             </mat-nav-list>
           </div>

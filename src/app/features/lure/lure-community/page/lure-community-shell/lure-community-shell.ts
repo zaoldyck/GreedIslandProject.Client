@@ -1,4 +1,3 @@
-
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -10,17 +9,19 @@ import { filter } from 'rxjs/operators';
 
 import { Constants } from '../../../../../core/constants/constants';
 import { LureCommunityNavItem } from '../../../../../core/models/lure/lure-community-models';
- 
+import { MatDividerModule } from '@angular/material/divider';
 @Component({
   selector: 'app-lure-community-shell',
-  imports: [MatMenuModule, MatButtonModule, MatListModule, RouterLinkActive, RouterLink, MatIconModule, MatSidenavModule, RouterOutlet],
+  imports: [MatDividerModule, MatMenuModule, MatButtonModule, MatListModule, RouterLinkActive, RouterLink, MatIconModule, MatSidenavModule, RouterOutlet],
   templateUrl: './lure-community-shell.html',
-  styleUrl: './lure-community-shell.scss',  
+  styleUrl: './lure-community-shell.scss',
 })
 export class LureCommunityShell implements OnInit {
   readonly constants = inject(Constants);
   readonly collapsed = signal<boolean>(false);
 
+  // 快速链接折叠状态：默认展开（false 表示未折叠）
+  readonly quickLinksCollapsed = signal<boolean>(false);
 
   // 若当前 URL 属于 “更多” 集合，则持有该项；否则 undefined
   readonly currentMoreItem = signal<LureCommunityNavItem | undefined>(undefined);
@@ -43,6 +44,9 @@ export class LureCommunityShell implements OnInit {
   onExpand(): void { this.collapsed.set(false); }
   onCollapse(): void { this.collapsed.set(true); }
 
+  toggleQuickLinks(): void {
+    this.quickLinksCollapsed.update(v => !v);
+  }
 
   private updateCurrentMoreItem(): void {
     const tree: UrlTree = this.router.parseUrl(this.router.url);
@@ -75,5 +79,4 @@ export class LureCommunityShell implements OnInit {
 
     this.currentMoreItem.set(match ?? undefined);
   }
-
 }

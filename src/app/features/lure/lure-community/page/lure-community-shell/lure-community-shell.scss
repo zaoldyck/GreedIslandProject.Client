@@ -96,6 +96,16 @@
   ));
 }
 
+/* lure-community-shell.scss */
+.quick-links-header {
+  /* 让标题看起来像分组头 */
+  font-weight: 600;
+
+  .caret {
+    opacity: 0.8;
+  }
+}
+
 
 @media (max-width: constants.$extra-small-breakpoint-width) {
   .docs-component-viewer-nav{
