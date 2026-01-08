@@ -128,3 +128,13 @@
     <li>如有任何疑问、意见或建议，请通过本网站提供的联系方式与我们联系。</li>
   </ul>
 </mat-dialog-content>
+
+<!-- 顶部关闭按钮 -->
+<button type="button" mat-icon-button class="close-button" (click)="onClose()">
+  <mat-icon>close</mat-icon>
+</button>
+ 
+<!-- 底部关闭按钮 -->
+<mat-dialog-actions>
+  <button matButton (click)="onClose()">关闭</button>
+</mat-dialog-actions>

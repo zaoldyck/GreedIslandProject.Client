@@ -4,11 +4,13 @@
     <div class="register-illustration"></div>
     <div class="register-content">
       <h2 class="register-title">注册</h2>
-      <mat-stepper linear #stepper class="register-stepper">
+      <mat-stepper linear #stepper  class="register-stepper">
         <!-- 步骤一：验证手机号 -->
         <mat-step [editable]="false">
           <form [formGroup]="phoneForm" class="register-form" (ngSubmit)="confirmAgreementAndNext(stepper)">
-            <ng-template matStepLabel>验证手机号</ng-template>
+            @if (!isHandset || stepper.selectedIndex === 0) {
+            <ng-template matStepLabel> 验证手机号</ng-template>
+            }
 
             <!-- 第一步默认就进入完成态 -->
             <mat-form-field appearance="outline" floatLabel="always"
@@ -64,8 +66,9 @@
         <!-- 步骤二：完善个人信息 -->
         <mat-step [editable]="false">
           <form [formGroup]="profileForm" class="register-form" (ngSubmit)="complete(stepper)">
-            <ng-template matStepLabel>填写账号信息</ng-template>
-
+            @if (!isHandset || stepper.selectedIndex === 1) {
+            <ng-template matStepLabel>  填写账号信息</ng-template>
+            }
             <!-- 昵称 -->
             <mat-form-field appearance="outline">
               <mat-label>昵称（可选）</mat-label>
@@ -110,15 +113,17 @@
               }
             </mat-form-field>
             }
- 
-              <button mat-flat-button type="submit">
-                <span>注册</span>
-              </button>
-         
+
+            <button mat-flat-button type="submit">
+              <span>注册</span>
+            </button>
+
           </form>
         </mat-step>
-        <mat-step  [editable]="false">
+        <mat-step [editable]="false">
+          @if (!isHandset || stepper.selectedIndex === 2) {
           <ng-template matStepLabel>注册成功</ng-template>
+          }
           <p>注册成功.</p>
           <div>
             <button mat-button [routerLink]="['/register']">前往登录</button>

@@ -1,0 +1,12 @@
+  <h3 class="auth-wall__title">请登录</h3>
+  <p class="auth-wall__desc">您需要登录后才能更改用户偏好设置。</p>
+
+  <div class="auth-wall__actions">
+    <a matButton="tonal"
+       [routerLink]="'/login'"
+       [queryParams]="{ returnUrl: router.url }" >
+      <mat-icon>login</mat-icon>
+      <span>登录</span>
+    </a>
+  </div>
+ 

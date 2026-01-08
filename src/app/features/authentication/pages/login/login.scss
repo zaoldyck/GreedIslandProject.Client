@@ -63,6 +63,7 @@
 @media (max-width: constants.$extra-small-breakpoint-width) {
   .login-grid {
     grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
     min-height: auto;
   }
 

@@ -1,0 +1,22 @@
+
+:host {
+  display: block;
+  padding: 24px 16px; /* 整体内边距 */
+  text-align: left; /* 改为左对齐 */
+}
+
+.auth-wall__title {
+  margin: 0 0 8px; /* 标题下方留间距 */
+  font-size: 1.25rem;
+}
+
+.auth-wall__desc {
+  margin: 0 0 16px; /* 描述下方留间距 */
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.auth-wall__actions {
+  display: flex;
+  gap: 12px; /* 按钮之间的间距 */
+  justify-content: flex-start; /* 按钮组靠左 */
+}

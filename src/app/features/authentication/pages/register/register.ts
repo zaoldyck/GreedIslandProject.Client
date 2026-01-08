@@ -19,7 +19,7 @@ import { RouterModule } from '@angular/router';
 import { SendSmsRequest, VerifySmsRequest } from '../../../../core/models/authentication-models';
 import { CompleteRegisterRequest } from '../../../../core/models/register-models';
 import { MatCardModule } from '@angular/material/card';
- 
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 const CN_PHONE = /^1[3-9]\d{9}$/;                         // 大陆手机号 11 位
 
@@ -38,6 +38,10 @@ export class Register implements OnInit {
   private captchaService = inject(CaptchaService);
   private destroyRef = inject(DestroyRef);
   readonly purpose = 'register' as const; // 或 'login' as const
+
+  private bpo = inject(BreakpointObserver);
+  /** 是否为小屏（和你 constants.$extra-small-breakpoint-width 对齐，例如 600px） */
+  isHandset = false;
 
   // 第一步：手机号 + 短信码
   phoneForm = this.fb.nonNullable.group({
@@ -83,6 +87,10 @@ export class Register implements OnInit {
   get canSend() { return computed(() => !this.sending() && this.countdown() === 0); }
 
   ngOnInit(): void {
+    this.bpo.observe('(max-width: 720px)').subscribe(res => {
+      this.isHandset = res.matches;
+    });
+
     const passwordCtrl = this.profileForm.controls.password;
     const confirmPasswordCtrl = this.profileForm.controls.confirmPassword;
 

@@ -1,7 +1,15 @@
+
 <footer class="app-footer">
-  <div class="app-footer-link">
-    <p>
-      <span>示例网站</span> &copy; {{year }}
-    </p>
+  <div class="app-footer-inner">
+    <div class="app-footer-left"></div> <!-- 左侧占位 -->
+    <div class="app-footer-center">
+      <p><span>示例网站</span> &copy; {{ year }}</p>
+    </div>
+    <div class="app-footer-right">
+      <button matButton (click)="scrollToTop()" aria-label="返回顶部">
+        <mat-icon>arrow_upward</mat-icon>
+        <span>返回顶端</span>
+      </button>
+    </div>
   </div>
 </footer>

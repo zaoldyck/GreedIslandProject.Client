@@ -15,6 +15,12 @@ import { LureCommunitySearch } from './features/lure/lure-community/page/lure-co
 import { LureCommunityBookmarks } from './features/lure/lure-community/page/lure-community-bookmarks/lure-community-bookmarks';
 import { LureCommunityLatest } from './features/lure/lure-community/page/lure-community-latest/lure-community-latest';
 import { LureCommunityTop } from './features/lure/lure-community/page/lure-community-top/lure-community-top';
+import { LureCommunityAbout } from './features/lure/lure-community/page/lure-community-about/lure-community-about';
+import { LureCommunityCodeOfConduct } from './features/lure/lure-community/page/lure-community-code-of-conduct/lure-community-code-of-conduct';
+import { LureCommunityBadges } from './features/lure/lure-community/page/lure-community-badges/lure-community-badges';
+import { LureCommunityUsers } from './features/lure/lure-community/page/lure-community-users/lure-community-users';
+import { LureCommunityGroups } from './features/lure/lure-community/page/lure-community-groups/lure-community-groups';
+import { LureCommunityFilter } from './features/lure/lure-community/page/lure-community-filter/lure-community-filter';
 
 export const routes: Routes = [
   {
@@ -69,16 +75,18 @@ export const routes: Routes = [
             component:LureCommunityShell,
             data: { breadcrumb: '交流区', showCommunityMenuButton: true },
             children: [
-              { path: '', component: LureCommunityHome },
-              { path: 'search', component: LureCommunitySearch },
-              { path: 'latest', component: LureCommunityLatest },
-              { path: 'top', component: LureCommunityTop },
-              { path: 'bookmarks', component: LureCommunityBookmarks },
-              {
-                path: 'detail/:id',
-                component: LureBaitTypeDetail,
-                data: { breadcrumb: '详情' },
-              },
+              { path: '', component: LureCommunityHome, data: { breadcrumb: '交流区首页' } },
+              { path: 'search', component: LureCommunitySearch, data: { breadcrumb: '搜索' } },
+              { path: 'latest', component: LureCommunityLatest, data: { breadcrumb: '最新话题' } },
+              { path: 'top', component: LureCommunityTop, data: { breadcrumb: '热门话题' } },
+              { path: 'bookmarks', component: LureCommunityBookmarks, data: { breadcrumb: '我的书签' } },
+              { path: 'about', component: LureCommunityAbout, data: { breadcrumb: '关于交流区' } },
+              { path: 'code-of-conduct', component: LureCommunityCodeOfConduct, data: { breadcrumb: '行为准则' } },
+              { path: 'badges', component: LureCommunityBadges, data: { breadcrumb: '徽章' } },
+              { path: 'users', component: LureCommunityUsers, data: { breadcrumb: '用户' } },
+              { path: 'groups', component: LureCommunityGroups, data: { breadcrumb: '团队' } },
+              { path: 'filter', component: LureCommunityFilter, data: { breadcrumb: '过滤' } }
+
             ],
           },
         ],
