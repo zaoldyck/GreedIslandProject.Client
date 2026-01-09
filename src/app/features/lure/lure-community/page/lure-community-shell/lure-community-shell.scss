@@ -1,9 +1,10 @@
 @use '@angular/material' as mat;
 @use '../../../../../../styles/shared/constants';
+
 .scroll-visible {
   overflow: visible; /* 关键修改 */
 }
- 
+
 .docs-component-sidenav-body-content {
   display: flex;
 }
@@ -30,13 +31,18 @@
     /* ↓ 限定重排/重绘范围，减少外部影响（不影响布局） */
     contain: layout paint;
 
-    a.mat-mdc-list-item {
+
+    a.mat-mdc-list-item:not(:first-child) {
       margin-top: 2px;
     }
     /* 折叠态：统一联动的细节 */
     &.is-collapsed {
       width: 64px; /* 折叠宽度：可改 56/72/80 等 */
-      padding: 8px 4px; /* 折叠态更紧凑 */
+      padding: 8px 4px;
+
+      a.mat-mdc-list-item:not(:first-child) {
+        margin-top: 8px;
+      }
       /* 图标居中，项内边距更小 */
       a.mat-mdc-list-item {
         justify-content: center;
@@ -49,15 +55,14 @@
       [matListItemTitle] {
         display: block;
         text-align: center;
-        font-size: 0.5em;
+        font-size: 0.6em !important;
         overflow-wrap: anywhere;
         line-height: 1.5;
       }
     }
   }
- 
 }
- 
+
 .community-component-content {
   flex: 1 1 auto;
   padding: 8px 16px;
@@ -73,18 +78,16 @@
   padding: 0 8px;
 
   &.is-collapsed {
-    justify-content:center;
+    justify-content: center;
   }
 }
 
 .resizable-button {
   // 同步缩小 icon、状态层、触摸目标，避免圆层与图标不对齐
-  @include mat.icon-button-overrides((  
-  state-layer-size: 32px, // hover/press 圆层直径
+  @include mat.icon-button-overrides(( state-layer-size: 32px, // hover/press 圆层直径
   touch-target-size:32px, // 触摸目标直径
   ));
 }
-  
 
 @media (max-width: constants.$extra-small-breakpoint-width) {
   .docs-component-viewer-nav {
