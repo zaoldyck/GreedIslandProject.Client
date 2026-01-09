@@ -21,6 +21,10 @@ import { LureCommunityBadges } from './features/lure/lure-community/page/lure-co
 import { LureCommunityUsers } from './features/lure/lure-community/page/lure-community-users/lure-community-users';
 import { LureCommunityGroups } from './features/lure/lure-community/page/lure-community-groups/lure-community-groups';
 import { LureCommunityFilter } from './features/lure/lure-community/page/lure-community-filter/lure-community-filter';
+import { LureCommunityCategories } from './features/lure/lure-community/page/lure-community-categories/lure-community-categories';
+import { LureCommunityCategoryDetail } from './features/lure/lure-community/page/lure-community-category-detail/lure-community-category-detail';
+import { LureCommunityTags } from './features/lure/lure-community/page/lure-community-tags/lure-community-tags';
+import { LureCommunityTagDetail } from './features/lure/lure-community/page/lure-community-tag-detail/lure-community-tag-detail';
 
 export const routes: Routes = [
   {
@@ -85,8 +89,40 @@ export const routes: Routes = [
               { path: 'badges', component: LureCommunityBadges, data: { breadcrumb: '徽章' } },
               { path: 'users', component: LureCommunityUsers, data: { breadcrumb: '用户' } },
               { path: 'groups', component: LureCommunityGroups, data: { breadcrumb: '团队' } },
-              { path: 'filter', component: LureCommunityFilter, data: { breadcrumb: '过滤' } }
-
+              { path: 'filter', component: LureCommunityFilter, data: { breadcrumb: '过滤' } },
+              {
+                path: 'categories',
+              
+                data: { breadcrumb: '全部主题' },  
+                children: [
+ 
+                  { path: '', component: LureCommunityCategories },  
+ 
+                  {
+                    path: 'detail/:id',
+                    component: LureCommunityCategoryDetail,
+                    data: { breadcrumb: '详情' },
+ 
+                  },
+                ],
+              },
+              {
+                path: 'tags',
+              
+                data: { breadcrumb: '全部标签' },  
+                children: [
+               
+                  { path: '', component: LureCommunityTags },  
+ 
+                  {
+                    path: 'detail/:id',
+                    component: LureCommunityTagDetail,
+                    data: { breadcrumb: '详情' },
+                   
+                  },
+                ],
+              },
+             
             ],
           },
         ],

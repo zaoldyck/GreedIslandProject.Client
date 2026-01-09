@@ -55,18 +55,7 @@
       }
     }
   }
-
-  a.mat-mdc-list-item.is-active {
-    background: rgba(0, 0, 0, 0.06);
-  }
-
-  a.mat-mdc-list-item.is-active:hover {
-    background: rgba(0, 0, 0, 0.08);
-  }
-
-  a.mat-mdc-list-item:hover .mdc-list-item__ripple {
-    background-color: rgba(0,0,0,0.04);
-  }
+ 
 }
  
 .community-component-content {
@@ -95,20 +84,10 @@
   touch-target-size:32px, // 触摸目标直径
   ));
 }
-
-/* lure-community-shell.scss */
-.quick-links-header {
-  /* 让标题看起来像分组头 */
-  font-weight: 600;
-
-  .caret {
-    opacity: 0.8;
-  }
-}
-
+  
 
 @media (max-width: constants.$extra-small-breakpoint-width) {
-  .docs-component-viewer-nav{
-      display:none;
+  .docs-component-viewer-nav {
+    display: none;
   }
 }

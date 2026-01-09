@@ -1,6 +1,6 @@
 
-import { AfterViewInit, Component, DestroyRef, ElementRef, inject, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AfterViewInit, Component, DestroyRef, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet, UrlTree } from '@angular/router';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,8 @@ import { AuthenticationService } from '../../core/services/authentication-servic
 import { CommonService } from '../../core/services/common-service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Constants } from '../../core/constants/constants';
+import { LureCommunityNavItem } from '../../core/models/lure/lure-community-models';
 
 type MenuType = 'main' | 'community';
 
@@ -28,6 +30,7 @@ type MenuType = 'main' | 'community';
   ],
 })
 export class Shell implements AfterViewInit {
+    readonly constants = inject(Constants);
   public authenticationService = inject(AuthenticationService);
   public commonService = inject(CommonService);
   public router = inject(Router);
@@ -37,8 +40,13 @@ export class Shell implements AfterViewInit {
   @ViewChild('content', { read: ElementRef })
   private contentEl?: ElementRef<HTMLElement>;
 
+  // 快速链接折叠状态：默认展开（false 表示未折叠）
+  readonly quickLinksCollapsed = signal<boolean>(false);
+  // 快速链接折叠状态：默认展开（false 表示未折叠）
+  readonly tagsCollapsed = signal<boolean>(false);
+  // 若当前 URL 属于 “更多” 集合，则持有该项；否则 undefined
+  readonly currentMoreItem = signal<LureCommunityNavItem | undefined>(undefined);
  
-
   /** ✅ 新增：是否显示“交流区菜单”按钮（由路由 data 决定） */
   showCommunityMenuButton = false;
   menuType: MenuType = 'main';
@@ -95,7 +103,46 @@ export class Shell implements AfterViewInit {
 
   openMenu(drawer: { open: () => void }, type: MenuType) {
     this.menuType = type;
+    if (this.menuType == 'community') {
+      this.updateCurrentMoreItem();
+    }
     drawer.open();
   }
+  toggleQuickLinks(): void {
+    this.quickLinksCollapsed.update(v => !v);
+  }
+  toggleTags(): void {
+    this.tagsCollapsed.update(v => !v);
+  }
+  private updateCurrentMoreItem(): void {
+    const tree: UrlTree = this.router.parseUrl(this.router.url);
 
+    // 仅取 primary 出口的路径（不含查询串）
+    const primary = tree.root.children['primary'];
+    const path = '/' + (primary?.segments.map(s => s.path).join('/') ?? '');
+
+    // 当前查询参数（如果你后面需要“半放宽”可以用到）
+    const qp = tree.queryParams ?? {};
+
+    // 放宽匹配规则：
+    // 1) 路径 startsWith（支持 /lure/community/users?... 任意查询参数）
+    // 2) 不强制匹配 queryParams（完全忽略）；如需“半放宽”，见下方注释
+    const match = this.constants.lureCommunityMoreNav.find(item => {
+      // 允许 link 为 '/lure/community/users' 匹配 '/lure/community/users?order=xxx'
+      const pathMatch = path.startsWith(item.link);
+      if (!pathMatch) return false;
+
+      // ----（可选）半放宽：如果你仍希望对声明的 queryParams 做基本一致性校验——
+      // 仅当当前 URL 中包含该键时才校验值，否则不校验。
+      // if (item.queryParams) {
+      //   const ok = Object.entries(item.queryParams)
+      //     .every(([k, v]) => (k in qp) ? qp[k] === v : true);
+      //   if (!ok) return false;
+      // }
+
+      return true;
+    });
+
+    this.currentMoreItem.set(match ?? undefined);
+  }
 }

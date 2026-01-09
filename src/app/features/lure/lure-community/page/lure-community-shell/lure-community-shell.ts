@@ -22,6 +22,8 @@ export class LureCommunityShell implements OnInit {
 
   // 快速链接折叠状态：默认展开（false 表示未折叠）
   readonly quickLinksCollapsed = signal<boolean>(false);
+  // 快速链接折叠状态：默认展开（false 表示未折叠）
+  readonly tagsCollapsed = signal<boolean>(false);
 
   // 若当前 URL 属于 “更多” 集合，则持有该项；否则 undefined
   readonly currentMoreItem = signal<LureCommunityNavItem | undefined>(undefined);
@@ -46,6 +48,9 @@ export class LureCommunityShell implements OnInit {
 
   toggleQuickLinks(): void {
     this.quickLinksCollapsed.update(v => !v);
+  }
+  toggleTags(): void {
+    this.tagsCollapsed.update(v => !v);
   }
 
   private updateCurrentMoreItem(): void {

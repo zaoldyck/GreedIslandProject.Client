@@ -138,14 +138,7 @@
   box-sizing: border-box;
 }
 
-/* 只影响侧边栏这个列表 */
-.app-nav-list a.mat-mdc-list-item.is-active {
-  background: rgba(0, 0, 0, 0.06); /* 选中背景，不影响 hover ripple */
-}
  
-.app-nav-list a.mat-mdc-list-item.is-active:hover {
-  background: rgba(0, 0, 0, 0.08);
-}
 .docs-navbar-show-small {
   display:none;
 }

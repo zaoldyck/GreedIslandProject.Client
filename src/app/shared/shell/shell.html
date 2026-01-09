@@ -9,9 +9,9 @@
       </button>
     </div>
     @if (menuType === 'main') {
-      <mat-nav-list class="app-nav-list">
+    <mat-nav-list class="app-nav-list">
 
-      <a mat-list-item
+      <a mat-list-item #link1="routerLinkActive" [activated]="link1.isActive"
          routerLink="/"
          routerLinkActive="is-active"
          [routerLinkActiveOptions]="{ exact: true }"
@@ -20,18 +20,20 @@
         <span matListItemTitle>路亚鱼种</span>
       </a>
 
-      <a mat-list-item
+      <a mat-list-item #link2="routerLinkActive" [activated]="link2.isActive"
          routerLink="/lure/bait-types"
          routerLinkActive="is-active"
+           [routerLinkActiveOptions]="{ exact: false }"
          (click)="drawer.close()">
         <mat-icon matListItemIcon>category</mat-icon>
         <span matListItemTitle>拟饵类别</span>
       </a>
 
 
-      <a mat-list-item
+      <a mat-list-item #link3="routerLinkActive" [activated]="link3.isActive"
          routerLink="/lure/community"
          routerLinkActive="is-active"
+             [routerLinkActiveOptions]="{ exact: false }"
          (click)="drawer.close()">
         <mat-icon matListItemIcon>forum</mat-icon>
         <span matListItemTitle>交流区</span>
@@ -43,135 +45,94 @@
     {
       <mat-nav-list class="app-nav-list">
 
-      <!-- 交流区首页 -->
-      <a mat-list-item
-         routerLink="/lure/community"
+      <!-- 组：交流区主导航（来自 constants.lureCommunityNav） -->
+      @for (item of constants.lureCommunityNav; track item.link) {
+      <a mat-list-item #link="routerLinkActive" [activated]="link.isActive"  (click)="drawer.close()"
+         [routerLink]="item.link"
+         [queryParams]="item.queryParams"
          routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>home</mat-icon>
-        <span matListItemTitle>交流区首页</span>
+         [routerLinkActiveOptions]="{ exact: item.exact ?? false }">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
+      </a>
+      }
+
+      @if (currentMoreItem()) {
+      <a mat-list-item #link="routerLinkActive" [activated]="link.isActive" (click)="drawer.close()"
+         [routerLink]="currentMoreItem()!.link"
+         [queryParams]="currentMoreItem()!.queryParams"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: currentMoreItem()!.exact ?? false }">
+        <mat-icon matListItemIcon>{{ currentMoreItem()!.icon }}</mat-icon>
+        <span matListItemTitle>{{ currentMoreItem()!.label }}</span>
+      </a>
+      }
+
+      <!-- 侧栏“更多”入口：点击后弹出菜单（保留写死逻辑） -->
+      <a mat-list-item [matMenuTriggerFor]="moreMenu">
+        <mat-icon matListItemIcon>more_vert</mat-icon>
+        <span matListItemTitle>更多</span>
       </a>
 
-      <!-- 搜索 -->
-      <a mat-list-item
-         routerLink="/lure/community/search"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>search</mat-icon>
-        <span matListItemTitle>搜索</span>
-      </a>
+      <mat-menu #moreMenu="matMenu">
+        @for (m of constants.lureCommunityMoreNav; track m.link) {
+        <a mat-menu-item
+           [routerLink]="m.link"
+           [queryParams]="m.queryParams"   (click)="drawer.close()">
+          <mat-icon>{{ m.icon }}</mat-icon>
+          <span>{{ m.label }}</span>
+        </a>
+        }
+      </mat-menu>
+      <mat-divider class="menu-divider"></mat-divider>
 
-      <!-- 最新主题 -->
+      <!-- 快速链接折叠标题（默认展开） -->
       <a mat-list-item
-         routerLink="/lure/community/latest"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>chat</mat-icon>
-        <span matListItemTitle>最新话题</span>
+         class="quick-links-header"
+         (click)="toggleQuickLinks()"
+         aria-controls="quick-links-section"
+         [attr.aria-expanded]="!quickLinksCollapsed()">
+        <mat-icon matListItemIcon class="icon-box">
+          {{ quickLinksCollapsed() ? 'chevron_right' : 'expand_more' }}
+        </mat-icon>
+        <span matListItemTitle>快速链接</span>
       </a>
+      @if (!quickLinksCollapsed()) {
+      @for (item of constants.lureCommunityQuickLinks; track item.link) {
+      <a mat-list-item #link="routerLinkActive" [activated]="link.isActive"  (click)="drawer.close()"
+         [routerLink]="item.link"
+         [queryParams]="item.queryParams"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: item.exact ?? false }">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
+      </a>
+      }
+      }
+      <mat-divider class="menu-divider"></mat-divider>
 
-      <!-- 热门主题 -->
       <a mat-list-item
-         routerLink="/lure/community/top"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>star</mat-icon>
-        <span matListItemTitle>热门话题</span>
+         class="quick-links-header"
+         (click)="toggleTags()"
+         aria-controls="tags-section"
+         [attr.aria-expanded]="!tagsCollapsed()">
+        <mat-icon matListItemIcon class="icon-box">
+          {{ tagsCollapsed() ? 'chevron_right' : 'expand_more' }}
+        </mat-icon>
+        <span matListItemTitle>标签</span>
       </a>
-
-      <!-- 我的书签 -->
-      <a mat-list-item
-         routerLink="/lure/community/bookmarks"
+      @if (!tagsCollapsed()) {
+       @for (item of constants.lureCommunityTags; track item.link) {
+         <a mat-list-item #link="routerLinkActive" [activated]="link.isActive"  (click)="drawer.close()"
+         [routerLink]="item.link"
+         [queryParams]="item.queryParams"
          routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>bookmark</mat-icon>
-        <span matListItemTitle>我的书签</span>
+         [routerLinkActiveOptions]="{ exact: item.exact ?? false }">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
       </a>
-
-      <!-- Unity 引擎 -->
-      <a mat-list-item
-         routerLink="/c/unity-engine"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>extension</mat-icon>
-        <span matListItemTitle>Unity 引擎</span>
-      </a>
-
-      <!-- 全部分类 -->
-      <a mat-list-item
-         routerLink="/categories"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>category</mat-icon>
-        <span matListItemTitle>全部分类</span>
-      </a>
-
-      <!-- Bug 标签 -->
-      <a mat-list-item
-         routerLink="/tags/bug"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>bug_report</mat-icon>
-        <span matListItemTitle>Bug</span>
-      </a>
-
-      <!-- 交流标签 -->
-      <a mat-list-item
-         routerLink="/tags/conversation"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>forum</mat-icon>
-        <span matListItemTitle>交流</span>
-      </a>
-
-      <!-- 反馈标签 -->
-      <a mat-list-item
-         routerLink="/tags/feedback"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>feedback</mat-icon>
-        <span matListItemTitle>反馈</span>
-      </a>
-
-      <!-- 官方标签 -->
-      <a mat-list-item
-         routerLink="/tags/official"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>verified</mat-icon>
-        <span matListItemTitle>官方</span>
-      </a>
-
-      <!-- 提问标签 -->
-      <a mat-list-item
-         routerLink="/tags/question"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>help</mat-icon>
-        <span matListItemTitle>提问</span>
-      </a>
-
-      <!-- 全部标签 -->
-      <a mat-list-item
-         routerLink="/tags"
-         routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="drawer.close()">
-        <mat-icon matListItemIcon>list</mat-icon>
-        <span matListItemTitle>全部标签</span>
-      </a>
+       }
+      }
     </mat-nav-list>
     }
   </mat-sidenav>

@@ -7,11 +7,11 @@
 
           <div class="docs-component-viewer-nav-content" [class.is-collapsed]="collapsed()">
 
-            <mat-nav-list>
+            <mat-nav-list class="app-nav-list">
 
               <!-- 组：交流区主导航（来自 constants.lureCommunityNav） -->
               @for (item of constants.lureCommunityNav; track item.link) {
-              <a mat-list-item
+              <a mat-list-item #link="routerLinkActive" [activated]="link.isActive"
                  [routerLink]="item.link"
                  [queryParams]="item.queryParams"
                  routerLinkActive="is-active"
@@ -22,7 +22,7 @@
               }
 
               @if (currentMoreItem()) {
-              <a mat-list-item
+              <a mat-list-item #link="routerLinkActive" [activated]="link.isActive"
                  [routerLink]="currentMoreItem()!.link"
                  [queryParams]="currentMoreItem()!.queryParams"
                  routerLinkActive="is-active"
@@ -48,23 +48,22 @@
                 </a>
                 }
               </mat-menu>
-              <mat-divider></mat-divider>
+              <mat-divider class="menu-divider"></mat-divider>
 
               <!-- 快速链接折叠标题（默认展开） -->
-              <button mat-list-item
-                      type="button"
-                      class="quick-links-header"
-                      (click)="toggleQuickLinks()"
-                      aria-controls="quick-links-section"
-                      [attr.aria-expanded]="!quickLinksCollapsed()">
-                <mat-icon matListItemIcon class="caret">
+              <a mat-list-item
+                 class="quick-links-header"
+                 (click)="toggleQuickLinks()"
+                 aria-controls="quick-links-section"
+                 [attr.aria-expanded]="!quickLinksCollapsed()">
+                <mat-icon matListItemIcon class="icon-box">
                   {{ quickLinksCollapsed() ? 'chevron_right' : 'expand_more' }}
                 </mat-icon>
                 <span matListItemTitle>快速链接</span>
-              </button>
+              </a>
               @if (!quickLinksCollapsed()) {
-               @for (item of constants.lureCommunityQuickLinks; track item.link) {
-                <a mat-list-item
+                @for (item of constants.lureCommunityQuickLinks; track item.link) {
+                  <a mat-list-item #link="routerLinkActive" [activated]="link.isActive"
                  [routerLink]="item.link"
                  [queryParams]="item.queryParams"
                  routerLinkActive="is-active"
@@ -72,7 +71,31 @@
                 <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
                 <span matListItemTitle>{{ item.label }}</span>
               </a>
-               }
+                }
+              }
+              <mat-divider class="menu-divider"></mat-divider>
+ 
+              <a mat-list-item
+                 class="quick-links-header"
+                 (click)="toggleTags()"
+                 aria-controls="tags-section"
+                 [attr.aria-expanded]="!tagsCollapsed()">
+                <mat-icon matListItemIcon class="icon-box">
+                  {{ tagsCollapsed() ? 'chevron_right' : 'expand_more' }}
+                </mat-icon>
+                <span matListItemTitle>标签</span>
+              </a>
+              @if (!tagsCollapsed()) {
+                @for (item of constants.lureCommunityTags; track item.link) {
+                   <a mat-list-item #link="routerLinkActive" [activated]="link.isActive"
+                 [routerLink]="item.link"
+                 [queryParams]="item.queryParams"
+                 routerLinkActive="is-active"
+                 [routerLinkActiveOptions]="{ exact: item.exact ?? false }">
+                <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                <span matListItemTitle>{{ item.label }}</span>
+              </a>
+                }
               }
             </mat-nav-list>
           </div>

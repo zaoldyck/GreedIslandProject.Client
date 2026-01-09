@@ -71,3 +71,30 @@
 .rotate-180 {
   transform: rotate(180deg);
 }
+.menu-divider {
+  margin: 4px 0px !important;
+}
+.quick-links-header {
+  .icon-box {
+    margin-left: 4px !important;
+    margin-right: 8px !important;
+  }
+
+  [matListItemIcon] {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  &:hover [matListItemIcon] {
+    color: var(--mat-sys-primary) !important;
+  }
+
+  [matListItemTitle] {
+    font-size: 0.8em !important;
+  }
+
+  &:hover [matListItemTitle] {
+    color: var(--mat-sys-primary) !important;
+  }
+}
