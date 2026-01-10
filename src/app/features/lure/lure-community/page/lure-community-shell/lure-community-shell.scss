@@ -16,6 +16,7 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--mat-sys-outline-variant);
+  background:var(--mat-sys-surface-container);
 
   .docs-component-viewer-nav-content {
     /* 展开态（默认） */
@@ -37,7 +38,7 @@
     }
     /* 折叠态：统一联动的细节 */
     &.is-collapsed {
-      width: 64px; /* 折叠宽度：可改 56/72/80 等 */
+      width: 68px; /* 折叠宽度：可改 56/72/80 等 */
       padding: 8px 4px;
 
       a.mat-mdc-list-item:not(:first-child) {
@@ -48,14 +49,15 @@
         justify-content: center;
         flex-direction: column;
         height: auto;
-        padding: 0 4px;
+        padding:4px;
         border-radius: 4px;
       }
 
       [matListItemTitle] {
+        margin-top:4px;
         display: block;
         text-align: center;
-        font-size: 0.6em !important;
+        font-size: 11px !important;
         overflow-wrap: anywhere;
         line-height: 1.5;
       }
