@@ -96,7 +96,10 @@ export const routes: Routes = [
                 data: { breadcrumb: '全部主题' },  
                 children: [
  
-                  { path: '', component: LureCommunityCategories },  
+                  {
+                    path: '', component: LureCommunityCategories,
+                    data: { breadcrumb: null }
+},  
  
                   {
                     path: 'detail/:id',
@@ -112,7 +115,8 @@ export const routes: Routes = [
                 data: { breadcrumb: '全部标签' },  
                 children: [
                
-                  { path: '', component: LureCommunityTags },  
+                  { path: '', component: LureCommunityTags,
+                    data: { breadcrumb: null } },  
  
                   {
                     path: 'detail/:id',

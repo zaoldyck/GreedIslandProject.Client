@@ -1,56 +1,64 @@
+
 import { inject, Injectable, signal } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
 export interface BreadcrumbItem {
-  label: string; // 最终显示文本
-  url: string;   // 可点击的完整路径
+  label: string;
+  url: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class BreadcrumbService {
-
   private router = inject(Router);
-  private root = inject(ActivatedRoute);
+  // ⚠️ 删除对 ActivatedRoute 的直接注入
+  // private root = inject(ActivatedRoute);
 
-  // 外部组件通过 svc.items() 读取面包屑数组
   readonly items = signal<BreadcrumbItem[]>([]);
 
   constructor() {
-    // 监听每次导航完成后重新构建面包屑
+    // 等待导航完成再构建
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => this.build());
 
-    // 首次加载也构建一次
+    // 如果应用已完成首个导航，这里也可以构建一次，
+    // 否则首次构建依赖于上面的 NavigationEnd
     this.build();
   }
 
   private build() {
     const list: BreadcrumbItem[] = [];
-    let route: ActivatedRoute | null = this.root;
+
+    // 用 RouterState 的根作为起点
+    let route: ActivatedRoute | null = this.router.routerState.root;
     let url = '';
 
     while (route) {
-      const snapshot = route.snapshot;
+      const snapshot: ActivatedRouteSnapshot | null = (route as any)?.snapshot ?? null;
 
-      // 只处理主出口，跳过 aux 路由
-      if (snapshot.outlet && snapshot.outlet !== 'primary') {
+      // 如果当前节点还没有快照（初始化/懒加载边界），跳到子节点
+      if (!snapshot) {
         route = route.firstChild ?? null;
         continue;
       }
 
-      // 从 data 中取出 breadcrumb 定义
-      const bcDef = snapshot.data?.['breadcrumb'];
-      // 如果有 resolver 写入 title，则优先使用
-      const titleFromResolver = snapshot.data?.['title'];
+      // 只处理主出口，跳过 aux 路由
+      const outlet = snapshot.outlet ?? 'primary';
+      if (outlet !== 'primary') {
+        route = route.firstChild ?? null;
+        continue;
+      }
 
-      // 拼接当前层级的 URL 片段
-      if (snapshot.url.length) {
+      // 当前层级的 URL 片段
+      if (snapshot.url?.length) {
+        // snapshot.url 是 UrlSegment[]，拼接 path
         url += '/' + snapshot.url.map(s => s.path).join('/');
       }
+
+      // 从 data 中取 breadcrumb 定义
+      const bcDef = snapshot.data?.['breadcrumb'];
+      const titleFromResolver = snapshot.data?.['title'];
 
       // 跳过隐藏层（null/undefined）
       if (bcDef === null || bcDef === undefined) {
@@ -58,10 +66,10 @@ export class BreadcrumbService {
         continue;
       }
 
-      // 支持函数型定义：(snap)=>string
-      const label = typeof bcDef === 'function'
-        ? (bcDef as (snap: ActivatedRouteSnapshot) => string)(snapshot)
-        : (titleFromResolver ?? bcDef);
+      const label =
+        typeof bcDef === 'function'
+          ? (bcDef as (snap: ActivatedRouteSnapshot) => string)(snapshot)
+          : (titleFromResolver ?? bcDef);
 
       list.push({ label: String(label), url });
 

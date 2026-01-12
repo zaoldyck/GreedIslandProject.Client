@@ -10,9 +10,10 @@ import { filter } from 'rxjs/operators';
 import { Constants } from '../../../../../core/constants/constants';
 import { LureCommunityNavItem } from '../../../../../core/models/lure/lure-community-models';
 import { MatDividerModule } from '@angular/material/divider';
+import { Breadcrumb } from '../../../../../shared/breadcrumb/breadcrumb';
 @Component({
   selector: 'app-lure-community-shell',
-  imports: [MatDividerModule, MatMenuModule, MatButtonModule, MatListModule, RouterLinkActive, RouterLink, MatIconModule, MatSidenavModule, RouterOutlet],
+  imports: [Breadcrumb,MatDividerModule, MatMenuModule, MatButtonModule, MatListModule, RouterLinkActive, RouterLink, MatIconModule, MatSidenavModule, RouterOutlet],
   templateUrl: './lure-community-shell.html',
   styleUrl: './lure-community-shell.scss',
 })
