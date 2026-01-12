@@ -78,6 +78,10 @@
   overflow: hidden;
   border-bottom-right-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
+
+  a.mat-mdc-list-item:not(:first-child) {
+    margin-top: 2px;
+  }
 }
 
 /* 关键：让内部容器变成纵向 flex，把头部和列表分区处理 */

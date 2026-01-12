@@ -1,13 +1,101 @@
-<mat-card class="example-card" >
+<mat-card>
   <mat-card-content>
-    <p>
-      The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-      A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-      bred for hunting.
-    </p>
+    <form [formGroup]="form" class="filter-form" (ngSubmit)="onSearch()">
+      <div class="filter-row">
+        <mat-form-field appearance="outline" floatLabel="always" class="filter-item-2">
+          <mat-label>关键字</mat-label>
+          <input matInput
+                 placeholder="关键字"
+                 formControlName="keyword"
+                 (keydown.enter)="onSearch()" />
+
+          <span matSuffix class="suffix-box">
+            @if (form.controls.keyword.value) {
+            <button mat-icon-button
+                    type="button"
+                    aria-label="清空关键字"
+                    (click)="clearKeyword()">
+              <mat-icon>close</mat-icon>
+            </button>
+            }
+          </span>
+        </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+          <mat-select formControlName="scope">
+            @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
+            <mat-option [value]="opt.id">
+              {{ opt.name }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <div class="filter-item filter-bar-btns">
+          <button class="filter-bar-btn" matButton="tonal" type="button" (click)="onSearch()">
+            <mat-icon>search</mat-icon>
+            搜索
+          </button>
+        </div>
+      </div>
+      @if(form.controls.scope.value=='topics')
+      {
+      <div class="filter-row filter-row-extra-margin">
+        <div class="filter-item">
+          <a class="expandable-header pointer" (click)="toggleAdvancedOptions()">
+            <mat-icon>
+              {{ advancedOptionCollapsed() ? 'arrow_drop_down' : 'arrow_right' }}
+            </mat-icon>
+            <span>更多选项</span>
+          </a>
+        </div>
+      </div>
+      @if(advancedOptionCollapsed()){
+      <div class="filter-row">
+        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+          <mat-label>主题</mat-label>
+          <mat-select formControlName="scope">
+            @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
+            <mat-option [value]="opt.id">
+              {{ opt.name }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+          <mat-label>标签</mat-label>
+          <mat-select formControlName="scope">
+            @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
+            <mat-option [value]="opt.id">
+              {{ opt.name }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="filter-row">
+        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+          <mat-label>作者</mat-label>
+          <mat-select formControlName="scope">
+            @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
+            <mat-option [value]="opt.id">
+              {{ opt.name }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+          <mat-label>发布日期</mat-label>
+          <mat-select formControlName="scope">
+            @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
+            <mat-option [value]="opt.id">
+              {{ opt.name }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      }
+      }
+    </form>
+ 
   </mat-card-content>
-  <mat-card-actions>
-    <button matButton>LIKE</button>
-    <button matButton>SHARE</button>
-  </mat-card-actions>
 </mat-card>

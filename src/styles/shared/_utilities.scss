@@ -78,7 +78,7 @@
 .menu-divider {
   margin: 4px 0px !important;
 }
-.quick-links-header {
+.nav-group-header {
   .icon-box {
     margin-left: 4px !important;
     margin-right: 8px !important;
@@ -99,6 +99,22 @@
   }
 
   &:hover [matListItemTitle] {
+    color: var(--mat-sys-primary) !important;
+  }
+}
+.expandable-header {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+
+  &:hover mat-icon {
+    color: var(--mat-sys-primary) !important;
+  }
+
+  span {
+    font-size: 14px !important;
+  }
+
+  &:hover span {
     color: var(--mat-sys-primary) !important;
   }
 }

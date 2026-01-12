@@ -11,6 +11,7 @@ import { Constants } from '../../../../../core/constants/constants';
 import { LureCommunityNavItem } from '../../../../../core/models/lure/lure-community-models';
 import { MatDividerModule } from '@angular/material/divider';
 import { Breadcrumb } from '../../../../../shared/breadcrumb/breadcrumb';
+
 @Component({
   selector: 'app-lure-community-shell',
   imports: [Breadcrumb,MatDividerModule, MatMenuModule, MatButtonModule, MatListModule, RouterLinkActive, RouterLink, MatIconModule, MatSidenavModule, RouterOutlet],
@@ -57,15 +58,15 @@ export class LureCommunityShell implements OnInit {
   private updateCurrentMoreItem(): void {
     const tree: UrlTree = this.router.parseUrl(this.router.url);
 
-    // 仅取 primary 出口的路径（不含查询串）
+    // 仅取 primary 出口的路径（不含搜索串）
     const primary = tree.root.children['primary'];
     const path = '/' + (primary?.segments.map(s => s.path).join('/') ?? '');
 
-    // 当前查询参数（如果你后面需要“半放宽”可以用到）
+    // 当前搜索参数（如果你后面需要“半放宽”可以用到）
     const qp = tree.queryParams ?? {};
 
     // 放宽匹配规则：
-    // 1) 路径 startsWith（支持 /lure/community/users?... 任意查询参数）
+    // 1) 路径 startsWith（支持 /lure/community/users?... 任意搜索参数）
     // 2) 不强制匹配 queryParams（完全忽略）；如需“半放宽”，见下方注释
     const match = this.constants.lureCommunityMoreNav.find(item => {
       // 允许 link 为 '/lure/community/users' 匹配 '/lure/community/users?order=xxx'

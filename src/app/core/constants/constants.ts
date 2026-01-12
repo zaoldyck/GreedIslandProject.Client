@@ -51,4 +51,10 @@ export class Constants {
     }
   ];
 
+  readonly lureCommunitySearchScopeDropdown: { id: string; name: string; }[] = [
+    { id: 'topics', name: '话题/回复' },
+    { id: 'categories', name: '主题/标签' },
+    { id: 'users', name: '用户' }
+  ];
+
 }
