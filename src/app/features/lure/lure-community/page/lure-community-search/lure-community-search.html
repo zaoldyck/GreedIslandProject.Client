@@ -94,8 +94,17 @@
         </mat-form-field>
       </div>
       }
+      <div class="filter-row filter-row-extra-margin">
+        <div class="filter-item">
+          <a class="expandable-header pointer" (click)="toggleAdvancedOptions()">
+            <mat-icon>
+              {{ advancedOptionCollapsed() ? 'arrow_drop_down' : 'arrow_right' }}
+            </mat-icon>
+            <span>按回复数量和话题浏览量过滤</span>
+          </a>
+        </div>
+      </div>
       }
     </form>
- 
   </mat-card-content>
 </mat-card>
