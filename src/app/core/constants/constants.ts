@@ -24,7 +24,7 @@ export class Constants {
   ];
 
   readonly lureCommunityQuickLinks: LureCommunityNavItem[] = [
-    { label: '装备评测', icon: 'rate_review', link: '/lure/community/categories/detail/gear-reviews', exact: false },
+    { label: '装备讨论', icon: 'rate_review', link: '/lure/community/categories/detail/gear', exact: false },
     { label: '全部主题', icon: 'list', link: '/lure/community/categories', exact: true }
   ];
 
@@ -49,6 +49,12 @@ export class Constants {
       link: '/lure/community/tags',
       exact: true
     }
+  ];
+
+  readonly lureCommunitySearchScopeDropdown: { id: string; name: string; }[] = [
+    { id: 'topics', name: '话题/回复' },
+    { id: 'categories', name: '主题/标签' },
+    { id: 'users', name: '用户' }
   ];
 
 }

@@ -1,0 +1,60 @@
+@use '../../../../../../styles/shared/constants';
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 6%;
+}
+.filter-row {
+  display: flex;
+  flex-flow: wrap;
+  row-gap: 4px;
+  column-gap: 1rem;
+}
+.filter-item {
+  flex: 1 1 auto;
+}
+.filter-item-2 {
+  flex: 4 1 auto;
+}
+.filter-bar-btns {
+  flex: 0 0 auto;
+}
+.filter-bar-btn {
+  margin-top: 6px;
+}
+
+.filter-row-extra-margin {
+ 
+  margin-bottom: 12px;
+}
+
+.filter-item-group {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 8px;
+
+  .filter-item {
+      width:120px;
+  }
+}
+
+@media (max-width: constants.$small-breakpoint-width) {
+  .filter-form {
+    padding: 8px;
+  }
+}
+@media (max-width: constants.$extra-small-breakpoint-width) {
+  .filter-row {
+    flex-direction:column;
+    gap:4px;
+  }
+  .filter-bar-btns {
+    flex: 1 1 auto;
+  }
+
+  .filter-bar-btn {
+    margin-top: 0px;
+    width:100%;
+  }
+}

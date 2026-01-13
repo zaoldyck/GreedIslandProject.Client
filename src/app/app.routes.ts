@@ -79,7 +79,7 @@ export const routes: Routes = [
             component:LureCommunityShell,
             data: { breadcrumb: '交流区', showCommunityMenuButton: true },
             children: [
-              { path: '', component: LureCommunityHome, data: { breadcrumb: '交流区首页' } },
+              { path: '', component: LureCommunityCategories, data: { breadcrumb: '交流区首页' } },
               { path: 'search', component: LureCommunitySearch, data: { breadcrumb: '搜索' } },
               { path: 'latest', component: LureCommunityLatest, data: { breadcrumb: '最新话题' } },
               { path: 'top', component: LureCommunityTop, data: { breadcrumb: '热门话题' } },
@@ -96,7 +96,10 @@ export const routes: Routes = [
                 data: { breadcrumb: '全部主题' },  
                 children: [
  
-                  { path: '', component: LureCommunityCategories },  
+                  {
+                    path: '', component: LureCommunityCategories,
+                    data: { breadcrumb: null }
+},  
  
                   {
                     path: 'detail/:id',
@@ -112,7 +115,8 @@ export const routes: Routes = [
                 data: { breadcrumb: '全部标签' },  
                 children: [
                
-                  { path: '', component: LureCommunityTags },  
+                  { path: '', component: LureCommunityTags,
+                    data: { breadcrumb: null } },  
  
                   {
                     path: 'detail/:id',

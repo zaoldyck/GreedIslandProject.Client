@@ -136,7 +136,7 @@ export class CommonService {
 
   /**
    * 滚动到容器内或页面内的某个元素。
-   * - 若有容器，则优先在容器内查询目标并滚动；
+   * - 若有容器，则优先在容器内搜索目标并滚动；
    * - 若找不到或无容器，则回退到 document 进行滚动。
    */
   scrollIntoView(target: string | HTMLElement, behavior: ScrollBehavior = 'smooth') {

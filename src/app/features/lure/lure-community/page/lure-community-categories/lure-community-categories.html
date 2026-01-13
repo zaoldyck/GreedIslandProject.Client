@@ -1,1 +1,35 @@
-<p>lure-community-categories works!</p>
+ 
+@let list = items();
+
+@if (list.length > 0) {
+<div class="card-list">
+  @for (item of list; track item.id) {
+  <mat-card matRipple class="app-card pointer" (click)="onOpenDetail(item.id)">
+    <mat-card-header class="app-card-header">
+      <mat-card-title>{{ item.name }}</mat-card-title>
+      <mat-card-subtitle>{{ item.englishName }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <div class="image-box stretch">
+      <img mat-card-image
+           [src]="resolveImageUrl(item.imageUrl)"
+           (error)="onImgError($event)">
+    </div>
+
+    <mat-card-content class="app-card-content">
+      <p>{{ item.description }}</p>
+    </mat-card-content>
+  </mat-card>
+  }
+</div>
+}
+
+<!-- 无按钮版本的底部状态 -->
+<div class="footer">
+
+  @if (isLoading()) {
+  <div><mat-spinner [diameter]="32"></mat-spinner></div>
+  } @else if (noMore()) {
+  <div class="divider-text">已到底部</div>
+  }
+</div>

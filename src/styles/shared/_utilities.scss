@@ -2,6 +2,10 @@
 .utilities-background {
   background-image: linear-gradient(74deg, rgba(236, 236, 236,0.05) 0%, rgba(236, 236, 236,0.05) 13%,transparent 13%, transparent 64%,rgba(55, 55, 55,0.05) 64%, rgba(55, 55, 55,0.05) 71%,rgba(239, 239, 239,0.05) 71%, rgba(239, 239, 239,0.05) 100%),linear-gradient(170deg, rgba(8, 8, 8,0.05) 0%, rgba(8, 8, 8,0.05) 1%,transparent 1%, transparent 60%,rgba(9, 9, 9,0.05) 60%, rgba(9, 9, 9,0.05) 80%,rgba(198, 198, 198,0.05) 80%, rgba(198, 198, 198,0.05) 100%),linear-gradient(118deg, rgba(134, 134, 134,0.05) 0%, rgba(134, 134, 134,0.05) 30%,transparent 30%, transparent 43%,rgba(85, 85, 85,0.05) 43%, rgba(85, 85, 85,0.05) 47%,rgba(103, 103, 103,0.05) 47%, rgba(103, 103, 103,0.05) 100%),linear-gradient(249deg, rgba(178, 178, 178,0.05) 0%, rgba(178, 178, 178,0.05) 8%,transparent 8%, transparent 47%,rgba(161, 161, 161,0.05) 47%, rgba(161, 161, 161,0.05) 61%,rgba(19, 19, 19,0.05) 61%, rgba(19, 19, 19,0.05) 100%),linear-gradient(90deg, rgb(255,255,255),rgb(255,255,255));
 }
+.module-title {
+  margin: 0;
+  font-weight: 500;
+}
 /* 按钮伪链接样式 */
 .btn-as-link {
   background: none;
@@ -74,7 +78,7 @@
 .menu-divider {
   margin: 4px 0px !important;
 }
-.quick-links-header {
+.nav-group-header {
   .icon-box {
     margin-left: 4px !important;
     margin-right: 8px !important;
@@ -95,6 +99,44 @@
   }
 
   &:hover [matListItemTitle] {
+    color: var(--mat-sys-primary) !important;
+  }
+}
+.expandable-header {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+
+  &:hover mat-icon {
+    color: var(--mat-sys-primary) !important;
+  }
+ 
+  span {
+    font-size: 14px !important;
+  }
+
+  &:hover span {
+    color: var(--mat-sys-primary) !important;
+  }
+}
+.expandable-header-small {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+
+  &:hover mat-icon {
+    color: var(--mat-sys-primary) !important;
+  }
+
+  mat-icon {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  span {
+    font-size: 12px !important;
+  }
+
+  &:hover span {
     color: var(--mat-sys-primary) !important;
   }
 }
