@@ -109,9 +109,31 @@
   &:hover mat-icon {
     color: var(--mat-sys-primary) !important;
   }
-
+ 
   span {
     font-size: 14px !important;
+  }
+
+  &:hover span {
+    color: var(--mat-sys-primary) !important;
+  }
+}
+.expandable-header-small {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+
+  &:hover mat-icon {
+    color: var(--mat-sys-primary) !important;
+  }
+
+  mat-icon {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  span {
+    font-size: 12px !important;
   }
 
   &:hover span {

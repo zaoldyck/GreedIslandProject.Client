@@ -23,9 +23,20 @@
 .filter-bar-btn {
   margin-top: 6px;
 }
+
 .filter-row-extra-margin {
-  margin-top: -8px;
+ 
   margin-bottom: 12px;
+}
+
+.filter-item-group {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 8px;
+
+  .filter-item {
+      width:120px;
+  }
 }
 
 @media (max-width: constants.$small-breakpoint-width) {

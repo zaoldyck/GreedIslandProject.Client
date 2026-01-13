@@ -93,17 +93,42 @@
           </mat-select>
         </mat-form-field>
       </div>
-      }
       <div class="filter-row filter-row-extra-margin">
         <div class="filter-item">
-          <a class="expandable-header pointer" (click)="toggleAdvancedOptions()">
+          <a class="expandable-header-small pointer" (click)="togglePostOptions()">
             <mat-icon>
-              {{ advancedOptionCollapsed() ? 'arrow_drop_down' : 'arrow_right' }}
+              {{ postOptionCollapsed() ? 'arrow_drop_down' : 'arrow_right' }}
             </mat-icon>
-            <span>按回复数量和话题浏览量过滤</span>
+            <span>按话题的回复量和浏览量过滤</span>
           </a>
         </div>
       </div>
+      @if(postOptionCollapsed()){
+      <div class="filter-row">
+        <div class="filter-item-group">
+          <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+            <mat-label>最小回复量</mat-label>
+            <input matInput />
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+            <mat-label>最大回复量</mat-label>
+            <input matInput />
+          </mat-form-field>
+        </div>
+        <div class="filter-item-group">
+          <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+            <mat-label>最小浏览量</mat-label>
+            <input matInput />
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+            <mat-label>最大浏览量</mat-label>
+            <input matInput />
+          </mat-form-field>
+        </div>
+      </div>
+      }
+      }
+
       }
     </form>
   </mat-card-content>

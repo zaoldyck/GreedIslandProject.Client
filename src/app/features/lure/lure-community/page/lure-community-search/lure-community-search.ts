@@ -26,6 +26,7 @@ export class LureCommunitySearch {
   });
   // 快速链接折叠状态：默认展开（false 表示未折叠）
   readonly advancedOptionCollapsed = signal<boolean>(true);
+  readonly postOptionCollapsed = signal<boolean>(false);
   /** 外部检索（自动重置并拉取） */
   onSearch() {
  
@@ -35,5 +36,8 @@ export class LureCommunitySearch {
   }
   toggleAdvancedOptions(): void {
     this.advancedOptionCollapsed.update(v => !v);
+  }
+  togglePostOptions(): void {
+    this.postOptionCollapsed.update(v => !v);
   }
 }
