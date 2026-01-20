@@ -34,7 +34,7 @@
   /* 边框与圆角 */
   border: 1px solid var(--type-color);
   border-radius: 6px;
- 
+
 
   .tag-type-header {
     display: flex;
@@ -43,7 +43,7 @@
     /* 用浅背景增强可读性：给颜色降透明度或配合混合色 */
     background: color-mix(in oklab, var(--type-color) 16%, white);
     border-radius: 6px 6px 0 0; /* 只给顶部圆角 */
- 
+
     color: var(--type-color);
     padding: 2px 12px;
 
@@ -55,18 +55,11 @@
       margin: 0;
     }
   }
-
-
-
-  .tag-type-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 12px;
-    padding: 2px 12px;
-
-  }
+ 
 }
-
+.limit-reached {
+    margin-left:0px;
+}
 .tag-select-dialog-content {
   display: flex;
   flex-direction: column;
