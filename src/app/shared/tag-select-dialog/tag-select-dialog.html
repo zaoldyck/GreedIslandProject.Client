@@ -36,6 +36,7 @@
     <div class="tag-type-tags">
       @for (tag of type.tags; track tag.id) {
       <mat-checkbox class="colorful-checkbox" [checked]="isSelected(tag)"
+                      [disabled]="selectedCount() >= MAX_SELECTED && !isSelected(tag)"
                     (change)="toggle(tag, $event.checked)">
         {{ tag.name }}
       </mat-checkbox>
@@ -55,7 +56,18 @@
 
   <div class="selected-summary">
     <div class="summary-header">
-      <span>已选标签：{{ selectedTags().length }}</span>
+      <span>
+        已选标签：{{ selectedTags().length }}
+        @if(selectedTags().length >= MAX_SELECTED)
+        {
+        <span class="limit-reached warn-color">
+          （已达标签数量上限）
+        </span>
+        }
+      </span>
+     
+
+
       <span class="spacer"></span>
       <button mat-button class="warn-button" (click)="clear()">重新选择</button>
     </div>

@@ -71,7 +71,9 @@
 .switch-slide-toggle {
   @include mat.slide-toggle-overrides((unselected-handle-horizontal-margin:0px 0px 0px 4px,unselected-handle-size:var(--mat-slide-toggle-selected-handle-size, 24px),unselected-focus-handle-color:var(--mat-sys-primary-container),unselected-pressed-handle-color:var(--mat-sys-primary-container),unselected-hover-handle-color:var(--mat-sys-primary-container),unselected-pressed-state-layer-color:var(--mat-sys-primary), unselected-focus-state-layer-color:var(--mat-sys-primary),unselected-hover-state-layer-color:var(--mat-sys-primary),unselected-handle-color:var(--mat-sys-on-primary),unselected-track-color: var(--mat-sys-primary), unselected-focus-track-color: var(--mat-sys-primary), track-outline-color: var(--mat-sys-primary),unselected-hover-track-color: var(--mat-sys-primary),unselected-pressed-track-color:var(--mat-sys-primary) ));
 }
-
+.warn-color {
+  color:var(--mat-sys-error);
+}
 .rotate-180 {
   transform: rotate(180deg);
 }
