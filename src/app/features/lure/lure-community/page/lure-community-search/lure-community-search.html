@@ -50,29 +50,78 @@
       </div>
       @if(advancedOptionCollapsed()){
       <div class="filter-row">
-        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+
+        <mat-form-field appearance="outline" class="filter-item">
           <mat-label>主题</mat-label>
-          <mat-select formControlName="scope">
-            @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
-            <mat-option [value]="opt.id">
-              {{ opt.name }}
+
+          <mat-select formControlName="category" [compareWith]="compareById" (closed)="clearCategorySearch()">
+
+            <mat-select-trigger>
+              <span>{{ form.controls.category.value?.name }}</span>
+            </mat-select-trigger>
+
+            <!-- 搜索框：放在 disabled option 里 -->
+            <mat-option disabled>
+              <ngx-mat-select-search [formControl]="categorySearchCtrl"
+                                     placeholderLabel="搜索..."
+                                     noEntriesFoundLabel="没有匹配的选项">
+              </ngx-mat-select-search>
             </mat-option>
+
+            <!-- 你的清空项：用 --，非常合适 -->
+            <mat-option [value]="null">  <mat-icon>filter_alt_off</mat-icon>--</mat-option>
+
+            @if (filteredCategories$ | async; as categories) {
+            @for (c of categories; track c.id) {
+
+            <mat-option [value]="c">
+              <mat-icon>{{ c.icon }}</mat-icon>
+
+              <span>{{ c.name }}</span>
+              <span class="opt-count"> × {{ c.lureCommunityTopicsCount }}</span>
+            </mat-option>
+
+            }
             }
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+
+
+        <mat-form-field appearance="outline" class="filter-item">
           <mat-label>标签</mat-label>
-          <mat-select formControlName="scope">
-            @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
-            <mat-option [value]="opt.id">
-              {{ opt.name }}
+
+          <mat-select formControlName="tags"
+                      multiple
+                      [compareWith]="compareById"
+                      (closed)="clearTagSearch()" >
+
+            <!-- 搜索框：只能放在一个 disabled 的 mat-option 里，且它必须是“单独一行” -->
+            <mat-option disabled class="select-search-option">
+              <ngx-mat-select-search [formControl]="tagSearchCtrl"
+                                     placeholderLabel="搜索..."
+                                     noEntriesFoundLabel="没有匹配的选项">
+              </ngx-mat-select-search>
             </mat-option>
+
+            <!-- 二级结构：mat-optgroup = TagType，mat-option = Tag -->
+            @if (filteredTagTypes$ | async; as typeList) {
+            @for (t of typeList; track t.id) {
+            <mat-optgroup [label]="t.name?? '(未命名类型)'">
+              @for (tag of t.tags; track tag.id) {
+              <mat-option [value]="tag">
+                {{ tag.name }}
+              </mat-option>
+              }
+            </mat-optgroup>
             }
+            }
+
           </mat-select>
         </mat-form-field>
+
       </div>
       <div class="filter-row">
-        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+        <mat-form-field appearance="outline"   class="filter-item">
           <mat-label>作者</mat-label>
           <mat-select formControlName="scope">
             @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
@@ -82,7 +131,7 @@
             }
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+        <mat-form-field appearance="outline"  class="filter-item">
           <mat-label>发布日期</mat-label>
           <mat-select formControlName="scope">
             @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {

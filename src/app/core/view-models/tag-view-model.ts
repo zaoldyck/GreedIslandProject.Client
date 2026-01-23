@@ -1,9 +1,5 @@
-
-
-
 export class TagViewModel {
   constructor() {
-
     this.id = 0;
 
     this.typeId = null;
@@ -14,7 +10,7 @@ export class TagViewModel {
 
     this.description = null;
 
-    this.iconUrl = null;
+    this.icon = null;
 
     this.color = null;
 
@@ -23,7 +19,6 @@ export class TagViewModel {
     this.isEnabled = null;
 
     this.typeColor = null;
-
   }
 
   public id: number;
@@ -36,7 +31,7 @@ export class TagViewModel {
 
   public description: string | null;
 
-  public iconUrl: string | null;
+  public icon: string | null;
 
   public color: string | null;
 
@@ -45,5 +40,4 @@ export class TagViewModel {
   public isEnabled: boolean | null;
 
   public typeColor: string | null;
-
 }

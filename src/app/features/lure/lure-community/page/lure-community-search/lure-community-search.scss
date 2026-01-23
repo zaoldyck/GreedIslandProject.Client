@@ -38,6 +38,26 @@
       width:120px;
   }
 }
+.suffix-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* 宽度按你的按钮尺寸调整：两枚图标按钮合计宽度 */
+  min-width: 88px; // 约两枚 40px 按钮 + 间距
+
+  justify-content: flex-end;
+}
+
+.selected-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1; /* 防止继承的行高把它撑起来 */
+}
+ 
+.opt-count {
+  color: var(--mat-sys-on-surface-variant);
+}
 
 @media (max-width: constants.$small-breakpoint-width) {
   .filter-form {
