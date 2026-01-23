@@ -2,25 +2,119 @@ import { Component, inject, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TagViewModel } from '../../../../../core/view-models/tag-view-model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Constants } from '../../../../../core/constants/constants';
+import { combineLatest, map, Observable, shareReplay, startWith } from 'rxjs';
+import { LureCommunityCategoryViewModel } from '../../../../../core/view-models/lure-community-category-view-model';
+import { LureCommunityService } from '../lure-community-service';
+import { AsyncPipe } from '@angular/common';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { CommonService } from '../../../../../core/services/common-service';
+import { TranslocoService } from '@jsverse/transloco';
+
 type SearchScope = 'topics' | 'categories' | 'users';
+type HasId = { id: number };
 @Component({
   selector: 'app-lure-community-search',
-  imports: [MatSelectModule,MatInputModule,MatIconModule,ReactiveFormsModule,MatFormFieldModule,MatButtonModule,MatCardModule],
+  imports: [NgxMatSelectSearchModule, AsyncPipe,MatSelectModule, MatInputModule, MatIconModule, ReactiveFormsModule, MatFormFieldModule, MatButtonModule, MatCardModule],
   templateUrl: './lure-community-search.html',
   styleUrl: './lure-community-search.scss',
 })
 export class LureCommunitySearch {
   private fb = inject(FormBuilder);
   readonly constants = inject(Constants);
+  private lureCommunityService = inject(LureCommunityService);
+  private commonService = inject(CommonService);
+  readonly categories$: Observable<LureCommunityCategoryViewModel[]> =
+    this.lureCommunityService.getLureCommunityCategories();
+
+
+  readonly categorySearchCtrl = new FormControl<string>('', { nonNullable: true });
+
+  // 过滤后的列表
+  readonly filteredCategories$ = combineLatest([
+    this.categories$,
+    this.categorySearchCtrl.valueChanges.pipe(startWith('')),
+  ]).pipe(
+    map(([categories, keyword]) => {
+      const k = keyword.trim().toLowerCase();
+      if (!k) return categories;
+
+      return categories.filter(c =>
+        (c.name ?? '').toLowerCase().includes(k)
+      );
+    }),
+    shareReplay(1)
+  );
+
+  readonly compareById = <T extends HasId>(a: T | null, b: T | null): boolean =>
+    a?.id === b?.id;
+
+  clearCategorySearch() {
+    this.categorySearchCtrl.setValue('');
+  }
+
+  private transloco = inject(TranslocoService);
+
+  // 语言变化触发重算（确保初次也会 emit 一次）
+  readonly lang$ = this.transloco.langChanges$.pipe(
+    startWith(this.transloco.getActiveLang())
+  );
+
+  // 从后端拿到 TagTypes（全量：传 []）
+  readonly tagTypes$ = this.commonService.getTagTypes([]).pipe(shareReplay(1));
+
+  readonly tagSearchCtrl = new FormControl<string>('', { nonNullable: true });
+ 
+
+  readonly filteredTagTypes$ = combineLatest([
+    this.tagTypes$,
+    this.tagSearchCtrl.valueChanges.pipe(startWith('')),
+    this.lang$, // ✅ 语言切换会触发 map 重新跑
+  ]).pipe(
+    map(([types, keyword]) => {
+      const k = keyword.trim().toLowerCase();
+      if (!k) return types;
+
+      return types
+        .map(t => {
+          // ✅ type 显示名：用 name 作为 key 翻译
+          const typeLabel = (this.transloco.translate(t.name ?? '') || '').toLowerCase();
+          const typeMatch = typeLabel.includes(k);
+
+          // ✅ tag 显示名：同样用 tag.name 作为 key 翻译
+          const filteredTags = (t.tags ?? []).filter(tag => {
+            const tagLabel = (this.transloco.translate(tag.name ?? '') || '').toLowerCase();
+            return tagLabel.includes(k);
+          });
+
+          return {
+            ...t,
+            tags: typeMatch ? (t.tags ?? []) : filteredTags,
+          };
+        })
+        .filter(t => (t.tags?.length ?? 0) > 0);
+    }),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+
+  clearTagSearch() {
+    this.tagSearchCtrl.setValue('');
+  }
+
+ 
+
   form = this.fb.nonNullable.group({
     keyword: '',
     scope: this.fb.nonNullable.control<SearchScope>('topics'),
+
+    category: this.fb.control<LureCommunityCategoryViewModel | null>(null),
+
     tags: this.fb.nonNullable.control<TagViewModel[]>([]),
     matchMode: 'AND', // ✅ 用字面量类型，默认 OR
   });
@@ -29,7 +123,6 @@ export class LureCommunitySearch {
   readonly postOptionCollapsed = signal<boolean>(false);
   /** 外部检索（自动重置并拉取） */
   onSearch() {
- 
   }
   clearKeyword() {
     this.form.controls.keyword.setValue('');

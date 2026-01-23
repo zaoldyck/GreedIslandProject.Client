@@ -10,7 +10,7 @@ export class TagTypeViewModel {
 
     this.description = null;
 
-    this.iconUrl = null;
+    this.icon = null;
 
     this.color = null;
 
@@ -29,7 +29,7 @@ export class TagTypeViewModel {
 
   public description: string | null;
 
-  public iconUrl: string | null;
+  public icon: string | null;
 
   public color: string | null;
 

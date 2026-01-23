@@ -40,3 +40,18 @@
   padding-top: 8px !important;
   padding-bottom: 4px !important;
 }
+.select-search-option {
+}
+
+.mat-select-search-clear {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+mat-option {
+  mat-icon {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+ 

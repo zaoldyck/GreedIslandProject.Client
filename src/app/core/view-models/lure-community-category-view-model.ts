@@ -8,13 +8,15 @@ export class LureCommunityCategoryViewModel {
 
     this.description = null;
 
-    this.iconUrl = null;
+    this.icon = null;
 
     this.color = null;
 
     this.sortOrder = 0;
 
     this.isEnabled = null;
+
+    this.lureCommunityTopicsCount = 0;
   }
 
   public id: number;
@@ -25,11 +27,13 @@ export class LureCommunityCategoryViewModel {
 
   public description: string | null;
 
-  public iconUrl: string | null;
+  public icon: string | null;
 
   public color: string | null;
 
   public sortOrder: number;
 
   public isEnabled: boolean | null;
+
+  public lureCommunityTopicsCount: number;
 }
