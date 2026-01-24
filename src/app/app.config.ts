@@ -30,7 +30,8 @@ export const appConfig: ApplicationConfig = {
       // 用 firstValueFrom 等待 Observable 解析一次值（不再用 toPromise）
       return firstValueFrom(auth.refreshSession())
         .catch(() => void 0); // 失败时忽略，保证不阻塞到异常
-    }), provideHttpClient(), provideTransloco({
+    }),
+    provideTransloco({
       config: {
         availableLangs: ['en', 'zh-CN'],
         defaultLang: 'zh-CN',

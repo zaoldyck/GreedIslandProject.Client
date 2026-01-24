@@ -34,49 +34,51 @@
     </span>
   </mat-form-field>
 
-  <mat-form-field appearance="outline"
-                  floatLabel="always"
-                  class="filter-item filter-tags pointer"
-                  (mousedown)="$event.preventDefault()"
-                  (click)="openTagSelectDialog()">
-    <mat-label>标签</mat-label>
+  <div class="filter-tags tag-select-row">
+    <mat-form-field appearance="outline"
+                    floatLabel="always"
+                    class="filter-item  pointer"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="openTagSelectDialog()">
+      <mat-label>标签</mat-label>
 
-    <!-- infix 内容：已选标签（保持你原来的 chips） -->
-    <mat-chip-grid aria-label="已选择的标签">
-      @for (tag of form.controls.tags.value; track tag.id) {
-      <mat-chip-row class="selected-chip"
-                    [style.--chip-color]="tag.typeColor"
-                    [removable]="true"
-                    (removed)="removeTag(tag)"
-                    (click)="$event.stopPropagation()">
-        {{ tag.name }}
-        <button matChipRemove aria-label="移除标签">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-chip-row>
-      }
-    </mat-chip-grid>
+      <!-- infix 内容：已选标签（保持你原来的 chips） -->
+      <mat-chip-grid aria-label="已选择的标签">
+        @for (tag of form.controls.tags.value; track tag.id) {
+        <mat-chip-row class="selected-chip"
+                      [style.--chip-color]="tag.typeColor"
+                      [removable]="true"
+                      (removed)="removeTag(tag)"
+                      (click)="$event.stopPropagation()">
+          {{ tag.name }}
+          <button matChipRemove aria-label="移除标签">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+      </mat-chip-grid>
 
-    <!-- 后缀按钮：打开标签选择弹窗（位于最右侧） -->
-    <button mat-icon-button
-            matSuffix
-            type="button"
-            aria-label="选择标签"
-            (click)="$event.stopPropagation(); openTagSelectDialog()">
-      <mat-icon>tune</mat-icon>
-    </button>
-  </mat-form-field>
-  @if (form.controls.tags.value.length >= 2) {
+      <!-- 后缀按钮：打开标签选择弹窗（位于最右侧） -->
+      <button mat-icon-button
+              matSuffix
+              type="button"
+              aria-label="选择标签"
+              (click)="$event.stopPropagation(); openTagSelectDialog()">
+        <mat-icon>tune</mat-icon>
+      </button>
+    </mat-form-field>
+    @if (form.controls.tags.value.length >= 2) {
 
-  <mat-slide-toggle [checked]="form.controls.matchMode.value === 'OR'"
-                    (change)="onMatchModeChange($event)"
-                    class="switch-slide-toggle filter-slide-toggle"
-                    [hideIcon]="true"
-                    aria-label="匹配模式切换">
-    {{ form.controls.matchMode.value === 'AND' ? '匹配全部标签' : '匹配任意标签' }}
-  </mat-slide-toggle>
+    <mat-slide-toggle [checked]="form.controls.matchMode.value === 'OR'"
+                      (change)="onMatchModeChange($event)"
+                      class="filter-no-grow-item switch-slide-toggle filter-slide-toggle"
+                      [hideIcon]="true"
+                      aria-label="匹配模式切换">
+      {{ form.controls.matchMode.value === 'AND' ? '匹配全部标签' : '匹配任意标签' }}
+    </mat-slide-toggle>
 
-  }
+    }
+  </div>
   <div class="filter-item filter-bar-btns">
 
     <button class="filter-bar-btn" matButton="tonal" type="button" (click)="reset()">重置</button>

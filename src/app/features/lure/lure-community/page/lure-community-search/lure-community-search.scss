@@ -1,4 +1,13 @@
 @use '../../../../../../styles/shared/constants';
+@use '@angular/material' as mat;
+
+ 
+  /* 只针对这个标签 select 的 trigger（输入框显示区） */
+  .tag-select {
+    @include mat.select-overrides( );
+  }
+ 
+
 .filter-form {
   display: flex;
   flex-direction: column;
@@ -9,15 +18,24 @@
   display: flex;
   flex-flow: wrap;
   row-gap: 4px;
-  column-gap: 1rem;
+  column-gap: 16px;
 }
 .filter-item {
   flex: 1 1 auto;
 }
-.filter-item-2 {
+.filter-item-4 {
   flex: 4 1 auto;
 }
+.filter-item-3 {
+  flex: 3 1 auto;
+}
+.filter-item-2 {
+  flex: 2 1 auto;
+}
 .filter-bar-btns {
+  flex: 0 0 auto;
+}
+.filter-no-grow-item {
   flex: 0 0 auto;
 }
 .filter-bar-btn {
@@ -48,26 +66,50 @@
   justify-content: flex-end;
 }
 
-.selected-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  line-height: 1; /* 防止继承的行高把它撑起来 */
-}
  
 .opt-count {
   color: var(--mat-sys-on-surface-variant);
 }
+.chip-set-container {
+  padding: 4px 16px;
+  background-color: var(--mat-sys-surface-container, var(--mat-select-panel-background-color, white));
 
+  .chip-set {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap; /* ✅ 可换行 */
+  }
+}
+
+.custom-no-item-note {
+  padding-top: 8px;
+  padding-left:16px;
+}
+
+.filter-slide-toggle {
+  margin-top: 10px;
+}
+.tag-select-row{
+    display:flex;
+    gap:8px;
+}
 @media (max-width: constants.$small-breakpoint-width) {
   .filter-form {
-    padding: 8px;
+    padding: 8px 0px;
   }
 }
 @media (max-width: constants.$extra-small-breakpoint-width) {
   .filter-row {
     flex-direction:column;
     gap:4px;
+  }
+  .tag-select-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .filter-slide-toggle {
+    margin-top: -16px;
+    margin-bottom: 12px;
   }
   .filter-bar-btns {
     flex: 1 1 auto;

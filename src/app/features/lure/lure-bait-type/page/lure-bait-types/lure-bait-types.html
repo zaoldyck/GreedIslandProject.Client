@@ -34,9 +34,10 @@
     </span>
   </mat-form-field>
 
+  <div class="filter-tags tag-select-row">
   <mat-form-field appearance="outline"
                   floatLabel="always"
-                  class="filter-item filter-tags pointer"
+                  class="filter-item  pointer"
                   (mousedown)="$event.preventDefault()"
                   (click)="openTagSelectDialog()">
     <mat-label>标签</mat-label>
@@ -70,13 +71,14 @@
 
   <mat-slide-toggle [checked]="form.controls.matchMode.value === 'OR'"
                     (change)="onMatchModeChange($event)"
-                    class="switch-slide-toggle filter-slide-toggle"
+                    class="filter-no-grow-item switch-slide-toggle filter-slide-toggle"
                     [hideIcon]="true"
                     aria-label="匹配模式切换">
     {{ form.controls.matchMode.value === 'AND' ? '匹配全部标签' : '匹配任意标签' }}
   </mat-slide-toggle>
 
   }
+ </div>
   <div class="filter-item filter-bar-btns">
 
     <button class="filter-bar-btn" matButton="tonal" type="button" (click)="reset()">重置</button>

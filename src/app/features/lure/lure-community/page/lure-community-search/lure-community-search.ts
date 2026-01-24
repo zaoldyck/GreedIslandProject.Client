@@ -8,19 +8,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Constants } from '../../../../../core/constants/constants';
-import { combineLatest, map, Observable, shareReplay, startWith } from 'rxjs';
+import { combineLatest, forkJoin, map, Observable, of, shareReplay, startWith, switchMap, take } from 'rxjs';
 import { LureCommunityCategoryViewModel } from '../../../../../core/view-models/lure-community-category-view-model';
 import { LureCommunityService } from '../lure-community-service';
 import { AsyncPipe } from '@angular/common';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { CommonService } from '../../../../../core/services/common-service';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 type SearchScope = 'topics' | 'categories' | 'users';
 type HasId = { id: number };
 @Component({
   selector: 'app-lure-community-search',
-  imports: [NgxMatSelectSearchModule, AsyncPipe,MatSelectModule, MatInputModule, MatIconModule, ReactiveFormsModule, MatFormFieldModule, MatButtonModule, MatCardModule],
+  imports: [MatSlideToggleModule, MatChipsModule,TranslocoModule,NgxMatSelectSearchModule, AsyncPipe,MatSelectModule, MatInputModule, MatIconModule, ReactiveFormsModule, MatFormFieldModule, MatButtonModule, MatCardModule],
   templateUrl: './lure-community-search.html',
   styleUrl: './lure-community-search.scss',
 })
@@ -74,23 +76,22 @@ export class LureCommunitySearch {
   readonly filteredTagTypes$ = combineLatest([
     this.tagTypes$,
     this.tagSearchCtrl.valueChanges.pipe(startWith('')),
-    this.lang$, // ✅ 语言切换会触发 map 重新跑
+    this.lang$, // 语言切换触发重新过滤（因为 type 的翻译会变）
   ]).pipe(
     map(([types, keyword]) => {
-      const k = keyword.trim().toLowerCase();
+      const k = (keyword ?? '').trim().toLowerCase();
       if (!k) return types;
 
       return types
         .map(t => {
-          // ✅ type 显示名：用 name 作为 key 翻译
-          const typeLabel = (this.transloco.translate(t.name ?? '') || '').toLowerCase();
+          // ✅ type 名用于搜索 —— 翻译后参与匹配
+          const typeLabel = (
+            this.transloco.translate(t.name ?? '') || ''
+          ).toLowerCase();
           const typeMatch = typeLabel.includes(k);
-
-          // ✅ tag 显示名：同样用 tag.name 作为 key 翻译
-          const filteredTags = (t.tags ?? []).filter(tag => {
-            const tagLabel = (this.transloco.translate(tag.name ?? '') || '').toLowerCase();
-            return tagLabel.includes(k);
-          });
+          const filteredTags = (t.tags ?? []).filter(tag =>
+            (tag.name ?? '').toLowerCase().includes(k)
+          );
 
           return {
             ...t,
@@ -101,6 +102,8 @@ export class LureCommunitySearch {
     }),
     shareReplay({ bufferSize: 1, refCount: true })
   );
+
+
 
 
   clearTagSearch() {
@@ -118,6 +121,23 @@ export class LureCommunitySearch {
     tags: this.fb.nonNullable.control<TagViewModel[]>([]),
     matchMode: 'AND', // ✅ 用字面量类型，默认 OR
   });
+
+  remove(tagId: number): void {
+    const tagsCtrl = this.form.controls.tags;     // ✅ 强类型 FormControl<TagViewModel[]>
+    const current = tagsCtrl.value;               // ✅ 一定是 TagViewModel[]（nonNullable）
+
+    // 如果没有变化就不 setValue（避免无意义触发 valueChanges）
+    const next = current.filter(t => t.id !== tagId);
+    if (next.length === current.length) return;
+
+    tagsCtrl.setValue(next);
+
+ 
+  }
+  onMatchModeChange(ev: MatSlideToggleChange) {
+    this.form.controls.matchMode.setValue(ev.checked ? 'OR' : 'AND');
+    this.onSearch();
+  }
   // 快速链接折叠状态：默认展开（false 表示未折叠）
   readonly advancedOptionCollapsed = signal<boolean>(true);
   readonly postOptionCollapsed = signal<boolean>(false);

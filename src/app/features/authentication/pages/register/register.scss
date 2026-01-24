@@ -53,7 +53,7 @@
 .sms-row {
   display: grid;
   grid-template-columns: 1fr auto; // 输入框 + 按钮
-  gap: 12px;
+  gap: 8px;
   align-items: start; // 顶部对齐
 }
 

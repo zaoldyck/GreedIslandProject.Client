@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use '../../styles/shared/constants';
 
 .docs-navbar-header, .secondary-navbar-header {
   color: var(--mat-sys-primary);
@@ -41,6 +42,10 @@
   padding-bottom: 4px !important;
 }
 .select-search-option {
+  padding: 0px !important;
+  .mdc-list-item__primary-text{
+      width:100%;
+  }
 }
 
 .mat-select-search-clear {
@@ -54,4 +59,64 @@ mat-option {
     height: 20px !important;
   }
 }
+
+
+
+/* 只作用于“标签”这个 select 的下拉面板 */
+.tag-select-panel {
+  max-height: 480px !important; /* 或者 480px / 600px 看你需要 */
+  min-width: 400px !important;
  
+  .mat-mdc-optgroup-label {
+    background-color: color-mix(in srgb, var(--group-color) 4%, transparent);
+    border-left: 4px solid var(--group-color);
+    border-radius: 2px;
+    font-weight: 600; /* 更像分组标题 */
+  }
+  /* ---------- A) Optgroup 标题颜色 ---------- */
+  .mat-mdc-optgroup-label {
+    color: var(--group-color );
+  }
+  /* ---------- B) Option 文本颜色：普通 / hover / focus / selected 都不被洗掉 ---------- */
+  /* 默认文本颜色 */
+  .mat-mdc-option.tag-option .tag-option-text {
+    color: var(--group-color );
+  }
+  /* ---------- D) 可选：hover 背景不要太强（否则你会觉得“又丑又脏”） ---------- */
+
+  .mat-mdc-option.tag-option:hover {
+    background-color: color-mix(in srgb, var(--group-color) 8%, transparent);
+  }
+
+  .mat-mdc-option.tag-option:focus.mdc-list-item, .mat-mdc-option.tag-option.mat-mdc-option-active.mdc-list-item {
+    background-color: transparent;
+  }
+  /* focus/active 的情况下，如果同时 hover，仍然用 hover 的背景色 */
+  .mat-mdc-option.tag-option:focus:hover.mdc-list-item,
+  .mat-mdc-option.tag-option.mat-mdc-option-active:hover.mdc-list-item {
+    background-color: color-mix(in srgb, var(--group-color) 8%, transparent);
+  }
+
+  .mat-mdc-option.tag-option.mdc-list-item--selected {
+    background-color: color-mix(in srgb, var(--group-color) 14%, transparent);
+  }
+  /* 选中背景也克制一点（避免整片彩色很土） */
+
+  .mat-mdc-option.tag-option.mdc-list-item--selected:focus.mdc-list-item, .mat-mdc-option.tag-option.mdc-list-item--selected.mat-mdc-option-active.mdc-list-item {
+    background-color: color-mix(in srgb, var(--group-color) 18%, transparent);
+  }
+  /* 1) 未选中：只改边框颜色（保持克制） */
+  .mat-mdc-option.tag-option .mat-pseudo-checkbox {
+    border-color: var(--group-color);
+  }
+  /* 3) 选中/未决：填充色 + 边框色 = 组色 */
+  .mat-mdc-option.tag-option .mat-pseudo-checkbox.mat-pseudo-checkbox-checked {
+    background-color: var(--group-color);
+  }
+}
+
+@media (max-width: constants.$extra-small-breakpoint-width) {
+  .tag-select-panel {
+    min-width: 200px !important;
+    }
+ }
