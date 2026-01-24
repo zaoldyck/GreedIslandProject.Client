@@ -93,6 +93,10 @@
     display:flex;
     gap:8px;
 }
+
+.limit-reached {
+  margin-left: 0px;
+}
 @media (max-width: constants.$small-breakpoint-width) {
   .filter-form {
     padding: 8px 0px;

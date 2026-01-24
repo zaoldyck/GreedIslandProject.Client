@@ -107,15 +107,39 @@
                         formControlName="tags"
                         multiple
                         [compareWith]="compareById"
-                        (closed)="clearTagSearch()">
+                        (closed)="clearTagSearch()" >
+
+
+              <mat-select-trigger>
+                @if (form.controls.tags.value; as tags) {
+                 @if (tags.length > 0) {
+                      <span  aria-label="已选标签">
+                  @for (tag of tags; track tag.id; let last = $last) {
+                  <span  [style.color]="tag.typeColor">
+                    {{ tag.name }}
+                  </span>
+                  @if (!last) {
+                  <span >, </span>
+                  }
+                  }
+                </span>
+                 } 
+                }
+              </mat-select-trigger>
+
 
               <mat-option disabled class="select-search-option">
                 <ngx-mat-select-search [formControl]="tagSearchCtrl"
                                        placeholderLabel="搜索..."
-                                       noEntriesFoundLabel="">
+                                       noEntriesFoundLabel="" >
                 </ngx-mat-select-search>
                 @if (form.controls.tags.value; as tags) {
                 <div class="chip-set-container">
+                  @if (tags.length >=MAX_SELECTED) {
+                  <span class="limit-reached warn-color">
+                    已达标签数量上限--{{MAX_SELECTED}}个
+                  </span>
+                  }
                   <mat-chip-set class="chip-set" aria-label="已选标签">
                     @for (tag of tags; track tag.id) {
                     <mat-chip class="selected-chip"
@@ -154,7 +178,7 @@
 
                   @for (tag of type.tags; track tag.id) {
                   <mat-option class="tag-option"
-                              [value]="tag">
+                              [value]="tag" [disabled]="form.controls.tags.value.length >= MAX_SELECTED&& !form.controls.tags.value.includes(tag)">
                     <span class="tag-option-text">{{ tag.name }}</span>
                   </mat-option>
                   }

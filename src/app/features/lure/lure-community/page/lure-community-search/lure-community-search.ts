@@ -36,7 +36,7 @@ export class LureCommunitySearch {
 
 
   readonly categorySearchCtrl = new FormControl<string>('', { nonNullable: true });
-
+  readonly MAX_SELECTED = 10;
   // 过滤后的列表
   readonly filteredCategories$ = combineLatest([
     this.categories$,
@@ -122,18 +122,12 @@ export class LureCommunitySearch {
     matchMode: 'AND', // ✅ 用字面量类型，默认 OR
   });
 
+
   remove(tagId: number): void {
-    const tagsCtrl = this.form.controls.tags;     // ✅ 强类型 FormControl<TagViewModel[]>
-    const current = tagsCtrl.value;               // ✅ 一定是 TagViewModel[]（nonNullable）
-
-    // 如果没有变化就不 setValue（避免无意义触发 valueChanges）
-    const next = current.filter(t => t.id !== tagId);
-    if (next.length === current.length) return;
-
-    tagsCtrl.setValue(next);
-
- 
+    this.tagSearchCtrl.setValue('');
+    this.form.controls.tags.setValue(this.form.controls.tags.value.filter(t => t.id !== tagId));
   }
+
   onMatchModeChange(ev: MatSlideToggleChange) {
     this.form.controls.matchMode.setValue(ev.checked ? 'OR' : 'AND');
     this.onSearch();
