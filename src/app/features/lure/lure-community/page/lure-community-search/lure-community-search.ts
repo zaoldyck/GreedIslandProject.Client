@@ -68,6 +68,7 @@ export class LureCommunitySearch {
   private readonly pageSize = 20;
  
   readonly userSearching = signal(false);
+  readonly hasUserSearched = signal(false);
   private readonly forceClearUserSearch$ = new Subject<void>();
 
   readonly usersPage$ = merge(
@@ -91,7 +92,7 @@ export class LureCommunitySearch {
       // === 你原来的逻辑几乎原封不动 ===
       if (!keyword) {
         this.userSearching.set(false);
-
+        this.hasUserSearched.set(false); 
         const selected = this.form.controls.user.value; // ApplicationUserViewModel | null
         return of({
           items: selected ? [selected] : [],
@@ -105,16 +106,21 @@ export class LureCommunitySearch {
       }
 
       this.userSearching.set(true);
-
+      this.hasUserSearched.set(false);  
       return this.commonService.getUsersForDropdown({
         page: 1,
         pageSize: this.pageSize,
         keyword
       }).pipe(
-        finalize(() => this.userSearching.set(false)),
+
+        finalize(() => {
+          this.userSearching.set(false);
+          this.hasUserSearched.set(true);  // ✅ 关键：查询结束，才允许显示“无结果”
+        }),
+
         catchError(() => {
           this.userSearching.set(false);
-
+          this.hasUserSearched.set(true); 
           const selected = this.form.controls.user.value;
           return of({
             items: selected ? [selected] : [],

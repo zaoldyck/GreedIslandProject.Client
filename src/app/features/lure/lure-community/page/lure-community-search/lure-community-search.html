@@ -67,7 +67,7 @@
                                      noEntriesFoundLabel="">
               </ngx-mat-select-search>
             </mat-option>
-            <mat-option [value]="null">  <mat-icon>filter_alt_off</mat-icon>--</mat-option>
+            <mat-option [value]="null">  <mat-icon>filter_alt_off</mat-icon>不限主题</mat-option>
             @if (filteredCategories$ | async; as categories) {
             @for (c of categories; track c.id) {
 
@@ -90,7 +90,7 @@
         </mat-form-field>
 
 
-        <mat-form-field appearance="outline" class="filter-item-2">
+        <mat-form-field appearance="outline" class="filter-item">
           <mat-label>作者</mat-label>
 
           <mat-select formControlName="user"
@@ -110,7 +110,7 @@
                                      noEntriesFoundLabel="">
               </ngx-mat-select-search>
             </mat-option>
-            <mat-option [value]="null">  <mat-icon>filter_alt_off</mat-icon>--</mat-option>
+            <mat-option [value]="null">  <mat-icon>filter_alt_off</mat-icon>不限作者</mat-option>
             @if (filteredUsers$ | async; as users) {
             @for (c of users; track c.id) {
 
@@ -129,11 +129,12 @@
             </mat-option>
 
             }
-
-              @if ((userSearchCtrl.value?.trim()?.length ?? 0) > 0&&  users.length === 0) {
-              <div class="custom-no-item-note">没有匹配的选项</div>
-              }
  
+           @if (hasUserSearched() && users.length === 0) {
+            <div class="custom-no-item-note">没有匹配的选项</div>
+            }
+
+
             }
           </mat-select>
         </mat-form-field>
