@@ -192,9 +192,11 @@
                [src]="authenticationService.user()?.avatarUrl"
                alt="用户头像" />
           } @else {
+
           <span class="user-avatar-fallback">
-            {{ getInitials(authenticationService.user()?.displayName ?? authenticationService.user()?.userName) }}
+            {{ userInitials() }}
           </span>
+
           }
         </div>
 

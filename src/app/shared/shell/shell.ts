@@ -1,5 +1,5 @@
 
-import { AfterViewInit, Component, DestroyRef, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, DestroyRef, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet, UrlTree } from '@angular/router';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -15,6 +15,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Constants } from '../../core/constants/constants';
 import { LureCommunityNavItem } from '../../core/models/lure/lure-community-models';
+import { Utilities } from '../../core/utils/utilities';
 
 type MenuType = 'main' | 'community';
 
@@ -36,6 +37,7 @@ export class Shell implements AfterViewInit {
   public router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);           // ✅ 新增：注入 ActivatedRoute
+  readonly Utilities = Utilities; 
 
   @ViewChild('content', { read: ElementRef })
   private contentEl?: ElementRef<HTMLElement>;
@@ -46,7 +48,16 @@ export class Shell implements AfterViewInit {
   readonly tagsCollapsed = signal<boolean>(false);
   // 若当前 URL 属于 “更多” 集合，则持有该项；否则 undefined
   readonly currentMoreItem = signal<LureCommunityNavItem | undefined>(undefined);
- 
+
+  readonly user = computed(() => this.authenticationService.user());
+
+  readonly userDisplayText = computed(() => {
+    const u = this.user();
+    return (u?.displayName?.trim()) || u?.userName || '';
+  });
+
+  readonly userInitials = computed(() => Utilities.getInitials(this.userDisplayText()));
+
   /** ✅ 新增：是否显示“交流区菜单”按钮（由路由 data 决定） */
   showCommunityMenuButton = false;
   menuType: MenuType = 'main';
@@ -96,10 +107,7 @@ export class Shell implements AfterViewInit {
     });
   }
 
-  getInitials(name?: string | null): string {
-    if (!name) return '?';
-    return name.slice(0, 2).toUpperCase();
-  }
+
 
   openMenu(drawer: { open: () => void }, type: MenuType) {
     this.menuType = type;

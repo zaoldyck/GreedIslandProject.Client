@@ -144,3 +144,66 @@
 }
 
 
+.user-avatar-btn {
+  /* 可在外部覆盖的 CSS 变量 */
+  --avatar-size: 40px;
+  --ring-gap: 2px;
+  width: calc(var(--avatar-size) + var(--ring-gap) * 2);
+  height: calc(var(--avatar-size) + var(--ring-gap) * 2);
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  user-select: none;
+  outline: none;
+  padding: 0;
+  /* 默认当作“可交互按钮” */
+  cursor: pointer;
+  --angle: 0deg;
+  background: linear-gradient( var(--angle), var(--orange-red) 0%, var(--vivid-pink) 50%, var(--electric-violet) 100% );
+  animation: spin-angle 4s linear infinite;
+  /* ✅ 只有“不是 static”才有 hover/focus 效果 */
+  &:not(.is-static):hover {
+    transform: scale(1.03);
+    filter: brightness(1.05);
+  }
+
+  &:not(.is-static):focus-visible {
+    box-shadow: 0 0 0 3px rgba(110, 142, 245, 0.35);
+  }
+
+  .user-avatar-img,
+  .user-avatar-fallback {
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    object-fit: cover;
+    overflow: hidden;
+  }
+
+  .user-avatar-fallback {
+    background-image: linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%);
+    font-weight: 600;
+    font-size: calc(var(--avatar-size) / 2.8);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  /* ✅ static 模式：纯展示 */
+  &.is-static {
+    cursor: default;
+    animation: none;
+    transform: none;
+    filter: none;
+    /* 如果你希望外环也不要渐变，可以改成纯色/透明 */
+    /* background: transparent; */
+    /* 或者保留渐变但不转：上面 animation:none 已经实现 */
+  }
+}
+
+/* 尺寸预设 */
+.user-avatar-btn.avatar-sm {
+  --avatar-size: 24px;
+  --ring-gap: 1px;
+}
+

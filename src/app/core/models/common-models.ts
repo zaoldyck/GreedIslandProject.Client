@@ -8,3 +8,9 @@ export interface PagedResult<T> {
   hasNext: boolean;    // 来自后端计算属性
   hasPrev: boolean;    // 来自后端计算属性
 }
+
+export interface UserDropdownRequest {
+  page: number;
+  pageSize: number;
+  keyword?: string | null;
+}

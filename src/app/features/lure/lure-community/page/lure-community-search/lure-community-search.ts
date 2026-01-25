@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Constants } from '../../../../../core/constants/constants';
-import { combineLatest, forkJoin, map, Observable, of, shareReplay, startWith, switchMap, take } from 'rxjs';
+import { catchError, combineLatest, debounce, debounceTime, distinctUntilChanged, finalize, forkJoin, map, merge, Observable, of, shareReplay, startWith, Subject, switchMap, take, timer } from 'rxjs';
 import { LureCommunityCategoryViewModel } from '../../../../../core/view-models/lure-community-category-view-model';
 import { LureCommunityService } from '../lure-community-service';
 import { AsyncPipe } from '@angular/common';
@@ -17,9 +17,13 @@ import { CommonService } from '../../../../../core/services/common-service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ApplicationUserViewModel } from '../../../../../core/view-models/application-user-view-model';
+import { Utilities } from '../../../../../core/utils/utilities';
 
 type SearchScope = 'topics' | 'categories' | 'users';
 type HasId = { id: number };
+ 
+
 @Component({
   selector: 'app-lure-community-search',
   imports: [MatSlideToggleModule, MatChipsModule,TranslocoModule,NgxMatSelectSearchModule, AsyncPipe,MatSelectModule, MatInputModule, MatIconModule, ReactiveFormsModule, MatFormFieldModule, MatButtonModule, MatCardModule],
@@ -31,12 +35,15 @@ export class LureCommunitySearch {
   readonly constants = inject(Constants);
   private lureCommunityService = inject(LureCommunityService);
   private commonService = inject(CommonService);
+  readonly Utilities = Utilities; 
+  readonly MAX_SELECTED = 10;
+
+
+  readonly compareById = <T extends HasId>(a: T | null, b: T | null): boolean =>
+    a?.id === b?.id;
   readonly categories$: Observable<LureCommunityCategoryViewModel[]> =
     this.lureCommunityService.getLureCommunityCategories();
-
-
   readonly categorySearchCtrl = new FormControl<string>('', { nonNullable: true });
-  readonly MAX_SELECTED = 10;
   // 过滤后的列表
   readonly filteredCategories$ = combineLatest([
     this.categories$,
@@ -52,13 +59,99 @@ export class LureCommunitySearch {
     }),
     shareReplay(1)
   );
-
-  readonly compareById = <T extends HasId>(a: T | null, b: T | null): boolean =>
-    a?.id === b?.id;
-
   clearCategorySearch() {
     this.categorySearchCtrl.setValue('');
   }
+
+  readonly userSearchCtrl = new FormControl<string>('', { nonNullable: true });
+
+  private readonly pageSize = 20;
+ 
+  readonly userSearching = signal(false);
+  private readonly forceClearUserSearch$ = new Subject<void>();
+
+  readonly usersPage$ = merge(
+    this.userSearchCtrl.valueChanges.pipe(map(raw => ({ raw, force: false }))),
+    this.forceClearUserSearch$.pipe(map(() => ({ raw: this.userSearchCtrl.value, force: true }))) // ✅ 强制刷新事件
+  ).pipe(
+    startWith({ raw: this.userSearchCtrl.value, force: true }),
+
+    // ✅ 正常输入防抖 250ms；强制刷新 0ms（立刻）
+    debounce(e => timer(e.force ? 0 : 250)),
+
+    // ✅ 仍然 trim（但不会再导致“无法强制刷新”）
+    map(e => ({ ...e, keyword: e.raw.trim() })),
+
+    // ✅ 只有在“非强制”时才去重；强制刷新永远放行
+    distinctUntilChanged((a, b) => !b.force && a.keyword === b.keyword),
+
+    switchMap(e => {
+      const keyword = e.keyword;
+
+      // === 你原来的逻辑几乎原封不动 ===
+      if (!keyword) {
+        this.userSearching.set(false);
+
+        const selected = this.form.controls.user.value; // ApplicationUserViewModel | null
+        return of({
+          items: selected ? [selected] : [],
+          page: 1,
+          pageSize: this.pageSize,
+          totalCount: selected ? 1 : 0,
+          totalPages: selected ? 1 : 0,
+          hasNext: false,
+          hasPrev: false
+        });
+      }
+
+      this.userSearching.set(true);
+
+      return this.commonService.getUsersForDropdown({
+        page: 1,
+        pageSize: this.pageSize,
+        keyword
+      }).pipe(
+        finalize(() => this.userSearching.set(false)),
+        catchError(() => {
+          this.userSearching.set(false);
+
+          const selected = this.form.controls.user.value;
+          return of({
+            items: selected ? [selected] : [],
+            page: 1,
+            pageSize: this.pageSize,
+            totalCount: selected ? 1 : 0,
+            totalPages: selected ? 1 : 0,
+            hasNext: false,
+            hasPrev: false
+          });
+        })
+      );
+    }),
+
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+ 
+  readonly filteredUsers$ = this.usersPage$.pipe(
+    map(r => (r.items ?? []).map(u => {
+      u.displayText = (u.displayName?.trim()) || u.userName || '';
+      u.initials = Utilities.getInitials(u.displayText);
+      return u;
+    }))
+  );
+ 
+
+
+  clearUserSearch() {
+    // 不需要靠 valueChanges 触发（它会被 distinct 吞），我们手动强制触发
+    this.userSearchCtrl.setValue('', { emitEvent: false });
+
+    // ✅ 关键：下一轮再触发，确保 mat-select 的值（比如你选了 null）已经写回 formControl
+    queueMicrotask(() => this.forceClearUserSearch$.next());
+  }
+
+
 
   private transloco = inject(TranslocoService);
 
@@ -103,13 +196,10 @@ export class LureCommunitySearch {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-
-
-
+ 
   clearTagSearch() {
     this.tagSearchCtrl.setValue('');
   }
-
  
 
   form = this.fb.nonNullable.group({
@@ -117,7 +207,7 @@ export class LureCommunitySearch {
     scope: this.fb.nonNullable.control<SearchScope>('topics'),
 
     category: this.fb.control<LureCommunityCategoryViewModel | null>(null),
-
+    user: this.fb.control<ApplicationUserViewModel | null>(null),
     tags: this.fb.nonNullable.control<TagViewModel[]>([]),
     matchMode: 'AND', // ✅ 用字面量类型，默认 OR
   });

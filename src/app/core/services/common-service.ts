@@ -4,6 +4,8 @@ import { inject, Injectable, signal, computed } from '@angular/core';
 
 import { TagTypeViewModel } from '../view-models/tag-type-view-model';
 import { Observable } from 'rxjs';
+import { PagedResult, UserDropdownRequest } from '../models/common-models';
+import { ApplicationUserViewModel } from '../view-models/application-user-view-model';
 
 @Injectable({ providedIn: 'root' })
 export class CommonService {
@@ -53,7 +55,14 @@ export class CommonService {
   getTagTypes(tagTypeCodes: string[]): Observable<TagTypeViewModel[]> {
     return this.http.post<TagTypeViewModel[]>(`${this.base}/common/tagtypes`, tagTypeCodes);
   }
- 
+
+  getUsersForDropdown(req: UserDropdownRequest): Observable<PagedResult<ApplicationUserViewModel>> {
+    return this.http.post<PagedResult<ApplicationUserViewModel>>(
+      `${this.base}/common/users/dropdown`,
+      req
+    );
+  }
+
 
   private scrollHost?: HTMLElement;
 

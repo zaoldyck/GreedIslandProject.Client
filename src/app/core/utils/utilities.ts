@@ -28,7 +28,10 @@ export class Utilities {
   public static handleError(err: any, fallbackMessage = '请求失败，请稍后重试'): string {
     return err?.error?.message || err?.message || fallbackMessage;
   }
-
+  public static getInitials(name?: string | null): string {
+    if (!name) return '?';
+    return name.slice(0, 2).toUpperCase();
+  }
   /**
    * 包裹任意 Observable，使其在订阅时触发全局进度条：
    * - 订阅开始：beginLoading()

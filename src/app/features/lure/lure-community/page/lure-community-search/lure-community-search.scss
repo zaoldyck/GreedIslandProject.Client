@@ -97,6 +97,13 @@
 .limit-reached {
   margin-left: 0px;
 }
+.user-option {
+  display: flex;
+  align-items: center; // ✅ 垂直居中
+  gap: 10px; // ✅ 头像和文字间距
+  line-height: 1.2; // 可选：避免文字行高把整体撑歪
+}
+
 @media (max-width: constants.$small-breakpoint-width) {
   .filter-form {
     padding: 8px 0px;

@@ -64,10 +64,10 @@
             <mat-option disabled>
               <ngx-mat-select-search [formControl]="categorySearchCtrl"
                                      placeholderLabel="搜索..."
-                                     noEntriesFoundLabel="没有匹配的选项">
+                                     noEntriesFoundLabel="">
               </ngx-mat-select-search>
             </mat-option>
-
+            <mat-option [value]="null">  <mat-icon>filter_alt_off</mat-icon>--</mat-option>
             @if (filteredCategories$ | async; as categories) {
             @for (c of categories; track c.id) {
 
@@ -79,25 +79,67 @@
             </mat-option>
 
             }
+              @if(categories.length==0)
+              {
+                <div class="custom-no-item-note">没有匹配的选项</div>
+  
+              }
+      
             }
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="filter-item">
+
+        <mat-form-field appearance="outline" class="filter-item-2">
           <mat-label>作者</mat-label>
-          <mat-select formControlName="scope">
-            @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
-            <mat-option [value]="opt.id">
-              {{ opt.name }}
+
+          <mat-select formControlName="user"
+                      [compareWith]="compareById"
+                      (closed)="clearUserSearch()">
+
+            <mat-select-trigger>
+              <span>
+                {{ (form.controls.user.value?.displayText) || (form.controls.user.value?.displayName?.trim()) || form.controls.user.value?.userName }}
+              </span>
+            </mat-select-trigger>
+
+            <mat-option disabled>
+              <ngx-mat-select-search [formControl]="userSearchCtrl"
+                                     placeholderLabel="搜索..."
+                                     [searching]="userSearching()"
+                                     noEntriesFoundLabel="">
+              </ngx-mat-select-search>
             </mat-option>
+            <mat-option [value]="null">  <mat-icon>filter_alt_off</mat-icon>--</mat-option>
+            @if (filteredUsers$ | async; as users) {
+            @for (c of users; track c.id) {
+
+            <mat-option [value]="c">
+              <div class="user-option">
+                <div class="user-avatar-btn avatar-sm is-static">
+                  @if (c.avatarUrl) {
+                  <img class="user-avatar-img" [src]="c.avatarUrl" alt="用户头像" />
+                  } @else {
+                  <span class="user-avatar-fallback">{{ c.initials }}</span>
+                  }
+                </div>
+
+                <span class="user-name">{{ c.displayText }}</span>
+              </div>
+            </mat-option>
+
+            }
+
+              @if ((userSearchCtrl.value?.trim()?.length ?? 0) > 0&&  users.length === 0) {
+              <div class="custom-no-item-note">没有匹配的选项</div>
+              }
+ 
             }
           </mat-select>
         </mat-form-field>
-
 
       </div>
       <div class="filter-row">
-
 
         <div class="filter-item-2 tag-select-row">
           <mat-form-field appearance="outline" class="filter-item">
@@ -107,31 +149,29 @@
                         formControlName="tags"
                         multiple
                         [compareWith]="compareById"
-                        (closed)="clearTagSearch()" >
-
+                        (closed)="clearTagSearch()">
 
               <mat-select-trigger>
                 @if (form.controls.tags.value; as tags) {
-                 @if (tags.length > 0) {
-                      <span  aria-label="已选标签">
+                @if (tags.length > 0) {
+                <span aria-label="已选标签">
                   @for (tag of tags; track tag.id; let last = $last) {
-                  <span  [style.color]="tag.typeColor">
+                  <span [style.color]="tag.typeColor">
                     {{ tag.name }}
                   </span>
                   @if (!last) {
-                  <span >, </span>
+                  <span>, </span>
                   }
                   }
                 </span>
-                 } 
+                }
                 }
               </mat-select-trigger>
-
 
               <mat-option disabled class="select-search-option">
                 <ngx-mat-select-search [formControl]="tagSearchCtrl"
                                        placeholderLabel="搜索..."
-                                       noEntriesFoundLabel="" >
+                                       noEntriesFoundLabel="">
                 </ngx-mat-select-search>
                 @if (form.controls.tags.value; as tags) {
                 <div class="chip-set-container">
@@ -167,8 +207,6 @@
                 }
               </mat-option>
 
-
-
               @if (filteredTagTypes$ | async; as typeList) {
               @for (type of typeList; track type.id) {
               <ng-container *transloco="let t">
@@ -202,8 +240,7 @@
 
           }
         </div>
-     
-     
+
         <mat-form-field appearance="outline" class="filter-item">
           <mat-label>发布日期</mat-label>
           <mat-select formControlName="scope">
