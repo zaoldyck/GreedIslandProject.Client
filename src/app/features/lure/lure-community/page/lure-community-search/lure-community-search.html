@@ -180,6 +180,7 @@
                   <mat-option class="tag-option"
                               [value]="tag" [disabled]="form.controls.tags.value.length >= MAX_SELECTED&& !form.controls.tags.value.includes(tag)">
                     <span class="tag-option-text">{{ tag.name }}</span>
+                    <span class="opt-count"> × {{ tag.lureCommunityTopicTagMapsCount }}</span>
                   </mat-option>
                   }
                 </mat-optgroup>

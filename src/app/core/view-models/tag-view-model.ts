@@ -8,8 +8,6 @@ export class TagViewModel {
 
     this.name = null;
 
-    this.description = null;
-
     this.icon = null;
 
     this.color = null;
@@ -19,6 +17,8 @@ export class TagViewModel {
     this.isEnabled = null;
 
     this.typeColor = null;
+
+    this.lureCommunityTopicTagMapsCount = 0;
   }
 
   public id: number;
@@ -29,8 +29,6 @@ export class TagViewModel {
 
   public name: string | null;
 
-  public description: string | null;
-
   public icon: string | null;
 
   public color: string | null;
@@ -40,4 +38,6 @@ export class TagViewModel {
   public isEnabled: boolean | null;
 
   public typeColor: string | null;
+
+  public lureCommunityTopicTagMapsCount: number;
 }
