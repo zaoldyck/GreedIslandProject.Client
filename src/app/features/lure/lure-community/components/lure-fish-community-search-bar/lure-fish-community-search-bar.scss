@@ -1,0 +1,55 @@
+@use '../../../../../../styles/shared/constants';
+.searchbar-container {
+  // 让整个搜索组件居中（占满一行，内容居中）
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+}
+
+.searchbar-form {
+  // 控制最大宽度
+  width: min(100%, constants.$max-searchbar-width);
+}
+
+.searchbar-field {
+  width: 100%;
+  // 让 outline 的高度更“大搜索框”
+  // Material 3（Angular Material v15+）优先用下面这套
+  --mdc-outlined-text-field-container-shape: 14px; // 圆角
+  --mdc-outlined-text-field-outline-width: 1px;
+  // 调整输入框的整体高度（通过 padding 实现更稳）
+  .mat-mdc-form-field-infix {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    min-height: 52px; // 让整体更像“大搜索框”
+  }
+  // 输入文字大小
+  input.mat-mdc-input-element {
+    font-size: 16px;
+  }
+  // placeholder（可选）
+  .mat-mdc-floating-label {
+    font-size: 15px;
+  }
+}
+
+// suffix 区域：按钮对齐 + 间距更舒服
+.suffix-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  button[mat-icon-button] {
+    width: 40px;
+    height: 40px;
+
+    mat-icon {
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+ 

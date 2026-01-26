@@ -1,13 +1,9 @@
 @use '../../../../../../styles/shared/constants';
 @use '@angular/material' as mat;
-
- 
-  /* 只针对这个标签 select 的 trigger（输入框显示区） */
-  .tag-select {
-    @include mat.select-overrides( );
-  }
- 
-
+:host {
+  display: block;
+  padding: 0px 16px;
+}
 .filter-form {
   display: flex;
   flex-direction: column;
@@ -20,6 +16,20 @@
   row-gap: 4px;
   column-gap: 16px;
 }
+.keyword-grid-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 100px;
+  row-gap: 4px;
+  column-gap: 16px;
+}
+.search-grid-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  row-gap: 4px;
+  column-gap: 16px;
+}
+
+ 
 .flex-item {
   flex: 1 1 auto;
 }
@@ -106,27 +116,27 @@
 }
  
 @media (max-width: constants.$small-breakpoint-width) {
-  .filter-form {
-    padding: 8px 0px;
-  }
- 
-}
-@media (max-width: constants.$extra-small-breakpoint-width) {
-  .filter-row {
-    flex-direction:column;
-    gap:4px;
-  }
-  .tag-select-row {
-    flex-direction: column;
-    gap: 4px;
+
+  .keyword-grid-row {
+    grid-template-columns: minmax(0, 1fr);
   }
 
+  .search-grid-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .filter-bar-btns {
     flex: 1 1 auto;
   }
 
   .filter-bar-btn {
     margin-top: 0px;
-    width:100%;
+    width: 100%;
   }
+}
+@media (max-width: constants.$extra-small-breakpoint-width) {
+
+  .filter-form {
+    padding: 8px 0px;
+  }
+
 }

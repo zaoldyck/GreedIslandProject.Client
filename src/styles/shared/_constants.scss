@@ -1,6 +1,7 @@
 @use '@angular/material' as mat;
 $small-breakpoint-width: 959px !default;
 $extra-small-breakpoint-width: 720px !default;
+$max-searchbar-width: 746px;
 @mixin root-definitions() {
   --header-height: 44px;
   --drawer-width: 280px;

@@ -1,0 +1,38 @@
+
+<div class="searchbar-container">
+  <h1 class="searchbar-title">欢迎来到路亚交流区</h1>
+
+  <form class="searchbar-form" [formGroup]="form" (ngSubmit)="onSearch()">
+    <mat-form-field appearance="outline" class="searchbar-field">
+      <!-- 左侧放大镜：提示这是搜索输入 -->
+      <mat-icon matPrefix class="prefix-icon">search</mat-icon>
+
+      <input matInput
+             placeholder="搜索"
+             formControlName="keyword"
+             autocomplete="off" />
+
+      <!-- 右侧：清空 + 高级过滤 -->
+      <span matSuffix class="suffix-box">
+        @if (form.controls.keyword.value) {
+        <button mat-icon-button
+                type="button"
+                aria-label="清空关键字"
+                (click)="clearKeyword()">
+          <mat-icon>close</mat-icon>
+        </button>
+        }
+
+        <!-- 高级过滤按钮（打开筛选面板/弹窗/抽屉） -->
+        <button mat-icon-button
+                type="button"
+                aria-label="高级过滤"
+                (click)="openAdvancedFilter()">
+          <mat-icon>tune</mat-icon>
+          <!-- 你也可以用 filter_list / filter_alt / manage_search 等图标 -->
+        </button>
+      </span>
+    </mat-form-field>
+  </form>
+</div>
+ 

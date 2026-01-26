@@ -1,21 +1,26 @@
+
 // src/app/app.config.ts
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
   inject,
-  provideAppInitializer, isDevMode, // ✅ Angular 19+ / 20 官方推荐
+  provideAppInitializer,
+  isDevMode,
+  LOCALE_ID,
 } from '@angular/core';
+
 import { provideRouter } from '@angular/router';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs'; // ✅ 替代 toPromise()
+import { firstValueFrom } from 'rxjs';
 
 import { routes } from './app.routes';
 import { AuthenticationService } from './core/services/authentication-service';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
-import { provideNativeDateAdapter } from '@angular/material/core';
+
+import { provideNativeDateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,19 +29,25 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch()),
+
+    // ✅ Material Datepicker 使用 NativeDateAdapter
     provideNativeDateAdapter(),
-    // 应用启动初始化（阻塞启动直到会话探测完成）
+
+    // ✅ 让 Material Datepicker（面板文字/星期/月）变中文
+    { provide: MAT_DATE_LOCALE, useValue: 'zh-CN' },
+
+    // ✅（可选）让 Angular 的 DatePipe/DecimalPipe 等默认用中文
+    { provide: LOCALE_ID, useValue: 'zh-CN' },
+
     provideAppInitializer(() => {
       const auth = inject(AuthenticationService);
-      // 用 firstValueFrom 等待 Observable 解析一次值（不再用 toPromise）
-      return firstValueFrom(auth.refreshSession())
-        .catch(() => void 0); // 失败时忽略，保证不阻塞到异常
+      return firstValueFrom(auth.refreshSession()).catch(() => void 0);
     }),
+
     provideTransloco({
       config: {
         availableLangs: ['en', 'zh-CN'],
         defaultLang: 'zh-CN',
-        // Remove this option if your application doesn't support changing language in runtime.
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
       },

@@ -37,7 +37,8 @@ export class LureCommunitySearch {
   private commonService = inject(CommonService);
   readonly Utilities = Utilities; 
   readonly MAX_SELECTED = 10;
-
+  // 快速链接折叠状态：默认展开（false 表示未折叠）
+  readonly advancedOptionCollapsed = signal<boolean>(true);
 
   readonly compareById = <T extends HasId>(a: T | null, b: T | null): boolean =>
     a?.id === b?.id;
@@ -209,6 +210,7 @@ export class LureCommunitySearch {
  
 
 
+
   form = this.fb.nonNullable.group({
     keyword: '',
     scope: this.fb.nonNullable.control<SearchScope>('topics'),
@@ -218,10 +220,18 @@ export class LureCommunitySearch {
     tags: this.fb.nonNullable.control<TagViewModel[]>([]),
     matchMode: 'AND',
 
-    // ✅ 发布日期（保留下拉：早于/晚于），默认早于
     publishedOp: this.fb.nonNullable.control<PublishOp>('lte'),
     publishedDate: this.fb.control<Date | null>(null),
+
+    // ✅ 新增：回复量范围
+    minReplies: this.fb.control<number | null>(null),
+    maxReplies: this.fb.control<number | null>(null),
+
+    // ✅ 新增：浏览量范围
+    minViews: this.fb.control<number | null>(null),
+    maxViews: this.fb.control<number | null>(null),
   });
+
 
 
 
@@ -235,8 +245,7 @@ export class LureCommunitySearch {
     this.form.controls.matchMode.setValue(ev.checked ? 'OR' : 'AND');
     this.onSearch();
   }
-  // 快速链接折叠状态：默认展开（false 表示未折叠）
-  readonly advancedOptionCollapsed = signal<boolean>(true);
+
   readonly postOptionCollapsed = signal<boolean>(false);
   /** 外部检索（自动重置并拉取） */
   onSearch() {
