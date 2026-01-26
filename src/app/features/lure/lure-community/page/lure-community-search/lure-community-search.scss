@@ -20,16 +20,11 @@
   row-gap: 4px;
   column-gap: 16px;
 }
-.filter-item {
+.flex-item {
   flex: 1 1 auto;
 }
-.filter-item-4 {
-  flex: 4 1 auto;
-}
-.filter-item-3 {
-  flex: 3 1 auto;
-}
-.filter-item-2 {
+
+.flex-item-2 {
   flex: 2 1 auto;
 }
 .filter-bar-btns {
@@ -47,12 +42,12 @@
   margin-bottom: 12px;
 }
 
-.filter-item-group {
+.flex-item-group {
   flex: 1 1 auto;
   display: flex;
   gap: 8px;
 
-  .filter-item {
+  .flex-item {
       width:120px;
   }
 }
@@ -86,12 +81,15 @@
   padding-left:16px;
 }
 
-.filter-slide-toggle {
-  margin-top: 10px;
-}
-.tag-select-row{
+ 
+.flex-row{
     display:flex;
     gap:8px;
+}
+.chip-flex-row {
+  display: flex;
+  flex-direction: column;
+ 
 }
 
 .limit-reached {
@@ -103,11 +101,15 @@
   gap: 10px; // ✅ 头像和文字间距
   line-height: 1.2; // 可选：避免文字行高把整体撑歪
 }
-
+.publish-date-select{
+    width:100px;
+}
+ 
 @media (max-width: constants.$small-breakpoint-width) {
   .filter-form {
     padding: 8px 0px;
   }
+ 
 }
 @media (max-width: constants.$extra-small-breakpoint-width) {
   .filter-row {
@@ -118,10 +120,7 @@
     flex-direction: column;
     gap: 4px;
   }
-  .filter-slide-toggle {
-    margin-top: -16px;
-    margin-bottom: 12px;
-  }
+
   .filter-bar-btns {
     flex: 1 1 auto;
   }

@@ -19,14 +19,14 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ApplicationUserViewModel } from '../../../../../core/view-models/application-user-view-model';
 import { Utilities } from '../../../../../core/utils/utilities';
-
+import { MatDatepickerModule } from '@angular/material/datepicker';
 type SearchScope = 'topics' | 'categories' | 'users';
 type HasId = { id: number };
- 
+export type PublishOp = 'lte' | 'gte'; // lte=早于，gte=晚于
 
 @Component({
   selector: 'app-lure-community-search',
-  imports: [MatSlideToggleModule, MatChipsModule,TranslocoModule,NgxMatSelectSearchModule, AsyncPipe,MatSelectModule, MatInputModule, MatIconModule, ReactiveFormsModule, MatFormFieldModule, MatButtonModule, MatCardModule],
+  imports: [MatDatepickerModule,MatSlideToggleModule, MatChipsModule,TranslocoModule,NgxMatSelectSearchModule, AsyncPipe,MatSelectModule, MatInputModule, MatIconModule, ReactiveFormsModule, MatFormFieldModule, MatButtonModule, MatCardModule],
   templateUrl: './lure-community-search.html',
   styleUrl: './lure-community-search.scss',
 })
@@ -208,6 +208,7 @@ export class LureCommunitySearch {
   }
  
 
+
   form = this.fb.nonNullable.group({
     keyword: '',
     scope: this.fb.nonNullable.control<SearchScope>('topics'),
@@ -215,8 +216,14 @@ export class LureCommunitySearch {
     category: this.fb.control<LureCommunityCategoryViewModel | null>(null),
     user: this.fb.control<ApplicationUserViewModel | null>(null),
     tags: this.fb.nonNullable.control<TagViewModel[]>([]),
-    matchMode: 'AND', // ✅ 用字面量类型，默认 OR
+    matchMode: 'AND',
+
+    // ✅ 发布日期（保留下拉：早于/晚于），默认早于
+    publishedOp: this.fb.nonNullable.control<PublishOp>('lte'),
+    publishedDate: this.fb.control<Date | null>(null),
   });
+
+
 
 
   remove(tagId: number): void {

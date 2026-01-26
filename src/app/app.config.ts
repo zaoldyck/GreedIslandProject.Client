@@ -15,6 +15,7 @@ import { routes } from './app.routes';
 import { AuthenticationService } from './core/services/authentication-service';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch()),
-
+    provideNativeDateAdapter(),
     // 应用启动初始化（阻塞启动直到会话探测完成）
     provideAppInitializer(() => {
       const auth = inject(AuthenticationService);

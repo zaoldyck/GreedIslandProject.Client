@@ -2,7 +2,7 @@
   <mat-card-content>
     <form [formGroup]="form" class="filter-form" (ngSubmit)="onSearch()">
       <div class="filter-row">
-        <mat-form-field appearance="outline" floatLabel="always" class="filter-item-4">
+        <mat-form-field appearance="outline" floatLabel="always" class="flex-item-2">
           <mat-label>关键字</mat-label>
           <input matInput
                  placeholder="关键字"
@@ -20,7 +20,7 @@
             }
           </span>
         </mat-form-field>
-        <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+        <mat-form-field appearance="outline" floatLabel="always" class="flex-item">
           <mat-select formControlName="scope">
             @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
             <mat-option [value]="opt.id">
@@ -29,7 +29,7 @@
             }
           </mat-select>
         </mat-form-field>
-        <div class="filter-item filter-bar-btns">
+        <div class="flex-item filter-bar-btns">
           <button class="filter-bar-btn" matButton="tonal" type="button" (click)="onSearch()">
             <mat-icon>search</mat-icon>
             搜索
@@ -39,7 +39,7 @@
       @if(form.controls.scope.value=='topics')
       {
       <div class="filter-row filter-row-extra-margin">
-        <div class="filter-item">
+        <div class="flex-item">
           <a class="expandable-header pointer" (click)="toggleAdvancedOptions()">
             <mat-icon>
               {{ advancedOptionCollapsed() ? 'arrow_drop_down' : 'arrow_right' }}
@@ -51,7 +51,7 @@
       @if(advancedOptionCollapsed()){
       <div class="filter-row">
 
-        <mat-form-field appearance="outline" class="filter-item-2">
+        <mat-form-field appearance="outline" class="flex-item-2">
           <mat-label>主题</mat-label>
 
           <mat-select formControlName="category" [compareWith]="compareById" (closed)="clearCategorySearch()">
@@ -79,18 +79,144 @@
             </mat-option>
 
             }
-              @if(categories.length==0)
-              {
-                <div class="custom-no-item-note">没有匹配的选项</div>
-  
-              }
-      
+            @if(categories.length==0)
+            {
+            <div class="custom-no-item-note">没有匹配的选项</div>
+
+            }
+
             }
           </mat-select>
         </mat-form-field>
+ 
+        <div class="flex-item flex-row">
+          <!-- 发布日期操作符：默认早于 -->
+          <mat-form-field appearance="outline" class="publish-date-select filter-no-grow-item">
+            <mat-select formControlName="publishedOp">
+              <mat-option value="lte">早于</mat-option>
+              <mat-option value="gte">晚于</mat-option>
+            </mat-select>
+          </mat-form-field>
 
+          <!-- 发布日期：单日期 -->
+          <mat-form-field appearance="outline" class="flex-item">
+            <mat-label>发布日期</mat-label>
+            <input matInput
+                   [matDatepicker]="pubPicker"
+                   formControlName="publishedDate"
+                   placeholder="选择日期" />
 
-        <mat-form-field appearance="outline" class="filter-item">
+            <mat-datepicker-toggle matIconSuffix [for]="pubPicker"></mat-datepicker-toggle>
+            <mat-datepicker #pubPicker></mat-datepicker>
+
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="filter-row">
+       
+        <mat-form-field appearance="outline" class="flex-item-2">
+          <mat-label>标签</mat-label>
+
+          <mat-select [panelClass]="'tag-select-panel'"
+                      formControlName="tags"
+                      multiple
+                      [compareWith]="compareById"
+                      (closed)="clearTagSearch()">
+
+            <mat-select-trigger>
+              @if (form.controls.tags.value; as tags) {
+                 @if (tags.length > 0) {
+                   <span aria-label="已选标签">
+                @for (tag of tags; track tag.id; let last = $last) {
+                <span [style.color]="tag.typeColor">
+                  {{ tag.name }}
+                </span>
+                @if (!last) {
+                <span>, </span>
+                }
+                }
+              </span>
+                 }
+              }
+
+            </mat-select-trigger>
+
+            <mat-option disabled class="select-search-option">
+              <ngx-mat-select-search [formControl]="tagSearchCtrl"
+                                     placeholderLabel="搜索..."
+                                     noEntriesFoundLabel="">
+              </ngx-mat-select-search>
+              @if (form.controls.tags.value; as tags) {
+              <div class="chip-flex-row chip-set-container">
+                <div class="flex-item">
+                  @if (tags.length >=MAX_SELECTED) {
+                  <span class="limit-reached warn-color">
+                    已达标签数量上限--{{MAX_SELECTED}}个
+                  </span>
+                  }
+                  <mat-chip-set class="chip-set" aria-label="已选标签">
+                    @for (tag of tags; track tag.id) {
+                    <mat-chip class="selected-chip"
+                              [style.--chip-color]="tag.typeColor"
+                              [removable]="true"
+                              (removed)="remove(tag.id)">
+
+                      {{ tag.name }}
+
+                      <button matChipRemove aria-label="移除 {{tag.name}}">
+                        <mat-icon>cancel</mat-icon>
+                      </button>
+                    </mat-chip>
+                    }
+                  </mat-chip-set>
+                </div>
+                @if (form.controls.tags.value.length >= 2) {
+
+                <mat-slide-toggle [checked]="form.controls.matchMode.value === 'OR'"
+                                  (change)="onMatchModeChange($event)"
+                                  class="filter-no-grow-item switch-slide-toggle filter-slide-toggle"
+                                  [hideIcon]="true"
+                                  aria-label="匹配模式切换">
+                  {{ form.controls.matchMode.value === 'AND' ? '匹配全部标签' : '匹配任意标签' }}
+                </mat-slide-toggle>
+
+                }
+              </div>
+             
+              }
+              @if (filteredTagTypes$ | async; as typeList) {
+
+              @if(typeList.length==0)
+              {
+              <div class="custom-no-item-note">没有匹配的选项</div>
+              }
+              }
+            </mat-option>
+
+            @if (filteredTagTypes$ | async; as typeList) {
+            @for (type of typeList; track type.id) {
+            <ng-container *transloco="let t">
+              <mat-optgroup class="tag-type-group"
+                            [style.--group-color]="type.color"
+                            [label]="t(type.name ?? '(未命名类型)')">
+
+                @for (tag of type.tags; track tag.id) {
+                <mat-option class="tag-option"
+                            [value]="tag" [disabled]="form.controls.tags.value.length >= MAX_SELECTED&& !form.controls.tags.value.includes(tag)">
+                  <span class="tag-option-text">{{ tag.name }}</span>
+                  <span class="opt-count"> × {{ tag.lureCommunityTopicTagMapsCount }}</span>
+                </mat-option>
+                }
+              </mat-optgroup>
+            </ng-container>
+            }
+
+            }
+          </mat-select>
+ 
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="flex-item">
           <mat-label>作者</mat-label>
 
           <mat-select formControlName="user"
@@ -129,8 +255,8 @@
             </mat-option>
 
             }
- 
-           @if (hasUserSearched() && users.length === 0) {
+
+            @if (hasUserSearched() && users.length === 0) {
             <div class="custom-no-item-note">没有匹配的选项</div>
             }
 
@@ -140,121 +266,8 @@
         </mat-form-field>
 
       </div>
-      <div class="filter-row">
-
-        <div class="filter-item-2 tag-select-row">
-          <mat-form-field appearance="outline" class="filter-item">
-            <mat-label>标签</mat-label>
-
-            <mat-select [panelClass]="'tag-select-panel'"
-                        formControlName="tags"
-                        multiple
-                        [compareWith]="compareById"
-                        (closed)="clearTagSearch()">
-
-              <mat-select-trigger>
-                @if (form.controls.tags.value; as tags) {
-                @if (tags.length > 0) {
-                <span aria-label="已选标签">
-                  @for (tag of tags; track tag.id; let last = $last) {
-                  <span [style.color]="tag.typeColor">
-                    {{ tag.name }}
-                  </span>
-                  @if (!last) {
-                  <span>, </span>
-                  }
-                  }
-                </span>
-                }
-                }
-              </mat-select-trigger>
-
-              <mat-option disabled class="select-search-option">
-                <ngx-mat-select-search [formControl]="tagSearchCtrl"
-                                       placeholderLabel="搜索..."
-                                       noEntriesFoundLabel="">
-                </ngx-mat-select-search>
-                @if (form.controls.tags.value; as tags) {
-                <div class="chip-set-container">
-                  @if (tags.length >=MAX_SELECTED) {
-                  <span class="limit-reached warn-color">
-                    已达标签数量上限--{{MAX_SELECTED}}个
-                  </span>
-                  }
-                  <mat-chip-set class="chip-set" aria-label="已选标签">
-                    @for (tag of tags; track tag.id) {
-                    <mat-chip class="selected-chip"
-                              [style.--chip-color]="tag.typeColor"
-                              [removable]="true"
-                              (removed)="remove(tag.id)">
-
-                      {{ tag.name }}
-
-                      <button matChipRemove aria-label="移除 {{tag.name}}">
-                        <mat-icon>cancel</mat-icon>
-                      </button>
-                    </mat-chip>
-                    }
-                  </mat-chip-set>
-                </div>
-                }
-                @if (filteredTagTypes$ | async; as typeList) {
-
-                @if(typeList.length==0)
-                {
-                <div class="custom-no-item-note">没有匹配的选项</div>
-
-                }
-                }
-              </mat-option>
-
-              @if (filteredTagTypes$ | async; as typeList) {
-              @for (type of typeList; track type.id) {
-              <ng-container *transloco="let t">
-                <mat-optgroup class="tag-type-group"
-                              [style.--group-color]="type.color"
-                              [label]="t(type.name ?? '(未命名类型)')">
-
-                  @for (tag of type.tags; track tag.id) {
-                  <mat-option class="tag-option"
-                              [value]="tag" [disabled]="form.controls.tags.value.length >= MAX_SELECTED&& !form.controls.tags.value.includes(tag)">
-                    <span class="tag-option-text">{{ tag.name }}</span>
-                    <span class="opt-count"> × {{ tag.lureCommunityTopicTagMapsCount }}</span>
-                  </mat-option>
-                  }
-                </mat-optgroup>
-              </ng-container>
-              }
-
-              }
-            </mat-select>
-          </mat-form-field>
-          @if (form.controls.tags.value.length >= 2) {
-
-          <mat-slide-toggle [checked]="form.controls.matchMode.value === 'OR'"
-                            (change)="onMatchModeChange($event)"
-                            class="filter-no-grow-item switch-slide-toggle filter-slide-toggle"
-                            [hideIcon]="true"
-                            aria-label="匹配模式切换">
-            {{ form.controls.matchMode.value === 'AND' ? '匹配全部标签' : '匹配任意标签' }}
-          </mat-slide-toggle>
-
-          }
-        </div>
-
-        <mat-form-field appearance="outline" class="filter-item">
-          <mat-label>发布日期</mat-label>
-          <mat-select formControlName="scope">
-            @for (opt of constants.lureCommunitySearchScopeDropdown; track opt.id) {
-            <mat-option [value]="opt.id">
-              {{ opt.name }}
-            </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
       <div class="filter-row filter-row-extra-margin">
-        <div class="filter-item">
+        <div class="flex-item">
           <a class="expandable-header-small pointer" (click)="togglePostOptions()">
             <mat-icon>
               {{ postOptionCollapsed() ? 'arrow_drop_down' : 'arrow_right' }}
@@ -265,22 +278,22 @@
       </div>
       @if(postOptionCollapsed()){
       <div class="filter-row">
-        <div class="filter-item-group">
-          <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+        <div class="flex-item-group">
+          <mat-form-field appearance="outline" floatLabel="always" class="flex-item">
             <mat-label>最小回复量</mat-label>
             <input matInput />
           </mat-form-field>
-          <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+          <mat-form-field appearance="outline" floatLabel="always" class="flex-item">
             <mat-label>最大回复量</mat-label>
             <input matInput />
           </mat-form-field>
         </div>
-        <div class="filter-item-group">
-          <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+        <div class="flex-item-group">
+          <mat-form-field appearance="outline" floatLabel="always" class="flex-item">
             <mat-label>最小浏览量</mat-label>
             <input matInput />
           </mat-form-field>
-          <mat-form-field appearance="outline" floatLabel="always" class="filter-item">
+          <mat-form-field appearance="outline" floatLabel="always" class="flex-item">
             <mat-label>最大浏览量</mat-label>
             <input matInput />
           </mat-form-field>

@@ -3,6 +3,7 @@ import { HttpResponseBase, HttpResponse, HttpErrorResponse } from '@angular/comm
 import { CommonService } from '../services/common-service';
 import { Observable } from 'rxjs/internal/Observable';
 import { defer, finalize } from 'rxjs';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 type HttpMessageSearchOptions = Readonly<{
   searchInCaption?: boolean;
@@ -32,6 +33,16 @@ export class Utilities {
     if (!name) return '?';
     return name.slice(0, 2).toUpperCase();
   }
+  public static publishedRangeValidator(fromKey: string, toKey: string): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const from = group.get(fromKey)?.value as Date | null;
+      const to = group.get(toKey)?.value as Date | null;
+
+      if (!from || !to) return null; // 只填一边/都不填都算合法
+      return to >= from ? null : { publishedRangeInvalid: true };
+    };
+  }
+
   /**
    * 包裹任意 Observable，使其在订阅时触发全局进度条：
    * - 订阅开始：beginLoading()
