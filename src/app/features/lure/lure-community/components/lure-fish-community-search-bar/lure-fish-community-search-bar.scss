@@ -6,6 +6,20 @@
   flex-direction: column;
   align-items: center;
   padding: 24px 16px;
+ 
+    background-image:
+    /* 第一层（112.5deg） */
+    linear-gradient( 112.5deg, var(--bg1) 0%, var(--bg1) 3%, var(--bg2) 3%, var(--bg2) 34%, var(--bg3) 34%, var(--bg3) 46%, var(--bg4) 46%, var(--bg4) 51%, var(--bg5) 51%, var(--bg5) 52%, var(--bg6) 52%, var(--bg6) 76%, var(--bg7) 76%, var(--bg7) 84%, var(--bg8) 84%, var(--bg8) 100% ),
+    /* 第二层（157.5deg） */
+    linear-gradient( 157.5deg, var(--bg1) 0%, var(--bg1) 3%, var(--bg2) 3%, var(--bg2) 34%, var(--bg3) 34%, var(--bg3) 46%, var(--bg4) 46%, var(--bg4) 51%, var(--bg5) 51%, var(--bg5) 52%, var(--bg6) 52%, var(--bg6) 76%, var(--bg7) 76%, var(--bg7) 84%, var(--bg8) 84%, var(--bg8) 100% ),
+    /* 第三层（45deg） */
+    linear-gradient( 45deg, var(--bg1) 0%, var(--bg1) 3%, var(--bg2) 3%, var(--bg2) 34%, var(--bg3) 34%, var(--bg3) 46%, var(--bg4) 46%, var(--bg4) 51%, var(--bg5) 51%, var(--bg5) 52%, var(--bg6) 52%, var(--bg6) 76%, var(--bg7) 76%, var(--bg7) 84%, var(--bg8) 84%, var(--bg8) 100% ),
+    /* 第四层（90deg，对比层） */
+    linear-gradient(90deg, var(--acc1), var(--acc2));
+    background-blend-mode: overlay, overlay, overlay, normal;
+ 
+ 
+ 
 }
 
 .searchbar-form {
