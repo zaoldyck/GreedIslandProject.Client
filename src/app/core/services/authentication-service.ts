@@ -66,7 +66,7 @@ export class AuthenticationService {
 
   loginWithSms(request: LoginBySmsRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
-      `${this.base}/Authentication/LoginWithSms`,
+      `${this.base}/Authentication/login-with-sms`,
       request
     );
   }

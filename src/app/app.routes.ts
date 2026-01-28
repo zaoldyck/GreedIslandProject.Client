@@ -24,6 +24,7 @@ import { LureCommunityCategories } from './features/lure/lure-community/pages/lu
 import { LureCommunityCategoryDetail } from './features/lure/lure-community/pages/lure-community-category-detail/lure-community-category-detail';
 import { LureCommunityTags } from './features/lure/lure-community/pages/lure-community-tags/lure-community-tags';
 import { LureCommunityTagDetail } from './features/lure/lure-community/pages/lure-community-tag-detail/lure-community-tag-detail';
+import { LureCommunityMyMessages } from './features/lure/lure-community/pages/lure-community-my-messages/lure-community-my-messages';
 
 export const routes: Routes = [
   {
@@ -82,6 +83,8 @@ export const routes: Routes = [
               { path: 'search', component: LureCommunitySearch, data: { breadcrumb: '搜索' } },
               { path: 'latest', component: LureCommunityLatest, data: { breadcrumb: '最新话题' } },
               { path: 'top', component: LureCommunityTop, data: { breadcrumb: '热门话题' } },
+              { path: 'my-activities', component: LureCommunityMyActivities, data: { breadcrumb: '我的动态' } },
+              { path: 'my-messages', component: LureCommunityMyMessages, data: { breadcrumb: '我的消息' } },
               { path: 'bookmarks', component: LureCommunityBookmarks, data: { breadcrumb: '我的书签' } },
               { path: 'about', component: LureCommunityAbout, data: { breadcrumb: '关于交流区' } },
               { path: 'code-of-conduct', component: LureCommunityCodeOfConduct, data: { breadcrumb: '行为准则' } },

@@ -34,14 +34,12 @@ export class Constants {
       icon: 'sell',           // 小虫子图标，贴合“虫、Creature、Grub”等软饵
       link: '/lure/community/tags/detail/soft-baits',  // 你按路由规范改也行：/lure/tags/SOFT_BAITS
       exact: false,
-      
     },
     {
       label: '硬饵',
       icon: 'sell',                   // “反应/搜索强”的感觉；可换 'science' / 'cruelty_free'
       link: '/lure/community/tags/detail/hard-baits',
       exact: false,
-    
     },
     {
       label: '全部标签',
@@ -56,5 +54,4 @@ export class Constants {
     { id: 'categories', name: '主题/标签' },
     { id: 'users', name: '用户' }
   ];
-
 }
