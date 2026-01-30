@@ -25,6 +25,7 @@ import { LureCommunityCategoryDetail } from './features/lure/lure-community/page
 import { LureCommunityTags } from './features/lure/lure-community/pages/lure-community-tags/lure-community-tags';
 import { LureCommunityTagDetail } from './features/lure/lure-community/pages/lure-community-tag-detail/lure-community-tag-detail';
 import { LureCommunityMyMessages } from './features/lure/lure-community/pages/lure-community-my-messages/lure-community-my-messages';
+import { LureCommunityMyActivities } from './features/lure/lure-community/pages/lure-community-my-activities/lure-community-my-activities';
 
 export const routes: Routes = [
   {

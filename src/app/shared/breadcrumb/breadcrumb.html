@@ -1,5 +1,4 @@
-
-<nav class="breadcrumb">
+ <nav class="breadcrumb">
   @for (bc of svc.items(); let last = $last; track bc.url) {
   @if (!last) {
   <a matButton class="breadcrumb-button" [routerLink]="bc.url" [title]="bc.label">
@@ -13,4 +12,4 @@
   }
   }
 </nav>
-<mat-divider class="breadcrumb-divider"></mat-divider>
+ 

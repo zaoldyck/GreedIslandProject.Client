@@ -20,6 +20,7 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { ApplicationUserViewModel } from '../../../../../core/view-models/application-user-view-model';
 import { Utilities } from '../../../../../core/utils/utilities';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { ActivatedRoute, Router } from '@angular/router';
 type SearchScope = 'topics' | 'categories' | 'users';
 type HasId = { id: number };
 export type PublishOp = 'lte' | 'gte'; // lte=早于，gte=晚于
@@ -32,6 +33,8 @@ export type PublishOp = 'lte' | 'gte'; // lte=早于，gte=晚于
 })
 export class LureCommunitySearch {
   private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   readonly constants = inject(Constants);
   private lureCommunityService = inject(LureCommunityService);
   private commonService = inject(CommonService);
@@ -60,6 +63,30 @@ export class LureCommunitySearch {
     }),
     shareReplay(1)
   );
+
+  constructor() {
+    this.route.queryParamMap.pipe(take(1)).subscribe(params => {
+      // 1) 展开高级
+      if (params.get('openAdvanced') === '1' || params.get('openAdvanced') === 'true') {
+        this.advancedOptionCollapsed.set(false);
+      }
+
+      // 2) 回填 keyword（以及需要回填的其它条件）
+      const keyword = (params.get('keyword') ?? '').trim();
+      this.form.patchValue(
+        {
+          keyword,
+          // TODO: 如果你还有 categoryId/userId/tagIds/date… 在这里回填
+        },
+        { emitEvent: false }
+      );
+
+      // 3) 触发一次搜索（按你的业务逻辑调用服务）
+      this.onSearch();
+    });
+  }
+
+
   clearCategorySearch() {
     this.categorySearchCtrl.setValue('');
   }

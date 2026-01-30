@@ -3,22 +3,7 @@
 
 
 @mixin root-definitions() {
-  /* 条纹 14 段颜色（按你浅色版里出现顺序命名），每个都含 Light / Dark */
-
-
-
-  --bg1: light-dark(rgb(102,166,255), rgb(62,21,112));
-  --bg2: light-dark(rgb(98,149,215), rgb(94,55,147));
-  --bg3: light-dark(rgb(83,157,201), rgb(40,36,104));
-  --bg4: light-dark(rgb(100,146,170), rgb(61,51,125));
-  --bg5: light-dark(rgb(128,159,225), rgb(86,62,98));
-  --bg6: light-dark(rgb(98,151,207), rgb(41,48,116));
-  --bg7: light-dark(rgb(70,144,213), rgb(15,51,94));
-  --bg8: light-dark(rgb(39,151,178), rgb(30,92,133));
- 
-  /* 最后一层（对比层 L4）两端色 */
-  --acc1: light-dark(rgb(68,103,137), rgb(62,42,151));
-  --acc2: light-dark(rgb(0,115,190), rgb(33,40,180));
+  --text-subtle: light-dark(rgba(0,0,0,0.55), rgba(255,255,255,0.6));
   // PRIMITIVES
   // Colors
   --bright-blue: oklch(51.01% 0.274 263.83); // #0546ff

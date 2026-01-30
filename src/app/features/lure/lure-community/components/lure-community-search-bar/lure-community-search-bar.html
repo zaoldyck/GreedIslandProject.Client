@@ -1,4 +1,3 @@
-
 <div class="searchbar-container">
   <h1 class="searchbar-title">欢迎来到路亚交流区</h1>
 
@@ -10,7 +9,7 @@
       <input matInput
              placeholder="搜索"
              formControlName="keyword"
-             autocomplete="off" />
+             autocomplete="off" (keydown.enter)="onSearch()"/>
 
       <!-- 右侧：清空 + 高级过滤 -->
       <span matSuffix class="suffix-box">
@@ -25,9 +24,8 @@
 
         <!-- 高级过滤按钮（打开筛选面板/弹窗/抽屉） -->
         <button mat-icon-button
-                type="button"
-                aria-label="高级过滤"
-                (click)="openAdvancedFilter()">
+                type="submit"
+                aria-label="高级过滤">
           <mat-icon>tune</mat-icon>
           <!-- 你也可以用 filter_list / filter_alt / manage_search 等图标 -->
         </button>

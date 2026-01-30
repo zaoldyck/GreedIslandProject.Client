@@ -1,1 +1,30 @@
-<app-lure-fish-community-search-bar></app-lure-fish-community-search-bar>
+<app-lure-community-search-bar></app-lure-community-search-bar>
+
+<div class="card-list">
+  @if (categories$ | async; as categories) {
+  @if (categories.length > 0) {
+
+  <!-- 分类卡片 -->
+  @for (c of categories; track c.id) {
+  <mat-card class="app-card pointer" [routerLink]="['/lure/community/categories/detail', c.code]" matRipple>
+    <mat-card-header>
+
+      <mat-card-title class="title-row">
+        <mat-icon class="title-icon">{{ c.icon }}</mat-icon>
+        <span class="title-text">{{ c.name }}</span>
+      </mat-card-title>
+
+      <mat-card-subtitle class="app-card-subtitle">话题数：{{ c.lureCommunityTopicsCount }}</mat-card-subtitle>
+    </mat-card-header>
+ 
+    @if (c.description) {
+    <mat-card-content class="app-card-content">
+      <p>{{ c.description }}</p>
+    </mat-card-content> 
+ 
+    }
+  </mat-card>
+  }
+  }
+  }
+</div>

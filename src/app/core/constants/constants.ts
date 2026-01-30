@@ -24,7 +24,7 @@ export class Constants {
   ];
 
   readonly lureCommunityQuickLinks: LureCommunityNavItem[] = [
-    { label: '装备讨论', icon: 'rate_review', link: '/lure/community/categories/detail/gear', exact: false },
+    { label: '装备讨论', icon: 'rate_review', link: '/lure/community/categories/detail/GEAR', exact: false },
     { label: '全部主题', icon: 'list', link: '/lure/community/categories', exact: true }
   ];
 
