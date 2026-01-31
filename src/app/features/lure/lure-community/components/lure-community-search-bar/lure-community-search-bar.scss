@@ -41,4 +41,33 @@
       }
     }
   }
+
+.quick-area {
+  width: 95%;
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+ span{
+     margin-top: -18px;
+   }
+}
+
+
+  .divider-before {
+  padding-left: 8px;
  
+}
+.end-icon{
+    margin-left:12px!important;
+}
+.divider-before::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 24px; /* 分割线高度 */
+  width: 1px;
+  background: color-mix(in srgb, var(--mat-button-filled-label-text-color, var(--mat-sys-on-primary)) 40%, transparent);
+}
+

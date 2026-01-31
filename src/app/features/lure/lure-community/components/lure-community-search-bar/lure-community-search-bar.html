@@ -9,7 +9,7 @@
       <input matInput
              placeholder="搜索"
              formControlName="keyword"
-             autocomplete="off" (keydown.enter)="onSearch()"/>
+             autocomplete="off" (keydown.enter)="onSearch()" />
 
       <!-- 右侧：清空 + 高级过滤 -->
       <span matSuffix class="suffix-box">
@@ -32,5 +32,79 @@
       </span>
     </mat-form-field>
   </form>
+
+  <div class="quick-area">
+    <span>快速跳转:</span>
+    <mat-form-field appearance="outline" class="small-select">
+      <mat-label>主题</mat-label>
+
+      <mat-select [panelClass]="'wide-select-panel'" [compareWith]="compareById"
+                  (selectionChange)="onCategorySelected($event.value)">
+
+        <mat-option disabled>
+          <ngx-mat-select-search [formControl]="categorySearchCtrl"
+                                 placeholderLabel="搜索..."
+                                 noEntriesFoundLabel="没有匹配的选项">
+          </ngx-mat-select-search>
+        </mat-option>
+
+        @if (filteredCategories$ | async; as categories) {
+        @for (c of categories; track c.id) {
+        <mat-option [value]="c">
+          <mat-icon>{{ c.icon }}</mat-icon>
+          <span>{{ c.name }}</span>
+          <span class="opt-count"> × {{ c.lureCommunityTopicsCount }}</span>
+        </mat-option>
+        }
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="small-select-right">
+      <mat-label>标签</mat-label>
+
+      <mat-select [panelClass]="'tag-select-panel'"
+                  [compareWith]="compareById" (selectionChange)="onTagSelected($event.value)">
+
+        <mat-option disabled class="select-search-option">
+          <ngx-mat-select-search [formControl]="tagSearchCtrl"
+                                 placeholderLabel="搜索..."
+                                 noEntriesFoundLabel="没有匹配的选项">
+          </ngx-mat-select-search>
+
+        </mat-option>
+
+        @if (filteredTagTypes$ | async; as typeList) {
+        @for (type of typeList; track type.id) {
+        <ng-container *transloco="let t">
+          <mat-optgroup class="tag-type-group"
+                        [style.--group-color]="type.color"
+                        [label]="t(type.name ?? '(未命名类型)')">
+
+            @for (tag of type.tags; track tag.id) {
+            <mat-option class="tag-option"
+                        [value]="tag">
+              <span class="tag-option-text">{{ tag.name }}</span>
+              <span class="opt-count"> × {{ tag.lureCommunityTopicTagMapsCount }}</span>
+            </mat-option>
+            }
+          </mat-optgroup>
+        </ng-container>
+        }
+
+        }
+      </mat-select>
+
+
+    </mat-form-field>
+  </div>
+  <div class="quick-area">
+
+    <button matButton="filled">
+      <mat-icon iconPositionStart>add</mat-icon>
+      新建话题
+      <mat-icon iconPositionEnd class="end-icon divider-before">expand_more</mat-icon>
+    </button>
+
+  </div>
 </div>
  

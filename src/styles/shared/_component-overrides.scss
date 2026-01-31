@@ -123,17 +123,35 @@ mat-option {
   }
 }
 
+.small-select, .small-select-right {
+  width: 100px;
+  .wide-select-panel {
+    min-width: 320px !important;
+  }
+}
+
  
+
 /* 把背景刷在 outline 的三段上（这样圆角也正确） */
 .searchbar-field .mdc-notched-outline__leading,
 .searchbar-field .mdc-notched-outline__notch,
 .searchbar-field .mdc-notched-outline__trailing {
   background-color: var(--mat-sys-background);
 }
+@media (max-width: constants.$small-breakpoint-width) {
+  .small-select-right {
+    .tag-select-panel {
+      margin-left: -120px !important;
+      min-width: 280px !important;
+    }
+  }
+}
 
-
+ 
 @media (max-width: constants.$extra-small-breakpoint-width) {
   .tag-select-panel {
-    min-width: 200px !important;
+    min-width: 280px !important;
     }
+
  }
+

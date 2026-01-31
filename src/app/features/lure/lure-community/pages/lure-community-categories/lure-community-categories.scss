@@ -1,7 +1,7 @@
 .card-list {
   padding:8px 16px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); // 或 auto-fit
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); // 或 auto-fit
   gap: var(--card-gap);
   justify-items: center; /* ✅ 让每个格子里的内容居中 */
 }
