@@ -71,3 +71,31 @@
   background: color-mix(in srgb, var(--mat-button-filled-label-text-color, var(--mat-sys-on-primary)) 40%, transparent);
 }
 
+ 
+
+.category-menu-item {
+  /* 让 icon + 文本两列布局 */
+  display: flex;
+  align-items: flex-start; /* 两行时从上对齐更好看 */
+}
+ 
+/* 文本区域：两行 */
+.category-menu-item .item-text {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.category-menu-item .item-desc {
+  font-size: 12px;
+  color:var(--text-subtle);
+  margin-bottom: 4px;
+  display: -webkit-box; /* 必须 */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* 两行 */
+
+  overflow: hidden; /* 必须：用于裁切，省略号才能出现 */
+  /* 可选：更稳一点 */
+  word-break: break-word;
+}

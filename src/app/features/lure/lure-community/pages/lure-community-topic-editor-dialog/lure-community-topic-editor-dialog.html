@@ -1,0 +1,16 @@
+
+<h2 mat-dialog-title
+    class="topic-dialog-title"
+    cdkDragHandle
+    cdkDrag
+    cdkDragRootElement=".cdk-overlay-pane">
+  {{ data.mode === 'create' ? '新建话题' : '编辑话题' }}
+</h2>
+
+
+<button mat-icon-button
+        mat-dialog-close
+        aria-label="关闭"
+        class="dialog-close-abs">
+  <mat-icon>close</mat-icon>
+</button>

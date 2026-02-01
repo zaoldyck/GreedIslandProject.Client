@@ -99,11 +99,28 @@
   </div>
   <div class="quick-area">
 
-    <button matButton="filled">
+    <button matButton="filled" [matMenuTriggerFor]="menu">
       <mat-icon iconPositionStart>add</mat-icon>
       新建话题
       <mat-icon iconPositionEnd class="end-icon divider-before">expand_more</mat-icon>
     </button>
+
+    <mat-menu #menu="matMenu">
+      @if (categories$ | async; as categories) {
+      @for (c of categories; track c.id) {
+      <button mat-menu-item
+              class="category-menu-item"
+              (click)="openCreateTopicDialog(c)">
+        <mat-icon>{{ c.icon }}</mat-icon>
+
+        <span class="item-text">
+          <span class="item-title">{{ c.name }}</span>
+          <span class="item-desc">{{ c.description }}</span>
+        </span>
+      </button>
+      }
+      }
+    </mat-menu>
 
   </div>
 </div>

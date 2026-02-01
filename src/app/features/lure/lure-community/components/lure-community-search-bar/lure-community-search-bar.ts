@@ -14,10 +14,14 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { CommonService } from '../../../../../core/services/common-service';
 import { TagViewModel } from '../../../../../core/view-models/tag-view-model';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
+import { LureCommunityTopicEditorDialog } from '../../pages/lure-community-topic-editor-dialog/lure-community-topic-editor-dialog';
+import { TopicEditorDialogData, TopicEditorDialogResult } from '../../pages/lure-community-topic-editor-dialog/lure-community-topic-editor-dialog-data';
 type HasId = { id: number };
 @Component({
   selector: 'app-lure-community-search-bar',
-  imports: [TranslocoModule, NgxMatSelectSearchModule,AsyncPipe,MatSelectModule,MatButtonModule, ReactiveFormsModule, MatInputModule, MatIconModule, MatFormFieldModule,],
+  imports: [MatMenuModule, TranslocoModule, NgxMatSelectSearchModule, AsyncPipe, MatSelectModule, MatButtonModule, ReactiveFormsModule, MatInputModule, MatIconModule, MatFormFieldModule,],
   templateUrl: './lure-community-search-bar.html',
   styleUrl: './lure-community-search-bar.scss',
 })
@@ -26,6 +30,7 @@ export class LureCommunitySearchBar {
   private router = inject(Router);
   private lureCommunityService = inject(LureCommunityService);
   private commonService = inject(CommonService);
+  private dialog = inject(MatDialog);
   form = this.fb.nonNullable.group({
     keyword: ''
   });
@@ -71,7 +76,6 @@ export class LureCommunitySearchBar {
 
     // 你按你的路由规则改这行：
     this.router.navigate(['/lure/community/categories/detail', c.code]);
- 
   }
   private transloco = inject(TranslocoService);
 
@@ -83,7 +87,6 @@ export class LureCommunitySearchBar {
   readonly tagTypes$ = this.commonService.getTagTypes([]).pipe(shareReplay(1));
 
   readonly tagSearchCtrl = new FormControl<string>('', { nonNullable: true });
-
 
   readonly filteredTagTypes$ = combineLatest([
     this.tagTypes$,
@@ -119,9 +122,33 @@ export class LureCommunitySearchBar {
 
     // 你按你的路由规则改这行：
     this.router.navigate(['/lure/community/tags/detail', c.id]);
-
   }
-  openAdvancedFilter() {
-    // this.sidenav.open();
+
+  openCreateTopicDialog(category: LureCommunityCategoryViewModel) {
+    const ref = this.dialog.open<
+      LureCommunityTopicEditorDialog,
+      TopicEditorDialogData,
+      TopicEditorDialogResult | undefined
+    >(LureCommunityTopicEditorDialog, {
+      width: 'min(1280px, 90dvw)',
+      maxWidth: '90dvw',
+      minHeight: '50dvh',
+      maxHeight: '90dvh',
+      data: {
+        mode: 'create',
+        category,
+      },
+      autoFocus: false,
+      restoreFocus: true,
+      disableClose: true,
+    });
+
+    ref.afterClosed().subscribe(result => {
+      if (!result) return; // 用户取消/点遮罩关闭
+
+      // ✅ 在这里调用创建 API
+      // this.topicService.createTopic(result).subscribe(...)
+      // ✅ 成功后刷新列表 / 或者 append 新topic / 或导航到详情
+    });
   }
 }
