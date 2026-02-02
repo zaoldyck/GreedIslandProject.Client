@@ -57,3 +57,37 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+---
+
+## 📜 License
+
+### Frontend License (due to CKEditor 5)
+This project integrates **CKEditor 5 (npm self‑hosted)**, which uses a dual‑license model:
+- **GNU General Public License v2 or later**, or
+- **Commercial License from CKSource**
+
+Using the self-hosted npm build requires either:
+1. **Complying with GPL‑2.0‑or‑later**, or
+2. Purchasing a commercial CKEditor license.
+
+Therefore, this frontend is distributed under:
+
+# ▶ **GPL‑2.0‑or‑later**
+
+Full license text is available in:
+```
+LICENSE
+```
+
+More licensing info: https://ckeditor.com/legal/ckeditor-licensing-options/
+
+---
+
+## 🤝 Contributing
+Contributions are welcome! By contributing, you agree your code will be licensed under **GPL‑2.0‑or‑later**.
+
+---
+
+## 📬 Contact
+Maintainer: a_bc@163.com
