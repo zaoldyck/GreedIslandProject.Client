@@ -54,6 +54,9 @@
     <None Update="src\app\core\view-models\lure-community-topic-view-model.ts">
       <CustomToolNamespace>ViewModels\LureCommunityTopicViewModel.cs</CustomToolNamespace>
     </None>
+    <None Update="src\app\core\view-models\lure-community-topic-tag-map-view-model.ts">
+      <CustomToolNamespace>ViewModels\LureCommunityTopicTagMapViewModel.cs</CustomToolNamespace>
+    </None>
     <None Update="src\app\core\view-models\province-view-model.ts">
       <CustomToolNamespace>ViewModels\ProvinceViewModel.cs</CustomToolNamespace>
     </None>

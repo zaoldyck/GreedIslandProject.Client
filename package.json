@@ -1,6 +1,9 @@
 {
   "name": "greedislandproject.client",
   "version": "0.0.0",
+
+  "license": "GPL-2.0-or-later",
+
   "scripts": {
     "ng": "ng",
     "start": "run-script-os",
@@ -12,6 +15,7 @@
     "start:windows": "ng serve --ssl --ssl-cert \"%APPDATA%\\ASP.NET\\https\\%npm_package_name%.pem\" --ssl-key \"%APPDATA%\\ASP.NET\\https\\%npm_package_name%.key\" --host=127.0.0.1",
     "start:default": "ng serve --ssl --ssl-cert \"$HOME/.aspnet/https/${npm_package_name}.pem\" --ssl-key \"$HOME/.aspnet/https/${npm_package_name}.key\" --host=127.0.0.1"
   },
+
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
@@ -24,7 +28,9 @@
       }
     ]
   },
+
   "private": true,
+
   "dependencies": {
     "@angular/cdk": "^21.0.2",
     "@angular/common": "^21.0.3",
@@ -36,6 +42,7 @@
     "@angular/platform-server": "^21.0.3",
     "@angular/router": "^21.0.3",
     "@angular/ssr": "^21.0.2",
+    "@ckeditor/ckeditor5-angular": "^11.0.0",
     "@jsverse/transloco": "^8.2.0",
     "echarts": "^6.0.0",
     "express": "^5.1.0",
@@ -53,6 +60,7 @@
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.17.19",
     "baseline-browser-mapping": "^2.9.9",
+    "ckeditor5": "^47.4.0",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

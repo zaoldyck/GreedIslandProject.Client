@@ -1,16 +1,67 @@
-
-<h2 mat-dialog-title
-    class="topic-dialog-title"
-    cdkDragHandle
-    cdkDrag
-    cdkDragRootElement=".cdk-overlay-pane">
+<h2 mat-dialog-title class="topic-dialog-title"
+    cdkDragHandle cdkDrag cdkDragRootElement=".cdk-overlay-pane">
   {{ data.mode === 'create' ? '新建话题' : '编辑话题' }}
 </h2>
 
-
-<button mat-icon-button
-        mat-dialog-close
-        aria-label="关闭"
-        class="dialog-close-abs">
+<button mat-icon-button mat-dialog-close aria-label="关闭" class="dialog-close-abs">
   <mat-icon>close</mat-icon>
 </button>
+
+<div mat-dialog-content [formGroup]="form" class="topic-dialog-content">
+
+  <!-- 分类 -->
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>分类</mat-label>
+    <mat-select formControlName="categoryId">
+      <mat-option [value]="1">路亚技巧</mat-option>
+      <mat-option [value]="2">装备评测</mat-option>
+    </mat-select>
+
+    @if (form.controls.categoryId.touched && form.controls.categoryId.hasError('required')) {
+    <mat-error>请选择分类</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- 标题 -->
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>标题</mat-label>
+    <input matInput formControlName="title" maxlength="80" />
+
+    <mat-hint align="end">
+      {{ form.controls.title.value.length || 0 }}/80
+    </mat-hint>
+
+    @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+    <mat-error>标题不能为空</mat-error>
+    }
+  </mat-form-field>
+
+
+  <div class="content-editor-wrapper">
+    <label class="content-label">内容</label>
+
+    @if (editor(); as Editor) {
+    <ckeditor [editor]="Editor" [config]="editorConfig" formControlName="content"></ckeditor>
+    } @else {
+    <div class="editor-skeleton">编辑器加载中…</div>
+    }
+
+    <div class="content-hint">{{ (form.controls.content.value || '').length }}/5000</div>
+  </div>
+
+
+</div>
+
+<!-- actions -->
+<div mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()" [disabled]="isLoading()">取消</button>
+
+  <button mat-flat-button color="primary" type="button"
+          (click)="submit()" [disabled]="isLoading()">
+    @if (isLoading()) {
+    <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+    <span>{{ data.mode === 'create' ? '创建' : '保存' }}</span>
+    }
+  </button>
+</div>

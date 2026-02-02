@@ -1,3 +1,5 @@
+import { LureCommunityTopicTagMapViewModel } from "./lure-community-topic-tag-map-view-model";
+
 export class LureCommunityTopicViewModel {
   constructor() {
     this.id = 0;
@@ -27,6 +29,8 @@ export class LureCommunityTopicViewModel {
     this.lastReplyDate = null;
 
     this.isEnabled = null;
+
+    this.lureCommunityTopicTagMaps = [];
   }
 
   public id: number;
@@ -56,4 +60,6 @@ export class LureCommunityTopicViewModel {
   public lastReplyDate: Date | null;
 
   public isEnabled: boolean | null;
+
+  public lureCommunityTopicTagMaps: LureCommunityTopicTagMapViewModel[];
 }
